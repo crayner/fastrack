@@ -382,6 +382,10 @@ foreach ($xx as $q=>$w) {
 				}
 				$xx[$q]['listprice'] = $xx[$q]['price']['value'];
 				unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['price'][0]);
+				if ($xx[$q]['price']['gst_value'] == 'ex-GST') {
+					$xx[$q]['price']['value'] += $xx[$q]['price']['value'] * $xx[$q]['price']['gst'] / 100;
+					$xx[$q]['price']['gst_value'] = 'inc-GST';
+				}
 				break;
 			case "Listing Type":
 				$xx[$q]['listingtype']['value'] = $r[0];
@@ -758,7 +762,7 @@ foreach ($xx as $q=>$w) {
 		<!--<div style="text-align: center; float: left; width: 250px; ">-->
 		<div>
         <!--<p style="text-align: center ">--><p><!--<a href="index.php?option=com_rsform&formId=8&productID=<?php echo $xx[$q]['id']; ?>" target="_self">-->
-        <img class="firstImage" src='<?php echo str_replace(array('fastrack', DOCUMENTROOT), array('fastrack-include', ''), @$xx[$q]['image'][1]); ?>' alt='' width="245" /><!--</a>-->
+        <img class="firstImage" src='<?php echo str_replace(array('fastrack', DOCUMENTROOT), array('fastrack-include', ''). @$xx[$q]['image'][1]); ?>' alt='' width="245" /><!--</a>-->
         </p>
        
 

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="module" version="3.0" method="upgrade" client="site">
+	<name>MOD_FASTRACK_SEARCH</name>
+	<author>Hill Range Services</author>
+	<creationDate>27th Nov 2014</creationDate>
+	<copyright>This extension is released under the GNU/GPL License.
+	</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html
+		GNU/GPL</license>
+	<authorEmail>info@hillrange.com.au
+	</authorEmail>
+	<authorUrl>fastrack.hillrange.com.au</authorUrl>
+	<version>1.0</version>
+	<description>MOD_FASTRACK_SEARCH_DESCRIPTION</description>
+	<files>
+		<filename module="mod_fastrack_search">mod_fastrack_search.php</filename>
+		<filename>index.html</filename>
+		<folder>tmpl</folder>
+		<folder>language</folder>
+	</files>
+	<config>
+		<fields name="params"
+			addfieldpath="/modules/com_fastrack/fields">
+			<fieldset name="basic">
+			</fieldset>
+		</fields>
+	</config>
+</extension>

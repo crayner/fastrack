@@ -17,15 +17,18 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 26th November 2014
+ * @version 20th November 2014
+ * @since 26th November 2014
  */
 
 defined('_JEXEC') or die();
 
+JLoader::import('modules.mod_fastrack.xmlparser', JPATH_SITE);
+
 
 class ModFastrackHelper {
 	static $params;
-	private static $Conditions;
+	public static $Conditions;
 	private static $fileName			=	'';
 /**	
   * Execute
@@ -36,28 +39,31 @@ class ModFastrackHelper {
   * @return array Machinery
   */
 	public static function execute($params){
-		
+
 		self::$params = $params;
+		if (null === $params->get('fileName', null)) {
+			self::loadModFastrackParams();
+		}
 		self::$Conditions = new stdClass();
-		$x = self::$Conditions;
 
 		$reader = new xmlParser();
+		$filename = self::fileName();
 		try {
-			$x = file_get_contents(self::fileName());
+			$x = file_get_contents(JPATH_SITE.$filename);
 		} catch (Exception $e) {
 			sleep ( 2 );
-			$x = file_get_contents(self::fileName());
+			$x = file_get_contents(JPATH_SITE.$filename);
 		}
 			
 		$xx = $reader->parseString($x);
 		$xx = $reader->optXml($xx['dealer'][0]['listing']);
-		self::$Conditions->TotalAvailable = count($xx);
+		self::setCondition('TotalAvailable', count($xx));
 		return $xx;
 	}
 /**	
   * return File Name
   *
-  * @version 27th November 2014
+  * @version 30th November 2014
   * @since 27th November 2014
   * @return string FileName and Path
   */
@@ -65,8 +71,9 @@ class ModFastrackHelper {
 	
 		if (self::$fileName != '')
 			return self::$fileName;
-		$path = rtrim(self::$params->get('filepath', 'modules/mod_fastrack/data'), '/').'/';
-		define('PRODUCTIMAGES', $path);
+		$path = rtrim(self::$params->get('filepath', '/modules/mod_fastrack/data'), '/').'/';
+		$x = ltrim($path, "/");
+		define('PRODUCTIMAGES', JPATH_SITE.'/'.$x);
 		self::$fileName = $path . self::$params->get('filename');
 		return self::$fileName;
 	}
@@ -76,11 +83,255 @@ class ModFastrackHelper {
   * @version 27th November 2014
   * @since 27th November 2014
   * @param string Condition Name
-  * @return mixed ConditionValue
+  * @return mixed Condition Value
   */
 	public static function getCondition($name){
 	
 		return self::$Conditions->$name;
+	}
+/**	
+  * get Condition
+  *
+  * @version 27th November 2014
+  * @since 27th November 2014
+  * @param string Condition Name
+  * @param mixed Condition Value
+  * @return mixed Condition Value
+  */
+	public static function setCondition($name, $value){
+	
+		self::$Conditions->$name = $value;
+		return self::$Conditions->$name;
+	}
+/**	
+  * set Search Controls
+  *
+  * @version 27th November 2014
+  * @since 27th November 2014
+  * @param string Condition Name
+  * @return mixed ConditionValue
+  */
+	public static function setSearchControls($xx){
+
+		$type = array();
+		$make = array();
+		$menu = array();
+		$total = 0;
+		$MakeTotal = 0;
+		$TypeTotal = 0;
+		
+		foreach($xx as $q=>$w) {
+			//Limit the Make/model based on type selection
+			if ( isset($_POST['type']) AND empty ($_POST['subtype'])) {
+				if ($w['type'] == $_POST['type']) {
+					@$menu['make'][] = $w['make']."::".$w['model'];
+					@$make[$w['make']]['count']++;
+					@$make[$w['make']][$w['model']]['count']++;
+					$MakeTotal++;
+				}
+			} elseif ( isset($_POST['type']) AND isset ($_POST['subtype'])) {
+				if ($w['type'] == $_POST['type'] AND $w['subtype'] == $_POST['subtype']) {
+					@$menu['make'][] = $w['make']."::".$w['model'];
+					@$make[$w['make']]['count']++;
+					@$make[$w['make']][$w['model']]['count']++;
+					$MakeTotal++;
+				}
+			} else {
+				@$menu['make'][] = $w['make']."::".$w['model'];
+				@$make[$w['make']]['count']++;
+				@$make[$w['make']][$w['model']]['count']++;
+				$MakeTotal++;
+			}
+		
+			//Limit the Type/subtype based on make selection
+			if ( isset($_POST['make']) AND empty ($_POST['model'])) {
+				if ($w['make'] == $_POST['make']) {
+					@$menu['type'][] = $w['type']."::".$w['subtype'];
+					@$type[$w['type']]['count']++;
+					@$type[$w['type']][$w['subtype']]['count']++;
+					$TypeTotal++;
+				}
+			} elseif ( isset($_POST['make']) AND isset ($_POST['model'])) {
+				if ($w['make'] == $_POST['make'] AND $w['model'] == $_POST['model']) {
+					@$menu['type'][] = $w['type']."::".$w['subtype'];
+					@$type[$w['type']]['count']++;
+					@$type[$w['type']][$w['subtype']]['count']++;
+					$TypeTotal++;
+				}
+			} else {
+				@$menu['type'][] = $w['type']."::".$w['subtype'];
+				@$type[$w['type']]['count']++;
+				@$type[$w['type']][$w['subtype']]['count']++;
+				$TypeTotal++;
+			}
+		
+			if (! isset($type[$w['type']]['image']))
+				@$type[$w['type']]['image'] = $image;
+			$total++;
+		}
+		$menu['make'] = array_unique($menu['make']);
+		$menu['type'] = array_unique($menu['type']);
+		sort($menu['make']);
+		sort($menu['type']);
+		$input = JFactory::getApplication()->input;
+		$input->set('type', $type);
+		$input->set('make', $make);
+		$input->set('menu', $menu);
+		$input->set('total', $total);
+		$input->set('MakeTotal', $MakeTotal);
+		$input->set('TypeTotal', $TypeTotal);
+	}
+/**
+  * Load mod Fastrack Params
+  *
+  * @version 27th November 2014
+  * @since 27th November 2014
+  * return void
+  */
+  	private static function loadModFastrackParams() {
+		
+		$sql = JFactory::getDbo();
+		$query = $sql->getQuery(true);
+		$query->from($sql->quoteName('#__modules'));
+		$query->select($sql->quoteName('params'));
+		$query->where($sql->quoteName('module') . ' = ' .$sql->quote('mod_fastrack'));
+		$sql->setQuery($query);
+		$x = explode('","', trim($sql->loadResult(), '{}'));
+		$y = array();
+		foreach ($x as $w) {
+			$q = explode('":"', $w);
+			$n = ltrim($q[0], '"');
+			$v = self::$params->get($n);
+			if (empty ($v))
+				self::$params->set($n, rtrim($q[1], '"'));
+		}
+	}
+/**
+  * Build Pagination Form Elements
+  *
+  * @version 27th November 2014
+  * @since 27th November 2014
+  * @param array Items
+  * @param string Input Element Types
+  * return string HTML
+  */
+  	public static function buildPagination($xx, $inputType = 'submit') {
+	
+
+		$input = Jfactory::getApplication()->input;
+		$yy = array();
+		$DisplayCount = 0;
+		$startid = 0;
+		$PageCount = 0;
+		foreach($xx as $q=>$w){
+			if ($DisplayCount == 0) {
+				$StartID = $w['id'];
+			}
+			$DisplayCount++;
+			if ($DisplayCount > $input->get('pageitems', 10, 'INT') - 1) {
+		
+				$PageCount++;
+				$yy[$PageCount] = $StartID;
+				$DisplayCount = 0;
+			}
+		}
+		if ($DisplayCount > 0) {
+			$PageCount++;
+				$yy[$PageCount] = $StartID;
+		}
+		$t = '';
+		$m = '';
+		if (empty($_POST['startKey']))
+			$_POST['startKey'] = 0;
+		if ($_POST['startKey'] == 0)
+			foreach($xx as $q=>$w) {
+				$_POST['startKey'] = $w['id'];
+				break ;
+			}
+		
+		$pagination = '';
+		ob_start();?>
+		<div style="text-align: center; clear:both">
+		<p>
+		<input type="hidden" value="<?php echo $_POST['startKey']; ?>" name="oldStartKey" />
+		<?php
+		
+		reset($yy);
+		$first = key($yy);
+		end($yy);
+		$last = key($yy);
+		
+		foreach ($yy as $q=>$w) {
+			if ($q == $first) {
+				?><input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $input->get('firstpage'); ?>" class="Pagination" /> 
+				<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $input->get('prevpage'); ?>" class="Pagination" />
+			
+				<?php	
+			}
+			?>
+			<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $q; ?>"  <?php 
+				if (@$_POST['startKey'] == $w) {
+					?> class="Pagination, PaginationChecked " <?php
+				} else { ?>
+				 class="Pagination"
+				<?php }
+			?> />
+			<input type="hidden" name="startKeyValues[<?php echo $q; ?>]" value="<?php echo $w; ?>" />
+			<?php	
+			if ($q == $last) {
+				?><input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $input->get('nextpage'); ?>" class="Pagination" /> 
+				<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $input->get('lastpage'); ?>" class="Pagination" /><?php	
+			}
+		}
+		?></p>
+		
+		</div>
+		<?php
+		$pagination = ob_get_contents();
+		ob_end_clean();
+		if (count($yy) < 2)
+			$pagination = '';
+		self::setCondition('yy', $yy);
+		return $pagination;
+	}
+/**
+  * Sort Results
+  *
+  * @version 25th July 2014
+  * @since 25th July 2014
+  * @param array The Results from Table Search
+  * @param array The fields in order for sort (first in array has highest priority, key is the field name and value = ASC or DESC.
+  * @return array The Results
+  */
+  	public static function SortResults($Result, $Sort){
+		
+		reset($Sort);
+		$direction = $y[key($Sort)] = current($Sort);
+		$name = key($Sort);
+		unset($Sort[$name]);
+		$t = array();
+		foreach($Result as $q=>$w) {
+			$t[$q] = $w[$name];
+		}
+		if (strtoupper($direction) == 'DESC') {
+			arsort($t);
+		} else {
+			asort($t);
+		}
+		$ss = array();
+		foreach($t as $item=>$value)
+			$ss[$value][$item] = $Result[$item];
+		if (count($Sort) >= 1) {
+			foreach($ss as $v=>$s) {
+				$ss[$v] = self::SortResults($s, $Sort);
+			}
+		}
+		$Result = array();
+		foreach($ss as $v=>$s) {
+			foreach ($s as $item=>$values)
+				$Result[$item] = $values;
+		}
+		return $Result ;
 	}
 }
 /**
@@ -106,43 +357,4 @@ class ModFastrackHelper {
 		if ($stop) 
 			trigger_error('Object Print Stop', E_USER_ERROR);
 		return ;
-	}
-/**
-  * Sort Results
-  *
-  * @version 25th July 2014
-  * @since 25th July 2014
-  * @param array The Results from Table Search
-  * @param array The fields in order for sort (first in array has highest priority, key is the field name and value = ASC or DESC.
-  * @return array The Results
-  */
-  	function SortResults($Result, $Sort){
-		
-		reset($Sort);
-		$direction = $y[key($Sort)] = current($Sort);
-		$name = key($Sort);
-		unset($Sort[$name]);
-		$t = array();
-		foreach($Result as $q=>$w) {
-			$t[$q] = $w[$name];
-		}
-		if (strtoupper($direction) == 'DESC') {
-			arsort($t);
-		} else {
-			asort($t);
-		}
-		$ss = array();
-		foreach($t as $item=>$value)
-			$ss[$value][$item] = $Result[$item];
-		if (count($Sort) >= 1) {
-			foreach($ss as $v=>$s) {
-				$ss[$v] = SortResults($s, $Sort);
-			}
-		}
-		$Result = array();
-		foreach($ss as $v=>$s) {
-			foreach ($s as $item=>$values)
-				$Result[$item] = $values;
-		}
-		return $Result ;
 	}

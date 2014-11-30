@@ -22,6 +22,7 @@
 
 defined('_JEXEC') or die();
 
+
 ?>
 <div class="UsedProductManagement">
 <form name="TheForm" id="TheForm" method="post">
@@ -29,97 +30,23 @@ defined('_JEXEC') or die();
 <?php
 $doc = JFactory::getDocument();
 $doc->addStyleSheet(JURI::base().'modules/mod_fastrack/tmpl/default.css');
-$yy = array();
-$DisplayCount = 0;
-$startid = 0;
-$PageCount = 0;
-foreach($xx as $q=>$w){
-	if ($DisplayCount == 0) {
-		$StartID = $w['id'];
-	}
-	$DisplayCount++;
-	if ($DisplayCount > PAGEITEMS - 1) {
 
-		$PageCount++;
-		$yy[$PageCount] = $StartID;
-		$DisplayCount = 0;
-	}
-}
-if ($DisplayCount > 0) {
-	$PageCount++;
-		$yy[$PageCount] = $StartID;
-}
-$t = '';
-$m = '';
-
-if ($_POST['startKey'] == 0)
-	foreach($xx as $q=>$w) {
-		$_POST['startKey'] = $w['id'];
-		break ;
-	}
-
-$pagination = '';
-ob_start();
-?>
-<div style="text-align: center; clear:both">
-<p>
-<input type="hidden" value="<?php echo $_POST['startKey']; ?>" name="oldStartKey" />
-<?php
-
-reset($yy);
-$first = key($yy);
-end($yy);
-$last = key($yy);
-
-foreach ($yy as $q=>$w) {
-	if ($q == $first) {
-		?><input type="submit" name="startKey" value="<?php echo FIRSTPAGE; ?>" class="Pagination" /> 
-		<input type="submit" name="startKey" value="<?php echo PREVPAGE; ?>" class="Pagination" />
-    
-		<?php	
-	}
-	?>
-    <input type="submit" name="startKey" value="<?php echo $q; ?>"  <?php 
-		if (@$_POST['startKey'] == $w) {
-			?> class="Pagination, PaginationChecked " <?php
-		} else { ?>
-         class="Pagination"
-        <?php }
-	?> />
-    <input type="hidden" name="startKeyValues[<?php echo $q; ?>]" value="<?php echo $w; ?>" />
-    <?php	
-	if ($q == $last) {
-		?><input type="submit" name="startKey" value="<?php echo NEXTPAGE; ?>" class="Pagination" /> 
-		<input type="submit" name="startKey" value="<?php echo LASTPAGE; ?>" class="Pagination" /><?php	
-	}
-}
-?></p>
-
-</div>
-<?php
-$pagination = ob_get_contents();
-ob_end_clean();
-if (count($yy) < 2)
-	$pagination = '';
+$pagination = ModFastrackHelper::buildPagination($xx);
 echo $pagination;
-?>
 
-
-
-<?php
-$ShowCount = PAGEITEMS;
-if ($count < PAGEITEMS)
+$ShowCount = $input->get('pageitems', 10);
+if ($count < $input->get('pageitems', 10))
 	$ShowCount = $count;
 ?>
 
 <div class="SaleItems">
 <?php echo $warning; ?>
-<p>Vanderfield currently has <?php echo $TotalAvailable; ?> used products in the catalogue.  Your search revealed <?php echo $count; ?> product<?php if ($count > 1) echo 's'; ?>, displayed <?php echo PAGEITEMS; ?> products to a page.</p>
+<p>Vanderfield currently has <?php echo $TotalAvailable; ?> used products in the catalogue.  Your search revealed <?php echo $count; ?> product<?php if ($count > 1) echo 's'; ?>, displayed <?php echo $input->get('pageitems', 10); ?> products to a page.</p>
 <?php
 $DisplayCount = 0;
 $DisplayNow = false;
 if (! in_array($_POST['startKey'], $yy)) {
-	$_POST['startKey'] = $yy[1];
+	$_POST['startKey'] = $yy[1]['id'];
 }
 foreach ($xx as $q=>$w) {
 	if ($w['id'] == $_POST['startKey'])
@@ -131,6 +58,7 @@ foreach ($xx as $q=>$w) {
 		$count = 0;
 		do {
 			$count++;
+printAnObject(PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg');
 			if (is_file(PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
 				$xx[$q]['image'][$count] = PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
 				if (empty($image))
@@ -155,13 +83,9 @@ foreach ($xx as $q=>$w) {
 				$ok = false;
 			}
 		} while ($ok);
-	
-	
+printAnObject($xx[$q], true);
+
 		$FileID = fopen(PRODUCTIMAGES.'store/'.$w['id'].".txt", "w");    
-		if ($w['price']['gst_value'] == 'ex-GST') {
-			$w['price']['value'] += $w['price']['value'] * $w['price']['gst'] / 100;
-			$w['price']['gst_value'] = 'inc-GST';
-		}
 		?><div class='SaleItem'><br />
 		<div class="SaleItemHeader">
 		<li class="MainTitle"><?php echo $w['make']; ?> - <?php echo $w['model']; ?></li>
@@ -256,8 +180,10 @@ foreach ($xx as $q=>$w) {
 			}
 		}
 		fclose($FileID);
+		if (empty($xx[$q]['image'][1]))
+			$xx[$q]['image'][1] = PRODUCTIMAGES.'PlaceHolder.png';
 		if (! is_file($xx[$q]['image'][1]))
-			$xx[$q]['image'][1] = PRODUCTIMAGES.'PlaceHolder.png'
+			$xx[$q]['image'][1] = PRODUCTIMAGES.'PlaceHolder.png';
 		?>
         </div> <!-- End of Specifications -->
 		
@@ -288,7 +214,7 @@ foreach ($xx as $q=>$w) {
 	
 		echo"</div> <!-- End of Sale Item -->\n" ;
 		$DisplayCount++;
-		if ($DisplayCount > PAGEITEMS - 1)
+		if ($DisplayCount > $params->get('pageitems', 10) - 1)
 			break;
 	}
 }
@@ -297,120 +223,6 @@ foreach ($xx as $q=>$w) {
 
 
 
-<div id="ProductMenu">
-<p style="margin-bottom: 5px;">Keyword Search: Separate by commas:</p>
-<div>
-<input type="text" name="keywords" size="20" maxlength="75" />&nbsp;
-<input class="searchbutton" type="submit" value="Search Now" name="Search"  /></p>
-<p><input type="submit" value="&nbsp;Refresh Display&nbsp;"  />&nbsp;&nbsp;<input type="submit" value="&nbsp;New Search&nbsp;" name="New Search" /></p>
-
-	<p>Type/SubType</p>
-		
-		<ul>
-		<li><input type="radio" name="type" value="All Types" onclick="TheForm.submit()">
-      All Types (<?php echo $TypeTotal; ?>)</li>
-<?php
-$m = '';
-$displaysubtype = false;
-foreach ($menu['type'] as $w) {
-	$q = explode("::", $w);
-	$q[0] = trim($q[0]);
-	$model = trim($q[1]);
-	if ($q[0] !== $m) {
-		$m = $q[0];
-		if ($displaysubtype) {
-			$displaysubtype = false;
-			echo "</ul>\n</li>\n";	
-		}
-		echo  "<li><input type=\"radio\" name=\"type\" value=\"".$m."\" ";
-		if (@$_POST['type'] == $m) {
-			echo "checked";
-			$displaysubtype = true;
-		}
-		echo " onclick=\"TheForm.submit()\">
-      ".$m." (".$type[$m]['count'].")";
-		if (@$_POST['type'] == $m)
-			echo "<ul>\n";
-		else
-			echo "</li>\n";
-	} 
-	
-	if (@$_POST['type'] == $m) {
-		echo  "<li><input type=\"radio\" name=\"subtype\" value=\"".$model."\" ";
-		if (@$_POST['subtype'] == $model)
-			echo "checked";
-				echo " onclick=\"TheForm.submit()\">
-	  ".$model." (".$type[$m][$model]['count'].")</li>\n";
-	}
-}
-if ($displaysubtype) {
-	$displaysubtype = false;
-	?></ul>
-    </li>
-    <?php	
-}
-?>
-</ul>
-
-
-
-<p>Make/Model</p>
-<ul>
-		<li><input type="radio" name="make" value="All Makes" onclick="TheForm.submit()">
-      All Makes (<?php echo $MakeTotal; ?>)</li>
-      <?php
-$m = '';
-$displaysubtype = false;
-foreach ($menu['make'] as $w) {
-	$q = explode("::", $w);
-	$q[0] = trim($q[0]);
-	$model = trim($q[1]);
-	if ($q[0] !== $m) {
-		$m = $q[0];
-		if ($displaysubtype) {
-			$displaysubtype = false;
-			?></ul>
-            </li>
-            <?php	
-		}
-		?>  <li>
-      			<input type="radio" name="make" value="<?php echo $m; ?>"<?php
-		if (@$_POST['make'] == $m)
-			echo "checked";
-		?> onclick="TheForm.submit()">
-      <?php echo $m; ?> (<?php echo $make[$m]['count']; ?>)
-      <?php
-		if (@$_POST['make'] == $m) {
-			$displaysubtype = true;
-			?> <ul>
-            <?php
-		} else {
-			?> </li>
-            <?php
-		}
-	} 
-	if (@$_POST['make'] == $m) {
-		?> <li><input type="radio" name="model" value="<?php echo $model; ?>" <?php
-		if (@$_POST['model'] == $model)
-			echo "checked";
-		?> onclick="TheForm.submit()" />
-	  <?php echo $model; ?> (<?php echo $make[$m][$model]['count']; ?>)</li>
-      <?php
-	}
-}
-if ($displaysubtype) {
-	$displaysubtype = false;
-	?> </ul>
-    </li>
-    <?php
-}
-?>
-</ul>
- 
-</div>
-<input type="hidden" value="<?php echo @$_POST['make']; ?>" name="OldMake">
-<input type="hidden" value="<?php echo @$_POST['type']; ?>" name="OldType">
-
 
 </div>   <!-- End of ProductMenu -->
 <div id="StartFooter">&nbsp;</div>
@@ -418,7 +230,7 @@ if ($displaysubtype) {
 
 
 
-</div>   <!-- End of UsedProductManagement -->
+   <!-- End of UsedProductManagement -->
 <?php echo $pagination; ?>
 </form>
 
@@ -435,14 +247,4 @@ while (false !== ($entry = $images->read())) {
 			if (date("Y-m-d", filemtime($path.$entry)) < date('Y-m-d', strtotime('-30 days')))
 				unlink($path.$entry);
 	}
-}
-
-
-
-
-
-?>
-<!--   * @author Craig Rayner Hill Range Services craig (at) hillrange dot com dot au
-  * for Webdoor Solutions July 2014
-
--->
+}?>

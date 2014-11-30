@@ -24,16 +24,6 @@ defined('_JEXEC') or die();
 
 
 JLoader::import('modules.mod_fastrack.helper', JPATH_SITE);
-JLoader::import('modules.mod_fastrack.preparation', JPATH_SITE);
+include JPATH_SITE.'/modules/mod_fastrack/preparation.php';
 
-ModFastrackPreparation::execute();
-
-$xx = ModFastrackHelper::getCondition('xx');
-$input = JFactory::getApplication()->input;
-$count = ModFastrackHelper::getCondition('count');
-$warning = ModFastrackHelper::getCondition('warning');
-$TotalAvailable = ModFastrackHelper::getCondition('TotalAvailable');
-$yy = ModFastrackHelper::getCondition('yy');
-$order = ModFastrackHelper::getCondition('order');
-
-require( JModuleHelper::getLayoutPath( 'mod_fastrack' ) );
+require( JModuleHelper::getLayoutPath( 'mod_fastrack_search' ) );

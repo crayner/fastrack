@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>26th Nov 2014</creationDate>
+	<creationDate>27th Nov 2014</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -17,6 +17,7 @@
 		<filename>index.html</filename>
 		<filename>helper.php</filename>
 		<filename>xmlparser.php</filename>
+		<filename>preparation.php</filename>
 		<folder>tmpl</folder>
 		<folder>language</folder>
 		<folder>fields</folder>
@@ -33,6 +34,15 @@
 					label="MOD_FASTRACK_FIELD_FILEPATH_LABEL" description="MOD_FASTRACK_FIELD_FILEPATH_DESC" />
 				<field name="pageitems" type="text" size="80" default="10"
 					label="MOD_FASTRACK_FIELD_PAGEITEMS_LABEL" description="MOD_FASTRACK_FIELD_PAGEITEMS_DESC" />
+				<field name="showGSTPrice" type="radio" default="1" label="MOD_FASTRACK_FIELD_SHOWGSTPRICE_LABEL" class="btn-group"
+					description="MOD_FASTRACK_FIELD_SHOWGSTPRICE_DESC">
+					<option value="0">MOD_FASTRACK_FIELD_SHOWGSTPRICE_NO</option>
+					<option value="1">MOD_FASTRACK_FIELD_SHOWGSTPRICE_YES</option>
+				</field>
+				<field name="firstpage" type="hidden" default="&lt;&lt;" />
+				<field name="lastpage" type="hidden" default="&gt;&gt;" />
+				<field name="prevpage" type="hidden" default="&lt;" />
+				<field name="nextpage" type="hidden" default="&gt;" />
 			</fieldset>
 		</fields>
 	</config>

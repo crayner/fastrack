@@ -1,6 +1,6 @@
 /* CSS Document */
 
-#usedmachinery table{
+#usedmachinery {
 	margin: 0;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 12px;
@@ -62,15 +62,11 @@ border-style: solid;
 
 /* Used Products CSS added August 2014 */
 .SaleItems {
-	float: right ;
-	max-width: 70%;
-/*	width: 70%; */
 }
 .SaleItem {
 	margin-top: -1px 2px 2px 2px;
 	padding: 0px;
 	clear: both ;
-	margin
 }
 .Specifications {
 	float: left;
@@ -162,50 +158,7 @@ margin-top: -5px;
 .thumb:hover span img { 
 	height: 245px;	
 }
-#ProductMenu {
-	float: left;
-	max-width: 270px;
-	background: #dddddd;
-	margin-bottom: 0;
-	margin-left: 0;
-	margin-right: 15px;
-	margin-top: 0;
-	padding-bottom: 5px;
-	padding-left: 15px;
-	padding-right: 10px;
-	padding-top: 10px;
-	border-radius: 20px;
-}
-#ProductMenu h3 {
-	line-height: unset;
-}
-
-#ProductMenu ul {
-	list-style-type: none;	
-}
-#ProductMenu label {
-	font-size: 80%;	
-}
-#ProductMenu input[type="submit"], .EnqButton  {
-	border: 1px solid #C6C6C6;
-	background-color: #FBD701;
-	border-radius: 5px;	
-	padding: 2px;
-	color: #777777;
-	width: 110px;
-/*	text-shadow: 0 1px 0 #3c61ab;*/
-}
-.EnqButton {
-margin-top: 2px;
-}
-#ProductMenu input[type="submit"]:hover {
-/*	border: none;
-	background-color: transparent;	
-	text-decoration: underline ; */
-}
 .UsedProductManagement {
-	width: 100%;
-	position: relative;
 }
 .Pagination {
 	background-color: transparent;
@@ -222,8 +175,4 @@ margin-top: 2px;
 div#StartFooter {
 	width: 100%;
 }
-.searchbutton {
-	position:relative;
-	padding 0;
-	margin: 0;
-}
+

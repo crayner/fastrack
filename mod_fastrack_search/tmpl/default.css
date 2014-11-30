@@ -1,0 +1,39 @@
+/* CSS Document */
+#ProductMenu {
+	background: #dddddd;
+	border-radius: 20px;
+	padding: 20px 2px 20px 2px;
+}
+#ProductMenu h3 {
+	line-height: unset;
+}
+
+#ProductMenu ul {
+	list-style-type: none;	
+}
+#ProductMenu label {
+	font-size: 80%;	
+}
+#ProductMenu input[type="submit"], .EnqButton  {
+	border: 1px solid #C6C6C6;
+	background-color: #FBD701;
+	border-radius: 5px;	
+	padding: 2px;
+	color: #777777;
+	width: 110px;
+/*	text-shadow: 0 1px 0 #3c61ab;*/
+}
+.EnqButton {
+margin-top: 2px;
+}
+#ProductMenu input[type="submit"]:hover {
+/*	border: none;
+	background-color: transparent;	
+	text-decoration: underline ; */
+}
+
+.searchbutton {
+	position:relative;
+	padding 0;
+	margin: 0;
+}

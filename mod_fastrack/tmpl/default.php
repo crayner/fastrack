@@ -31,7 +31,7 @@ defined('_JEXEC') or die();
 $doc = JFactory::getDocument();
 $doc->addStyleSheet(JURI::base().'modules/mod_fastrack/tmpl/default.css');
 
-$pagination = ModFastrackHelper::buildPagination($xx);
+$pagination = ModFastrackHelper::buildPagination($xx, 'submit');
 echo $pagination;
 
 $ShowCount = $input->get('pageitems', 10);
@@ -45,9 +45,10 @@ if ($count < $input->get('pageitems', 10))
 <?php
 $DisplayCount = 0;
 $DisplayNow = false;
-if (! in_array($_POST['startKey'], $yy)) {
-	$_POST['startKey'] = $yy[1]['id'];
+if (! in_array($_POST['startKey'], $xx)) {
+	$_POST['startKey'] = $xx[1]['id'];
 }
+printAnObject($_POST);
 foreach ($xx as $q=>$w) {
 	if ($w['id'] == $_POST['startKey'])
 		$DisplayNow = true;
@@ -58,12 +59,11 @@ foreach ($xx as $q=>$w) {
 		$count = 0;
 		do {
 			$count++;
-printAnObject(PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg');
-			if (is_file(PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
-				$xx[$q]['image'][$count] = PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
+			if (is_file(IMAGE_PATH_ABS.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
+				$xx[$q]['image'][$count] = 'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
 				if (empty($image))
-					$image = PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
-				if (! is_file(PRODUCTIMAGES.'store/toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
+					$image = IMAGE_PATH_ABS.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
+				if (! is_file(IMAGE_PATH_ABS.'store/toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
 					if (false !== ($im = @getimagesize($xx[$q]['image'][$count]))) {
 						$height = 245;
 						$y = $im[1]/$height;
@@ -71,7 +71,7 @@ printAnObject(PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg');
 						$thumb = imagecreatetruecolor($width, $height);
 						$source = imagecreatefromjpeg($xx[$q]['image'][$count]);
 						imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $im[0], $im[1]);
-						imagejpeg($thumb, PRODUCTIMAGES.'store/toowoomba_'.$w['id'].'_'.strval($count).'.jpg');
+						imagejpeg($thumb, IMAGE_PATH_ABS.'store/toowoomba_'.$w['id'].'_'.strval($count).'.jpg');
 						imagedestroy($source);
 						imagedestroy($thumb);
 					} else {
@@ -83,9 +83,8 @@ printAnObject(PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg');
 				$ok = false;
 			}
 		} while ($ok);
-printAnObject($xx[$q], true);
 
-		$FileID = fopen(PRODUCTIMAGES.'store/'.$w['id'].".txt", "w");    
+		$FileID = fopen(IMAGE_PATH_ABS.'store/'.$w['id'].".txt", "w");    
 		?><div class='SaleItem'><br />
 		<div class="SaleItemHeader">
 		<li class="MainTitle"><?php echo $w['make']; ?> - <?php echo $w['model']; ?></li>
@@ -181,23 +180,23 @@ printAnObject($xx[$q], true);
 		}
 		fclose($FileID);
 		if (empty($xx[$q]['image'][1]))
-			$xx[$q]['image'][1] = PRODUCTIMAGES.'PlaceHolder.png';
-		if (! is_file($xx[$q]['image'][1]))
-			$xx[$q]['image'][1] = PRODUCTIMAGES.'PlaceHolder.png';
+			$xx[$q]['image'][1] = 'PlaceHolder.png';
+		if (! is_file(IMAGE_PATH_ABS.$xx[$q]['image'][1]))
+			$xx[$q]['image'][1] = 'PlaceHolder.png';
 		?>
         </div> <!-- End of Specifications -->
 		
 		<!--<div style="text-align: center; float: left; width: 250px; ">-->
 		<div>
         <!--<p style="text-align: center ">--><p><!--<a href="index.php?option=com_rsform&formId=8&productID=<?php echo $xx[$q]['id']; ?>" target="_self">-->
-        <img class="firstImage" src='<?php echo str_replace(PRODUCTIMAGES, PRODUCTIMAGES.'store/', $xx[$q]['image'][1]); ?>' alt='' width="245" /><!--</a>-->
+        <img class="firstImage" src='<?php echo JURI::base().IMAGE_PATH_REL.'store/'.$xx[$q]['image'][1]; ?>' alt='' width="245" /><!--</a>-->
         </p>
        
 
 		<!--<div class="SaleThumbs">-->
         <?php
 		foreach ($xx[$q]['image'] as $c=>$i) {
-			$iv = getimagesize($i);
+			$iv = getimagesize(IMAGE_PATH_ABS.$i);
 			$s = $iv[1]/245;
 			$h = 245;
 			$w = intval($iv[0]/$s);
@@ -205,8 +204,8 @@ printAnObject($xx[$q], true);
 			$th = 75;
 			$tw = intval($iv[0]/$s);
 			?>
-			<a class="thumb" href="#"><img src="<?php echo str_replace(PRODUCTIMAGES, PRODUCTIMAGES.'store/', $i); ?>" alt="" width="<?php echo $tw; ?>" height="<?php echo $th; ?>">
-			<span style="width: <?php echo strval($w + 4); ?>px; height: <?php echo strval($h+4); ?>px; "><img src="<?php echo str_replace(PRODUCTIMAGES, PRODUCTIMAGES.'store/', $i); ?>" alt="" width="<?php echo $w; ?>" height="<?php echo $h; ?>"></span></a>
+			<a class="thumb" href="#"><img src="<?php echo JURI::base().IMAGE_PATH_REL.$i; ?>" alt="" width="<?php echo $tw; ?>" height="<?php echo $th; ?>">
+			<span style="width: <?php echo strval($w + 4); ?>px; height: <?php echo strval($h+4); ?>px; "><img src="<?php echo JURI::base().IMAGE_PATH_REL.$i; ?>" alt="" width="<?php echo $w; ?>" height="<?php echo $h; ?>"></span></a>
 			<?php
 		}
 		
@@ -238,7 +237,7 @@ printAnObject($xx[$q], true);
 
 
 # Now remove old image files from  created stack.
-$path = PRODUCTIMAGES.'store/';
+$path = IMAGE_PATH_ABS.'store/';
 $images = dir($path);
 
 while (false !== ($entry = $images->read())) {

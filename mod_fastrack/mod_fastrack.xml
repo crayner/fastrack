@@ -30,8 +30,6 @@
 				<field name="filename" type="text" default="" size="80"
 					label="MOD_FASTRACK_FIELD_FILENAME_LABEL"
 					description="MOD_FASTRACK_FIELD_FILENAME_DESC" />
-				<field name="filepath" type="text" size="80" default=""
-					label="MOD_FASTRACK_FIELD_FILEPATH_LABEL" description="MOD_FASTRACK_FIELD_FILEPATH_DESC" />
 				<field name="pageitems" type="text" size="80" default="10"
 					label="MOD_FASTRACK_FIELD_PAGEITEMS_LABEL" description="MOD_FASTRACK_FIELD_PAGEITEMS_DESC" />
 				<field name="showGSTPrice" type="radio" default="1" label="MOD_FASTRACK_FIELD_SHOWGSTPRICE_LABEL" class="btn-group"
@@ -39,10 +37,10 @@
 					<option value="0">MOD_FASTRACK_FIELD_SHOWGSTPRICE_NO</option>
 					<option value="1">MOD_FASTRACK_FIELD_SHOWGSTPRICE_YES</option>
 				</field>
-				<field name="firstpage" type="hidden" default="&lt;&lt;" />
-				<field name="lastpage" type="hidden" default="&gt;&gt;" />
-				<field name="prevpage" type="hidden" default="&lt;" />
-				<field name="nextpage" type="hidden" default="&gt;" />
+				<field name="firstpage" type="hidden" value="&lt;&lt;" />
+				<field name="lastpage" type="hidden" value="&gt;&gt;" />
+				<field name="prevpage" type="hidden" value="&lt;" />
+				<field name="nextpage" type="hidden" value="&gt;" />
 			</fieldset>
 		</fields>
 	</config>

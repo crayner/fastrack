@@ -85,26 +85,25 @@ class ModFastrackPreparation {
 			unset($_POST['model'], $_POST['startKey'],$_POST['startKeyValues']);
 		if (@$_POST['OldType'] !== @$_POST['type'])
 			unset($_POST['subtype'], $_POST['startKey'],$_POST['startKeyValues']);
-		if (!isset($_POST['startKey']))
-			$_POST['startKey'] = 1;
-		$_POST['startKeyValues'] = ModFastrackPreparation::startKeyValues($xx);
-		if (strval(intval($_POST['startKey'])) == $_POST['startKey'] and isset($_POST['startKeyValues'][$_POST['startKey']]))
-			$_POST['startKey'] = $_POST['startKeyValues'][$_POST['startKey']];
-		if ($_POST['startKey'] == $input->get('firstpage'))
-			$_POST['startKey'] = $_POST['startKeyValues'][1];
-		if ($_POST['startKey'] == $input->get('lasttpage'))
-			$_POST['startKey'] = $_POST['startKeyValues'][count($_POST['startKeyValues'])];
-		if ($_POST['startKey'] == $input->get('prevpage')) {
-			$was = intval(array_search($_POST['oldStartKey'], $_POST['startKeyValues'])) - 1;
-			if ($was < 1)
-				$was = 1;
-			$_POST['startKey'] = $_POST['startKeyValues'][$was];
-		}
-		if ($_POST['startKey'] == $input->get('nextpage')) {
-			$was = intval(array_search($_POST['oldStartKey'], $_POST['startKeyValues'])) + 1;
-			if ($was > count($_POST['startKeyValues']))
-				$was--;
-			$_POST['startKey'] = $_POST['startKeyValues'][$was];
+		if (! empty($_POST)) {
+			if (isset($_POST['startKeyValues'][$_POST['startKey']]))
+				$_POST['startKey'] = $_POST['startKeyValues'][$_POST['startKey']];
+			if ($_POST['startKey'] == $input->get('firstpage'))
+				$_POST['startKey'] = $_POST['startKeyValues'][1];
+			if ($_POST['startKey'] == $input->get('lasttpage'))
+				$_POST['startKey'] = $_POST['startKeyValues'][count($_POST['startKeyValues'])];
+			if ($_POST['startKey'] == $input->get('prevpage')) {
+				$was = intval(array_search($_POST['oldStartKey'], $_POST['startKeyValues'])) - 1;
+				if ($was < 1)
+					$was = 1;
+				$_POST['startKey'] = $_POST['startKeyValues'][$was];
+			}
+			if ($_POST['startKey'] == $input->get('nextpage')) {
+				$was = intval(array_search($_POST['oldStartKey'], $_POST['startKeyValues'])) + 1;
+				if ($was > count($_POST['startKeyValues']))
+					$was--;
+				$_POST['startKey'] = $_POST['startKeyValues'][$was];
+			}
 		}
 		
 		
@@ -263,9 +262,9 @@ class ModFastrackPreparation {
 		}
 		
 		$xx = ModFastrackHelper::setCondition('xx', ModFastrackHelper::SortResults($yy, array('listprice'=>'DESC', 'make'=>'ASC', 'model' => 'ASC')));
-		$yy = ModFastrackHelper::setCondition('yy', $yy);
 		$count = ModFastrackHelper::setCondition('count', count($xx));
-		$count = ModFastrackHelper::setCondition('order', $order);
+		$order = ModFastrackHelper::setCondition('order', $order);
+		self::startKeyValues($xx);
 	}
 /**
   * Execute
@@ -275,7 +274,7 @@ class ModFastrackPreparation {
   * @param array Items
   * @retrun array
   */
-	static private function startKeyValues($xx){
+	static private function startKeyValues($xx) {
 		
 		$_POST['startKeyValues'] = array();
 		$pageItems = self::$params->get('pageitems');
@@ -290,5 +289,5 @@ class ModFastrackPreparation {
 				$x = 1;
 		}
 		return $_POST['startKeyValues'];
-	}
+ 	}
 }

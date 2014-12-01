@@ -33,7 +33,7 @@ $input = JFactory::getApplication()->input;
 $count = ModFastrackHelper::getCondition('count');
 $warning = ModFastrackHelper::getCondition('warning');
 $TotalAvailable = ModFastrackHelper::getCondition('TotalAvailable');
-$yy = ModFastrackHelper::getCondition('yy');
 $order = ModFastrackHelper::getCondition('order');
+$total = ModFastrackHelper::getCondition('total');
 
 require( JModuleHelper::getLayoutPath( 'mod_fastrack' ) );

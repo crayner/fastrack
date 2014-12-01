@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 20th November 2014
+ * @version 1st December 2014
  * @since 26th November 2014
  */
 
@@ -71,9 +71,12 @@ class ModFastrackHelper {
 	
 		if (self::$fileName != '')
 			return self::$fileName;
-		$path = rtrim(self::$params->get('filepath', '/modules/mod_fastrack/data'), '/').'/';
-		$x = ltrim($path, "/");
-		define('PRODUCTIMAGES', JPATH_SITE.'/'.$x);
+		$path = '/modules/mod_fastrack/data/';
+		if ($path === "/modules/mod_fastrack/data/") {
+			define('IMAGE_PATH_REL', $path);
+			define('IMAGE_PATH_ABS', JPATH_SITE.$path);
+		} else {
+		}
 		self::$fileName = $path . self::$params->get('filename');
 		return self::$fileName;
 	}
@@ -173,13 +176,12 @@ class ModFastrackHelper {
 		$menu['type'] = array_unique($menu['type']);
 		sort($menu['make']);
 		sort($menu['type']);
-		$input = JFactory::getApplication()->input;
-		$input->set('type', $type);
-		$input->set('make', $make);
-		$input->set('menu', $menu);
-		$input->set('total', $total);
-		$input->set('MakeTotal', $MakeTotal);
-		$input->set('TypeTotal', $TypeTotal);
+		$type = ModFastrackHelper::setCondition('type', $type);
+		$make = ModFastrackHelper::setCondition('make', $make);
+		$menu = ModFastrackHelper::setCondition('menu', $menu);
+		$total = ModFastrackHelper::setCondition('total', $total);
+		$MakeTotal = ModFastrackHelper::setCondition('MakeTotal', $MakeTotal);
+		$TypeTotal = ModFastrackHelper::setCondition('TypeTotal', $TypeTotal);
 	}
 /**
   * Load mod Fastrack Params
@@ -209,7 +211,7 @@ class ModFastrackHelper {
 /**
   * Build Pagination Form Elements
   *
-  * @version 27th November 2014
+  * @version 1st December 2014
   * @since 27th November 2014
   * @param array Items
   * @param string Input Element Types
@@ -218,27 +220,7 @@ class ModFastrackHelper {
   	public static function buildPagination($xx, $inputType = 'submit') {
 	
 
-		$input = Jfactory::getApplication()->input;
-		$yy = array();
-		$DisplayCount = 0;
-		$startid = 0;
-		$PageCount = 0;
-		foreach($xx as $q=>$w){
-			if ($DisplayCount == 0) {
-				$StartID = $w['id'];
-			}
-			$DisplayCount++;
-			if ($DisplayCount > $input->get('pageitems', 10, 'INT') - 1) {
-		
-				$PageCount++;
-				$yy[$PageCount] = $StartID;
-				$DisplayCount = 0;
-			}
-		}
-		if ($DisplayCount > 0) {
-			$PageCount++;
-				$yy[$PageCount] = $StartID;
-		}
+		$yy = $_POST['startKeyValues'];
 		$t = '';
 		$m = '';
 		if (empty($_POST['startKey']))
@@ -250,37 +232,36 @@ class ModFastrackHelper {
 			}
 		
 		$pagination = '';
-		ob_start();?>
+		ob_start(); ?>
 		<div style="text-align: center; clear:both">
 		<p>
 		<input type="hidden" value="<?php echo $_POST['startKey']; ?>" name="oldStartKey" />
 		<?php
 		
-		reset($yy);
-		$first = key($yy);
-		end($yy);
-		$last = key($yy);
-		
+		$first = reset($yy);
+		$last = end($yy);
+		$_POST['startKeyValues'] = $yy;
+		$x = 1;
 		foreach ($yy as $q=>$w) {
-			if ($q == $first) {
-				?><input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $input->get('firstpage'); ?>" class="Pagination" /> 
-				<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $input->get('prevpage'); ?>" class="Pagination" />
+			if ($w == $first) {
+				?><input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo self::$params->get('firstpage'); ?>" class="Pagination" /> 
+				<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo self::$params->get('prevpage'); ?>" class="Pagination" />
 			
 				<?php	
 			}
 			?>
 			<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $q; ?>"  <?php 
-				if (@$_POST['startKey'] == $w) {
-					?> class="Pagination, PaginationChecked " <?php
+				if ($w == $_POST['startKey']) {
+					?> class="Pagination PaginationChecked " <?php
 				} else { ?>
 				 class="Pagination"
 				<?php }
 			?> />
 			<input type="hidden" name="startKeyValues[<?php echo $q; ?>]" value="<?php echo $w; ?>" />
 			<?php	
-			if ($q == $last) {
-				?><input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $input->get('nextpage'); ?>" class="Pagination" /> 
-				<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $input->get('lastpage'); ?>" class="Pagination" /><?php	
+			if ($w == $last) {
+				?><input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo self::$params->get('nextpage'); ?>" class="Pagination" /> 
+				<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo self::$params->get('lastpage'); ?>" class="Pagination" /><?php	
 			}
 		}
 		?></p>

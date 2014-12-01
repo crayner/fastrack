@@ -22,6 +22,7 @@
 
 defined('_JEXEC') or die();
 
+JLoader::import('modules.mod_fastrack.display', JPATH_SITE);
 
 ?>
 <div class="UsedProductManagement">
@@ -37,18 +38,36 @@ echo $pagination;
 $ShowCount = $input->get('pageitems', 10);
 if ($count < $input->get('pageitems', 10))
 	$ShowCount = $count;
+
+$itemsTemplate = <<<ppp
+<div id="SaleItems">
+{{warning}}
+<p>Vanderfield currently has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
+{{items}}
+</div>
+ppp;
+
+$items = new modFastrackDisplay();
+$items->setTemplate($params->get('items_content', $itemsTemplate));
+$items->setAttribute('warning', $warning);
+$items->setAttribute('TotalAvailable', $TotalAvailable);
+$items->setAttribute('count', $count);
+$plural = '';
+if ($count> 1)
+	$plural = 's';
+$items->setAttribute('plural', $plural);
+$items->setAttribute('pageitems', $params->get('pageitems', 10));
+echo $items->render();
 ?>
 
 <div class="SaleItems">
 <?php echo $warning; ?>
-<p>Vanderfield currently has <?php echo $TotalAvailable; ?> used products in the catalogue.  Your search revealed <?php echo $count; ?> product<?php if ($count > 1) echo 's'; ?>, displayed <?php echo $input->get('pageitems', 10); ?> products to a page.</p>
+
+<p>Vanderfield currently has <?php echo $TotalAvailable; ?> used products in the catalogue.  Your search revealed <?php echo $count; ?> product<?php if ($count > 1) echo 's'; ?>, displayed <?php echo $params->get('pageitems', 10); ?> products to a page.</p>
 <?php
 $DisplayCount = 0;
 $DisplayNow = false;
-if (! in_array($_POST['startKey'], $xx)) {
-	$_POST['startKey'] = $xx[1]['id'];
-}
-printAnObject($_POST);
+
 foreach ($xx as $q=>$w) {
 	if ($w['id'] == $_POST['startKey'])
 		$DisplayNow = true;
@@ -59,19 +78,17 @@ foreach ($xx as $q=>$w) {
 		$count = 0;
 		do {
 			$count++;
-			if (is_file(IMAGE_PATH_ABS.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
-				$xx[$q]['image'][$count] = 'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
-				if (empty($image))
-					$image = IMAGE_PATH_ABS.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
-				if (! is_file(IMAGE_PATH_ABS.'store/toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
-					if (false !== ($im = @getimagesize($xx[$q]['image'][$count]))) {
+			if (is_file(IMAGE_PATH_ABS.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
+				$xx[$q]['image'][$count] = IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg';
+				if (! is_file(IMAGE_PATH_ABS.'store/'.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
+					if (false !== ($im = @getimagesize(IMAGE_PATH_ABS.$xx[$q]['image'][$count]))) {
 						$height = 245;
 						$y = $im[1]/$height;
 						$width = intval($im[0]/$y);
 						$thumb = imagecreatetruecolor($width, $height);
-						$source = imagecreatefromjpeg($xx[$q]['image'][$count]);
+						$source = imagecreatefromjpeg(IMAGE_PATH_ABS.$xx[$q]['image'][$count]);
 						imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $im[0], $im[1]);
-						imagejpeg($thumb, IMAGE_PATH_ABS.'store/toowoomba_'.$w['id'].'_'.strval($count).'.jpg');
+						imagejpeg($thumb, IMAGE_PATH_ABS.'store/'.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg');
 						imagedestroy($source);
 						imagedestroy($thumb);
 					} else {
@@ -188,8 +205,8 @@ foreach ($xx as $q=>$w) {
 		
 		<!--<div style="text-align: center; float: left; width: 250px; ">-->
 		<div>
-        <!--<p style="text-align: center ">--><p><!--<a href="index.php?option=com_rsform&formId=8&productID=<?php echo $xx[$q]['id']; ?>" target="_self">-->
-        <img class="firstImage" src='<?php echo JURI::base().IMAGE_PATH_REL.'store/'.$xx[$q]['image'][1]; ?>' alt='' width="245" /><!--</a>-->
+        <p>
+        <img class="firstImage" src='<?php echo JURI::base().IMAGE_PATH_REL.'store/'.$xx[$q]['image'][1]; ?>' alt='' width="245" />
         </p>
        
 

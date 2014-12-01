@@ -39,7 +39,6 @@ class ModFastrackPreparation {
 			self::$params = new \Joomla\Registry\Registry;
 		$input = JFactory::getApplication()->input;
 		$xx = ModFastrackHelper::execute(self::$params);
-		ModFastrackHelper::setSearchControls($xx);
 		$TotalAvailable = ModFastrackHelper::getCondition('TotalAvailable');
 		$warning = ModFastrackHelper::setCondition('warning', '');
 		# $_POST Management

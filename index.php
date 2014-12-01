@@ -635,11 +635,11 @@ foreach ($xx as $q=>$w) {
 		$count = 0;
 		do {
 			$count++;
-			if (is_file(PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
-				$xx[$q]['image'][$count] = PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
+			if (is_file(PRODUCTIMAGES.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
+				$xx[$q]['image'][$count] = PRODUCTIMAGES.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg';
 				if (empty($image))
-					$image = PRODUCTIMAGES.'toowoomba_'.$w['id'].'_'.strval($count).'.jpg';
-				if (! is_file(str_replace('fastrack', 'fastrack-include', PRODUCTIMAGES).'toowoomba_'.$w['id'].'_'.strval($count).'.jpg')) {
+					$image = PRODUCTIMAGES.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg';
+				if (! is_file(str_replace('fastrack', 'fastrack-include', PRODUCTIMAGES).IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
 					if (false !== ($im = @getimagesize($xx[$q]['image'][$count]))) {
 						$height = 245;
 						$y = $im[1]/$height;
@@ -647,7 +647,7 @@ foreach ($xx as $q=>$w) {
 						$thumb = imagecreatetruecolor($width, $height);
 						$source = imagecreatefromjpeg($xx[$q]['image'][$count]);
 						imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $im[0], $im[1]);
-						imagejpeg($thumb, str_replace('fastrack', 'fastrack-include', PRODUCTIMAGES).'toowoomba_'.$w['id'].'_'.strval($count).'.jpg');
+						imagejpeg($thumb, str_replace('fastrack', 'fastrack-include', PRODUCTIMAGES).IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg');
 						imagedestroy($source);
 						imagedestroy($thumb);
 					} else {

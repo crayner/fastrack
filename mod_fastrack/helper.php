@@ -33,7 +33,7 @@ class ModFastrackHelper {
 /**	
   * Execute
   *
-  * @version 27th November 2014
+  * @version 1st December 2014
   * @since 27th November 2014
   * @param object mod_fastrack Registryt
   * @return array Machinery
@@ -52,7 +52,10 @@ class ModFastrackHelper {
 			$x = file_get_contents(JPATH_SITE.$filename);
 		} catch (Exception $e) {
 			sleep ( 2 );
-			$x = file_get_contents(JPATH_SITE.$filename);
+			if (is_file(JPATH_SITE.$filename)) {
+				$x = file_get_contents(JPATH_SITE.$filename);
+			} else
+				return array();
 		}
 			
 		$xx = $reader->parseString($x);
@@ -63,7 +66,7 @@ class ModFastrackHelper {
 /**	
   * return File Name
   *
-  * @version 30th November 2014
+  * @version 1st December 2014
   * @since 27th November 2014
   * @return string FileName and Path
   */
@@ -78,6 +81,8 @@ class ModFastrackHelper {
 		} else {
 		}
 		self::$fileName = $path . self::$params->get('filename');
+		$fn = str_replace('.xml', '', strtolower(self::$params->get('filename')));
+		define('IMAGE_NAME', $fn);
 		return self::$fileName;
 	}
 /**	
@@ -122,7 +127,24 @@ class ModFastrackHelper {
 		$total = 0;
 		$MakeTotal = 0;
 		$TypeTotal = 0;
-		
+		if (isset($_POST['startKey']) and (isset($_POST['oldStartKey']))) {
+			if ($_POST['startKey'] == '<') {
+				$k = array_search($_POST['oldStartKey'], $_POST['startKeyValues']) - 1;
+				if ( $k < 1 )
+					$k = 1;
+				$_POST['startKey'] = $_POST['startKeyValues'][$k];
+			}
+			if ($_POST['startKey'] == '>') {
+				$k = array_search($_POST['oldStartKey'], $_POST['startKeyValues']) + 1;
+				if ( $k > count($_POST['startKeyValues']) )
+					$k = count($_POST['startKeyValues']);
+				$_POST['startKey'] = $_POST['startKeyValues'][$k];
+			}
+			if ($_POST['startKey'] == '<<') 
+				$_POST['startKey'] = $_POST['startKeyValues'][1];
+			if ($_POST['startKey'] == '>>') 
+				$_POST['startKey'] = $_POST['startKeyValues'][count($_POST['startKeyValues'])];
+		}
 		foreach($xx as $q=>$w) {
 			//Limit the Make/model based on type selection
 			if ( isset($_POST['type']) AND empty ($_POST['subtype'])) {

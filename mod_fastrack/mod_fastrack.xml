@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>27th Nov 2014</creationDate>
+	<creationDate>1st Dec 2014</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -18,6 +18,7 @@
 		<filename>helper.php</filename>
 		<filename>xmlparser.php</filename>
 		<filename>preparation.php</filename>
+		<filename>display.php</filename>
 		<folder>tmpl</folder>
 		<folder>language</folder>
 		<folder>fields</folder>
@@ -25,7 +26,7 @@
 	</files>
 	<config>
 		<fields name="params"
-			addfieldpath="/modules/com_fastrack/fields">
+			addfieldpath="/modules/mod_fastrack/fields">
 			<fieldset name="basic">
 				<field name="filename" type="text" default="" size="80"
 					label="MOD_FASTRACK_FIELD_FILENAME_LABEL"
@@ -37,10 +38,26 @@
 					<option value="0">MOD_FASTRACK_FIELD_SHOWGSTPRICE_NO</option>
 					<option value="1">MOD_FASTRACK_FIELD_SHOWGSTPRICE_YES</option>
 				</field>
-				<field name="firstpage" type="hidden" value="&lt;&lt;" />
-				<field name="lastpage" type="hidden" value="&gt;&gt;" />
-				<field name="prevpage" type="hidden" value="&lt;" />
-				<field name="nextpage" type="hidden" value="&gt;" />
+				<field name="firstpage" type="hidden" default="&lt;&lt;" value="&lt;&lt;" size="80" />
+				<field name="lastpage" type="hidden" default="&gt;&gt;" value="&gt;&gt;" size="80" />
+				<field name="prevpage" type="hidden" default="&lt;" value="&lt;" size="80" />
+				<field name="nextpage" type="hidden" default="&gt;" value="&gt;" size="80" />
+				<field name="items_content" type="textarea2" default="" label="MOD_FASTRACK_FIELD_ITEMS_CONTENT_LABEL"
+					description="MOD_FASTRACK_FIELD_ITEMS_CONTENT_DESC"
+					rows="10" cols="80" filter="raw">
+					<content><![CDATA[<div id="SaleItems">
+{{warning}}
+<p>Vanderfield currently has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
+{{items}}
+</div>]]></content>
+					<description></description>
+				</field>
+				<field name="item_content" type="textarea2" default="" label="MOD_FASTRACK_FIELD_ITEM_CONTENT_LABEL"
+					description="MOD_FASTRACK_FIELD_ITEM_CONTENT_DESC"
+					rows="10" cols="80" filter="raw">
+					<content><![CDATA[stuff]]></content>
+					<description></description>
+				</field>
 			</fieldset>
 		</fields>
 	</config>

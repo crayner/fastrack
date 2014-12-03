@@ -336,6 +336,50 @@ class ModFastrackHelper {
 		}
 		return $Result ;
 	}
+/**
+  * Image Creator
+  *
+  * Resize Images so speed up normal page render
+  * @version 3rd December 2014
+  * @since 3rd December 2014
+  * @param array Item Details
+  * @return array Item Details
+  */
+  	public static function imageCreator($w) {
+  
+		$w['image'] = array();
+		$count = 0;
+		$ok = true;
+		do {
+			$count++;
+			if (is_file(IMAGE_PATH_ABS.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
+				$w['image'][$count] = IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg';
+				if (! is_file(IMAGE_PATH_ABS.'store/'.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
+					if (false !== ($im = @getimagesize(IMAGE_PATH_ABS.$w['image'][$count]))) {
+						$height = 245;
+						$y = $im[1]/$height;
+						$width = intval($im[0]/$y);
+						$thumb = imagecreatetruecolor($width, $height);
+						$source = imagecreatefromjpeg(IMAGE_PATH_ABS.$w['image'][$count]);
+						imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $im[0], $im[1]);
+						imagejpeg($thumb, IMAGE_PATH_ABS.'store/'.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg');
+						imagedestroy($source);
+						imagedestroy($thumb);
+					} else {
+						unset($w['image'][$count]);
+						$ok = false;
+						if ($count == 1) 
+							$w['image'][1] = 'PlaceHolder.png';
+					}
+				}
+			} else {
+				$ok = false;
+				if ($count == 1) 
+					$w['image'][1] = 'PlaceHolder.png';
+			}
+		} while ($ok);
+		return $w;
+	}
 }
 /**
   * Print an Object

@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>1st Dec 2014</creationDate>
+	<creationDate>3rd Dec 2014</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -38,25 +38,61 @@
 					<option value="0">MOD_FASTRACK_FIELD_SHOWGSTPRICE_NO</option>
 					<option value="1">MOD_FASTRACK_FIELD_SHOWGSTPRICE_YES</option>
 				</field>
-				<field name="firstpage" type="hidden" default="&lt;&lt;" value="&lt;&lt;" size="80" />
-				<field name="lastpage" type="hidden" default="&gt;&gt;" value="&gt;&gt;" size="80" />
-				<field name="prevpage" type="hidden" default="&lt;" value="&lt;" size="80" />
-				<field name="nextpage" type="hidden" default="&gt;" value="&gt;" size="80" />
+				<field name="firstpage" type="hidden" default="&lt;&lt;" value="&lt;&lt;" />
+				<field name="lastpage" type="hidden" default="&gt;&gt;" value="&gt;&gt;" />
+				<field name="prevpage" type="hidden" default="&lt;" value="&lt;" />
+				<field name="nextpage" type="hidden" default="&gt;" value="&gt;" />
 				<field name="items_content" type="textarea2" default="" label="MOD_FASTRACK_FIELD_ITEMS_CONTENT_LABEL"
-					description="MOD_FASTRACK_FIELD_ITEMS_CONTENT_DESC"
 					rows="10" cols="80" filter="raw">
 					<content><![CDATA[<div id="SaleItems">
 {{warning}}
 <p>Vanderfield currently has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
 {{items}}
 </div>]]></content>
-					<description></description>
+					<description>MOD_FASTRACK_FIELD_ITEMS_CONTENT_DESC</description>
 				</field>
 				<field name="item_content" type="textarea2" default="" label="MOD_FASTRACK_FIELD_ITEM_CONTENT_LABEL"
-					description="MOD_FASTRACK_FIELD_ITEM_CONTENT_DESC"
 					rows="10" cols="80" filter="raw">
-					<content><![CDATA[stuff]]></content>
-					<description></description>
+					<content><![CDATA[
+<div class="SaleItem">
+	<div class="SaleItemHeader">
+		<li class="MainTitle">{{make}} - {{model}}</li>
+		<li class="PriceTitle">
+			<span class="audgst">{{currency}}</span> {{cost}} <span class="audgst">{{gst}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('{{enquiry}}', '_self')" />
+		</li>
+		<div style="clear:both;"></div>
+	</div> <!-- End of SaleItemHeader -->
+	<div class="Specifications">
+		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
+		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
+		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
+		<p><b>{{config_name}}:</b> {{config_value}}</p>
+		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
+		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
+		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}
+		{{#hours}}<p><b>Hours:</b> {{hours}}</p>{{/hours}}
+		{{#stockref}}<p><b>Stock Ref #:</b> {{stockref}}</p>{{/stockref}}
+		{{#engpower}}<p><b>Eng. Power:</b> {{engpower}}</p>{{/engpower}}
+		{{#status}}<p><b>Status:</b> {{status}}</p>{{/status}}
+		<!-- <p><b>ID:</b> {{id}}</p> -->
+		{{#description}}<p><b>Description:</b> {{description}}</p>{{/description}}
+		{{#miscellaneous}}{{miscellaneous}}{{/miscellaneous}}
+	</div> <!-- End of Specifications -->
+	<div id="FirstImageHolder">
+		<p><img id="firstImage" src='{{firstimage}}' alt='' width="245" /></p>
+	</div> <!-- End of FirstImageHolder -->
+	{{#thumbimages}}<div class="SaleThumbs">
+		{{thumbimages}}
+	</div> <!-- End of SaleThumbs -->{{/thumbimages}}
+</div> <!-- End of SaleItem -->
+]]></content>
+					<description>MOD_FASTRACK_FIELD_ITEM_CONTENT_DESC</description>
+				</field>
+				<field name="enquiry_url" type="textarea2" default="" label="MOD_FASTRACK_FIELD_ENQUIRY_URL_LABEL"
+					rows="1" cols="80" filter="raw">
+					<content><![CDATA[]]></content>
+					<description>MOD_FASTRACK_FIELD_ENQUIRY_URL_DESC</description>
 				</field>
 			</fieldset>
 		</fields>

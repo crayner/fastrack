@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 1st December 2014
+ * @version 3rd December 2014
  * @since 1st December 2014
  */
 
@@ -34,6 +34,11 @@ class modFastrackDisplay {
   * var array
   */
   	private $templateAttrib;
+/**
+  * Attribute Tests
+  * var object
+  */
+  	private $templateTestAttrib;
 /**
   * template
   * var string
@@ -58,7 +63,7 @@ class modFastrackDisplay {
 		$this->output = '';
 	}
 /**
-  * Set Attributes
+  * Set Attribute
   *
   * @version 1st December 2014	
   * @since 1st December 2014	
@@ -68,6 +73,21 @@ class modFastrackDisplay {
   */
   	public function setAttribute($name, $value) {
 	
+		$this->attributes->$name = $value;
+	}
+/**
+  * Add to Attribute
+  *
+  * @version 3rd December 2014	
+  * @since 3rd December 2014	
+  * @param string Attribute Name
+  * @param string Attribute Value
+  * @return void
+  */
+  	public function addToAttribute($name, $value) {
+	
+		if (isset($this->attributes->$name))
+			$value = $this->attributes->$name . $value;
 		$this->attributes->$name = $value;
 	}
 /**
@@ -97,32 +117,58 @@ class modFastrackDisplay {
 		$this->output = '';
 		$this->defineTemplateAttributes();
 		$this->output = $this->template;
-		foreach ($this->templateAttrib as $name) {
-			$search = '{{'.$name.'}}';
+		
+		/*  If Attribute Tested, then remove failed test values
+		or remove test labels.  */
+		foreach($this->templateTestAttrib as $name=>$value) {
+			if (isset($this->attributes->$name)) {
+				$this->output = str_replace(array('{{#'.$name.'}}','{{/'.$name.'}}'), '', $this->output); 
+			} else {
+				foreach($value as $search)
+					$this->output = str_replace($search, '', $this->output);
+			}
+		}
+		
+		foreach ($this->templateAttrib as $search) {
+			$name = str_replace(array('{{', '}}'), '', $search);
 			$replace = '';
 			if (isset($this->attributes->$name))
 				$replace = $this->attributes->$name;
 			$this->output = str_replace($search, $replace, $this->output);
 		}
-printAnObject($this, true);
+
 		return $this->output;
 	}
 /**
   * Define Template Attributes
   *
-  * @version 1st December 2014	
+  * @version 3rd December 2014	
   * @since 1st December 2014	
   * @return void
   */
   	protected function defineTemplateAttributes() {
 		
 		$x = explode('{{', $this->template);
-		$temp = '';
-		$this->templateAttrib = array() ;
-		foreach($x as $w) {
-			$y = explode('}}', $w);
-			if (count($y) == 2)
-				$this->templateAttrib[] = $y[0];
+		$this->templateAttrib = array();
+		$this->templateTestAttrib = array();
+		$c = preg_match_all("(\{\{(\w*)\}\})", $this->template, $matches);
+		$this->templateAttrib = array_unique($matches[0], SORT_REGULAR);
+		$c = preg_match_all("(\{\{#(\w*)\}\})", $this->template, $matches);
+		foreach($matches[0] as $w) {
+			$name = substr($w, 3, -2);
+			$length = strlen($w);
+			$offset = 0;
+			if (false !== ($start = strpos($this->template, "{{#".$name."}}", $offset))){
+				$end = strpos($this->template, '{{/'.$name.'}}', $offset);
+				if ($end > $start) {
+					if (! isset($this->templateTestAttrib[$name]))
+						$this->templateTestAttrib[$name]= array();
+					$this->templateTestAttrib[$name][$offset] = substr($this->template, $start, $end + $length - $start);
+					$offset = $end + $length;
+				} else 
+					$offset = strlen($this->template);
+			}
 		}
+		return ;
 	}
 }

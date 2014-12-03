@@ -57,14 +57,59 @@ if ($count> 1)
 	$plural = 's';
 $items->setAttribute('plural', $plural);
 $items->setAttribute('pageitems', $params->get('pageitems', 10));
-echo $items->render();
-?>
 
-<div class="SaleItems">
-<?php echo $warning; ?>
 
-<p>Vanderfield currently has <?php echo $TotalAvailable; ?> used products in the catalogue.  Your search revealed <?php echo $count; ?> product<?php if ($count > 1) echo 's'; ?>, displayed <?php echo $params->get('pageitems', 10); ?> products to a page.</p>
-<?php
+
+
+$itemTemplate = <<<ooo
+<div class="SaleItem">
+	<div class="SaleItemHeader">
+		<li class="MainTitle">{{make}} - {{model}}</li>
+		<li class="PriceTitle">
+			<span class="audgst">{{currency}}</span> {{cost}} <span class="audgst">{{gst}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			{{#enquiry}}<input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('{{enquiry}}', '_self')" />{{/enquiry}}
+		</li>
+		<div style="clear:both;"></div>
+	</div> <!-- End of SaleItemHeader -->
+	<div class="Specifications">
+		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
+		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
+		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
+		<p><b>{{config_name}}:</b> {{config_value}}</p>
+		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
+		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
+		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}
+		{{#hours}}<p><b>Hours:</b> {{hours}}</p>{{/hours}}
+		{{#stockref}}<p><b>Stock Ref #:</b> {{stockref}}</p>{{/stockref}}
+		{{#engpower}}<p><b>Eng. Power:</b> {{engpower}}</p>{{/engpower}}
+		{{#status}}<p><b>Status:</b> {{status}}</p>{{/status}}
+		<!-- <p><b>ID:</b> {{id}}</p> -->
+		{{#description}}<p><b>Description:</b> {{description}}</p>{{/description}}
+		{{#miscellaneous}}{{miscellaneous}}{{/miscellaneous}}
+	</div> <!-- End of Specifications -->
+	<div id="FirstImageHolder">
+		<p><img id="firstImage" src='{{firstimage}}' alt='' width="245" /></p>
+	</div> <!-- End of FirstImageHolder -->
+	{{#thumbimages}}<div class="SaleThumbs">
+		{{thumbimages}}
+	</div> <!-- End of SaleThumbs -->{{/thumbimages}}
+</div> <!-- End of SaleItem -->
+ooo;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 $DisplayCount = 0;
 $DisplayNow = false;
 
@@ -72,126 +117,99 @@ foreach ($xx as $q=>$w) {
 	if ($w['id'] == $_POST['startKey'])
 		$DisplayNow = true;
 	if ($DisplayNow) {
-		$ok = true;
+		$item = new modFastrackDisplay();
+		$item->setTemplate($params->get('item_content', $itemTemplate));
+		$xx[$q] = ModFastrackHelper::imageCreator($xx[$q]);
 		unset($image);
-		$xx[$q]['image'] = array();
-		$count = 0;
-		do {
-			$count++;
-			if (is_file(IMAGE_PATH_ABS.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
-				$xx[$q]['image'][$count] = IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg';
-				if (! is_file(IMAGE_PATH_ABS.'store/'.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
-					if (false !== ($im = @getimagesize(IMAGE_PATH_ABS.$xx[$q]['image'][$count]))) {
-						$height = 245;
-						$y = $im[1]/$height;
-						$width = intval($im[0]/$y);
-						$thumb = imagecreatetruecolor($width, $height);
-						$source = imagecreatefromjpeg(IMAGE_PATH_ABS.$xx[$q]['image'][$count]);
-						imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $im[0], $im[1]);
-						imagejpeg($thumb, IMAGE_PATH_ABS.'store/'.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg');
-						imagedestroy($source);
-						imagedestroy($thumb);
-					} else {
-						unset($xx[$q]['image'][$count]);
-						$ok = false;
-					}
-				}
-			} else {
-				$ok = false;
-			}
-		} while ($ok);
-
-		$FileID = fopen(IMAGE_PATH_ABS.'store/'.$w['id'].".txt", "w");    
-		?><div class='SaleItem'><br />
-		<div class="SaleItemHeader">
-		<li class="MainTitle"><?php echo $w['make']; ?> - <?php echo $w['model']; ?></li>
-		<li class="PriceTitle"><span class="audgst"><?php echo $w['price']['currency']; ?></span> $<?php echo number_format($w['price']['value'], 2, ".", ","); ?> <span class="audgst"><?php echo $w['price']['gst_value']; ?></span>&nbsp;&nbsp;&nbsp;&nbsp;
-		<input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('index.php?option=com_rsform&formId=8&productID=<?php echo $xx[$q]['id']; ?>', '_self')" /></li>
-		<div style="clear:both;"></div>
-		</div>
-		<div class="Specifications">
-		<?php
+		$item->setAttribute('enquiry', str_replace('{{id}}', $w['id'], $params->get('enquiry_url', '')));
+		$FileID = fopen(IMAGE_PATH_ABS.'store/'.$w['id'].".txt", "w");   
 		foreach ($order as $n){
 			switch ($n) {
 				case "type";
-					echo "<p class=\"SpecHeading\"><b>Type:</b> ".$w[$n]." - ".$w['subtype']."</p>\n";
+					$item->setAttribute('type', $w[$n]);
 					fwrite($FileID, $n.":=".$w[$n]." - ".$w['subtype']."\n");
 					break;
 				case "price";
+					$item->setAttribute('currency', $w['price']['currency']); 
+					$item->setAttribute('cost', '$'.number_format($w['price']['value'], 2, '.', ',')); 
+					$item->setAttribute('gst', $w['price']['gst_value']); 
 					fwrite($FileID, "cost:=".$w['price']['value']."\n");
 					fwrite($FileID, "gst:=".$w['price']['gst_value']."\n");
 					fwrite($FileID, "currency:=".$w['price']['currency']."\n");
 					break;
 				case "subtype":
+					$item->setAttribute($n, $w[$n]);
 					break;
 				case "make";
-					echo "<p class=\"SpecHeading\"><b>Make:</b> ".$w[$n]."</p>\n";
+					$item->setAttribute($n, $w[$n]); 
 					fwrite($FileID, $n.":=".$w[$n]."\n");
 					break;
 				case "model";
-					echo "<p class=\"SpecHeading\"><b>Model:</b> ".$w[$n]."</p>\n";
+					$item->setAttribute($n, $w[$n]); 
 					fwrite($FileID, $n.":=".$w[$n]."\n");
 					break;
 				case "config";
 					if (isset($w[$n])) {
 						fwrite($FileID, $w[$n]['name'].":=".$w[$n]['value']."\n");
-						echo "<p><b>".$w[$n]['name'].":</b> ".$w[$n]['value']."</p>\n";
+						$item->setAttribute($n.'_name', $w[$n]['name']); 
+						$item->setAttribute($n.'_value', $w[$n]['value']); 
 					}
 					break;
 				case "listingtype";
 					if (isset($w[$n])) {
-						echo "<p><b>Listing Type:</b> ".$w[$n]['value']."</p>\n";
+						$item->setAttribute($n, $w[$n]['value']); 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "condition";
 					if (isset($w[$n])){
-						echo "<p><b>Condition:</b> ".$w[$n]['value']."</p>\n";
+						$item->setAttribute($n, $w[$n]['value']); 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "year";
 					if (isset($w[$n])) {
-						echo "<p><b>Year:</b> ".$w[$n]['value']."</p>\n";
+						$item->setAttribute($n, $w[$n]['value']); 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "hours";
 					if (isset($w[$n])){
-						echo "<p><b>Hours:</b> ".$w[$n]['value']."</p>\n";
+						$item->setAttribute($n, $w[$n]['value']); 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "stockref";
 					if (isset($w[$n])) {
-						echo "<p><b>Stock Ref #:</b> ".$w[$n]['value']."</p>\n";
+						$item->setAttribute($n, $w[$n]['value']); 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "engpower";
 					if (isset($w[$n])) {
-						echo "<p><b>Eng. Power:</b> ".$w[$n]['value']."</p>\n";
+						$item->setAttribute($n, $w[$n]['value']); 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "status";
 					if (isset($w[$n]))
-						echo "<p><b>Status:</b> ".$w[$n]['value']."</p>\n";
+						$item->setAttribute($n, $w[$n]['value']); 
+						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					break;
 				case "id";
 					if (isset($w[$n])) {
-						echo "<!-- <p><b>ID:</b> ".$w[$n]."</p>\n -->\n";
+						$item->setAttribute($n, $w[$n]); 
 						fwrite($FileID, $n.":=".$w[$n]."\n");
 					}
 					break;
 				case "description";
 					if (isset($w[$n])) {
-						echo "<p><b>Description:</b> ".str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value']))."</p>\n";
+						$item->setAttribute($n, str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value']))); 
 						fwrite($FileID, $n.":=".str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value']))."\n");
 					}
 					break;
 				default:
-					echo "<p><b>".$n.":</b> ".$w[$n]."</p>\n";
+					$item->addToAttribute('miscellaneous', "<p><b>".$n.":</b> ".$w[$n]."</p>\n"); 
 					fwrite($FileID, $n.':+'.$w[$n]."\n");
 			}
 		}
@@ -200,18 +218,8 @@ foreach ($xx as $q=>$w) {
 			$xx[$q]['image'][1] = 'PlaceHolder.png';
 		if (! is_file(IMAGE_PATH_ABS.$xx[$q]['image'][1]))
 			$xx[$q]['image'][1] = 'PlaceHolder.png';
-		?>
-        </div> <!-- End of Specifications -->
-		
-		<!--<div style="text-align: center; float: left; width: 250px; ">-->
-		<div>
-        <p>
-        <img class="firstImage" src='<?php echo JURI::base().IMAGE_PATH_REL.'store/'.$xx[$q]['image'][1]; ?>' alt='' width="245" />
-        </p>
-       
+		$item->setAttribute('firstimage', JURI::base().IMAGE_PATH_REL.'store/'.$xx[$q]['image'][1]);
 
-		<!--<div class="SaleThumbs">-->
-        <?php
 		foreach ($xx[$q]['image'] as $c=>$i) {
 			$iv = getimagesize(IMAGE_PATH_ABS.$i);
 			$s = $iv[1]/245;
@@ -220,40 +228,31 @@ foreach ($xx as $q=>$w) {
 			$s = $iv[1]/75;
 			$th = 75;
 			$tw = intval($iv[0]/$s);
-			?>
-			<a class="thumb" href="#"><img src="<?php echo JURI::base().IMAGE_PATH_REL.$i; ?>" alt="" width="<?php echo $tw; ?>" height="<?php echo $th; ?>">
-			<span style="width: <?php echo strval($w + 4); ?>px; height: <?php echo strval($h+4); ?>px; "><img src="<?php echo JURI::base().IMAGE_PATH_REL.$i; ?>" alt="" width="<?php echo $w; ?>" height="<?php echo $h; ?>"></span></a>
-			<?php
+			$stuff = "<a class=\"thumb\" href=\"#\"><img src=\"".JURI::base().IMAGE_PATH_REL.$i."\" alt=\"\" width=\"".$tw."\" height=\"".$th."\">
+			<span style=\"width: ".strval($w + 4)."px; height: ".strval($h+4)."px; \"><img src=\"". JURI::base().IMAGE_PATH_REL.$i . "\" alt=\"\" width=\"".$w."\" height=\"".$h."\"></span></a>";
+			$item->addToAttribute('thumbimages', $stuff);
 		}
 		
-		echo "</div> <!-- End of SaleThumbs -->\n";
-	
-		echo"</div> <!-- End of Sale Item -->\n" ;
+		$items->addToAttribute('items', $item->render());
 		$DisplayCount++;
 		if ($DisplayCount > $params->get('pageitems', 10) - 1)
 			break;
 	}
 }
 ?>
-</div>    <!-- End of SaleItems -->
+
+<?php echo $items->render(); ?>
 
 
-
-
-</div>   <!-- End of ProductMenu -->
 <div id="StartFooter">&nbsp;</div>
 
-
-
-
-   <!-- End of UsedProductManagement -->
 <?php echo $pagination; ?>
 </form>
 
 <?php
 
 
-# Now remove old image files from  created stack.
+# Now remove old image files from created stack.
 $path = IMAGE_PATH_ABS.'store/';
 $images = dir($path);
 

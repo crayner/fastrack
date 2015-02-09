@@ -22,13 +22,12 @@
  */
 
 defined('_JEXEC') or die();
-
-?>
-<h2><?php echo JText::_('COM_FASTRACK_WELCOME'); ?></h2>
-<h3>File Addition</h3>
-<div align="center" style="clear: both">
-	<br>
-<?php
-$input = JFactory::getApplication()->input;
-echo sprintf(JText::_('COM_FASTRACK_FOOTER'), $input->get('FASTRACK_VERSION'));?>
-</div>
+/**
+ * Fastrack Views Helper
+ *
+ * @version 9th February 2015
+ * @since 9th February 2015
+ */
+class FastrackViews extends JViewHtml {
+	
+}

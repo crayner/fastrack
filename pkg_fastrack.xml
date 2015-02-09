@@ -15,6 +15,6 @@
 		<file id="com_fastrack" type="component" client="site">com_fastrack.zip</file>
 	</files>
 	<updateservers>
-		<server type="extension" priority="1" name="pkg_fastrack">https://sites.google.com/a/hillrange.com.au/fastrack/fractrack__upgrade.xml</server>
+		<server type="extension" priority="1" name="pkg_fastrack">https://sites.google.com/a/hillrange.com.au/fastrack/fastrack__upgrade.xml</server>
 	</updateservers>
 </extension>

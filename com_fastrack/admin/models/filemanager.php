@@ -28,6 +28,6 @@ defined('_JEXEC') or die();
  * @version 9th February 2015
  * @since 9th February 2015
  */
-class FastrackModelsDefault extends JModelBase {
+class FastrackModelsFilemanager extends JModelBase {
 	
 }

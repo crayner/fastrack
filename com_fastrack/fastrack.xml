@@ -37,6 +37,7 @@
 	<administration>
 		<files folder="admin">
 			<filename>index.html</filename>
+			<filename>access.xml</filename>
 			<filename>fastrack.php</filename>
 			<folder>sql</folder>
 			<folder>language</folder>

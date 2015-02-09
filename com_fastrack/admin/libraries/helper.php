@@ -22,6 +22,95 @@
  */
 
 defined('_JEXEC') or die();
+/**
+ * Fastrack Helper
+ *
+ * @version 9th February 2015
+ * @since 9th February 2015
+ */
+class FastrackHelper {
+/**
+ * Get Actions
+ *
+ * @version 9th February 2015
+ * @since 9th February 2015
+ * @param integer File ID
+ * @return object
+ */
+ 	public static function getActions($fileId = 0) {
+
+		$user  = JFactory::getUser();
+		$result  = new JObject;
+		if (empty($fileId)) {
+			$assetName = 'com_fastrack';
+		}
+		else {
+			$assetName = 'com_fastrack.file.'.(int) $fileId;
+		}
+
+		$actions = array('core.admin', 'core.manage', 'core.create', 'core.edit', 'core.delete');
+		foreach ($actions as $action) {
+			$result->set($action, $user->authorise($action, $assetName));
+		}
+
+		return $result;
+	}
+/**
+ * Get Actions
+ *
+ * @version 9th February 2015
+ * @since 9th February 2015
+ */
+	public static function loadLibrary ( $libraries = array ( 'jquery' => true ) ) {
+
+		if (JFactory::getDocument()->getType() != 'html') {
+			return ;
+		}
+
+		$document = JFactory::getDocument();
+		if (isset($libraries['jquery'])) {
+			JHtml::_('jquery.framework');
+			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/fastrack/gcNoConflict.js');
+		}
+
+		if (isset($libraries['jqueryui'])) {
+			$theme = 'bootstrap';
+			if (is_string($libraries['jqueryui']) && !empty($theme) && $theme == -1) {
+				$theme = $libraries['jqueryui'];
+			} else {
+				$libraries['bootstrap'] = true;
+			}
+			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/jquery/themes/'.$theme.'/jquery-ui.custom.css');
+			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/ui/jquery-ui.custom.min.js');
+		}
+
+		if (isset($libraries['bootstrap'])) {
+			JHtml::_('bootstrap.framework');
+		}
+
+		if (isset($libraries['chosen'])) {
+			JHtml::_('formbehavior.chosen', 'select');
+		}
+
+		if (isset($libraries['fastrack'])) {
+			$document->addScript(JURI::root().'components/com_fastrack/libraries/fastrack/fastrack.js');
+			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/fastrack/fastrack.css');
+		}
+
+		if (isset($libraries['maps'])) {
+			$document->addScript((JBrowser::getInstance()->isSSLConnection() ? "https" : "http").'://maps.googleapis.com/maps/api/js?sensor=true&language='.self::getGoogleLanguage());
+		}
+
+		if (isset($libraries['fullcalendar'])) {
+			$document->addScript(JURI::root().'components/com_fastrack/libraries/fullcalendar/fullcalendar.min.js');
+			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/fullcalendar/fullcalendar.css');
+			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/fastrack/jquery.fastrack-all.min.js');
+			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/jquery/fancybox/jquery.fancybox-1.3.4.css');
+			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/jquery/ext/tipTip.css');
+			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/ext/jquery.tipTip.minified.js');
+		}
+	}
+}
 
 /**
   * Print an Object

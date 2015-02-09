@@ -13,6 +13,7 @@
 	<description>COM_FASTRACK_XML_DESCRIPTION</description>
 	<files folder="site">
 		<filename>index.html</filename>
+		<folder>libraries</folder>
 	</files>
 	<media destination="com_fastrack" folder="media">
 		<filename>index.html</filename>

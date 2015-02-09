@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="component" version="3.0" method="upgrade">
+	<name>COM_FASTRACK</name>
+	<creationDate>9th Feb 2015</creationDate>
+	<author>Hill Range Services</author>
+	<authorEmail>info@hillrange.com.au</authorEmail>
+	<authorUrl>fastrack.hillrange.com.au</authorUrl>
+	<copyright>This extension is released under the GNU/GPL License.
+	</copyright>
+	<license>http://www.gnu.org/copyleft/gpl.html
+		GNU/GPL</license>
+	<version>Beta.0.0.1</version>
+	<description>COM_FASTRACK_XML_DESCRIPTION</description>
+	<files folder="site">
+		<filename>index.html</filename>
+	</files>
+	<media destination="com_fastrack" folder="media">
+		<filename>index.html</filename>
+		<folder>images</folder>
+	</media>
+	<install>
+		<sql>
+			<file charset="utf8" driver="mysql">sql/install.sql</file>
+		</sql>
+	</install>
+	<uninstall>
+		<sql>
+			<file charset="utf8" driver="mysql">sql/uninstall.sql</file>
+		</sql>
+	</uninstall>
+	<update> 
+		<schemas>
+			<schemapath type="mysql">sql/updates/mysql</schemapath>
+		</schemas>
+	</update>
+	<scriptfile>script.php</scriptfile>
+	<administration>
+		<files folder="admin">
+			<filename>index.html</filename>
+			<filename>fastrack.php</filename>
+			<folder>sql</folder>
+			<folder>language</folder>
+			<folder>controllers</folder>
+			<folder>views</folder>
+			<folder>models</folder>
+			<folder>libraries</folder>
+		</files>
+	</administration>
+</extension>

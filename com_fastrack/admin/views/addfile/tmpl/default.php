@@ -17,29 +17,50 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
+ * @version date
+ * @since date
  */
 
 defined('_JEXEC') or die();
 
-JFactory::getDocument()->addStyleSheet('components/com_fastrack/views/default/tmpl/default.css');
-?>
-<h2><?php echo JText::_('COM_FASTRACK_CPANEL_WELCOME'); ?></h2>
-<p><?php echo JText::_('COM_FASTRACK_CPANEL_INTRO'); ?></p>
+JHtml::_('behavior.tooltip');
+JHtml::_('behavior.formvalidation');
+JHtml::_('behavior.keepalive');
 
-<!-- cpanel View -->
-<div id="cpanel" style="float:left">
-    <div style="float:left; margin-right: 20px">
-        <div class="icon">
-            <a href="index.php?option=com_fastrack&view=addfile" >
-            <img src="<?php echo JURI::base(true);?>/../media/com_fastrack/images/FileAddIcon.png" height="50px" width="50px">
-            <span><?php echo JText::_('COM_FASTRACK_ADDFILE'); ?></span>
-            </a>
+
+?>
+
+<form action="<?php echo JRoute::_('index.php?option=com_fastrack&view=addfile&id='.(int) @$ftfile->id); ?>" method="post" name="adminForm" id="gicalreader-form" class="form-validate">
+	<div class="row-fluid">
+		<!-- Begin Content -->
+		<div class="span10 form-horizontal">
+			<div class="tab-content">
+				<!-- Begin Tabs -->
+				<div class="tab-pane active" id="general">
+					<div class="row-fluid">
+						<div class="span6">
+							<div class="control-group">
+								<div class="control-label">
+									<?php echo $this->form->getLabel('name'); ?>
+								</div>
+								<div class="controls">
+									<?php echo $this->form->getInput('name'); ?>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+            </div>
         </div>
-    </div>
-</div>
+	</div>
+</form>
 
 <div align="center" style="clear: both">
 	<br>
     <?php $input = JFactory::getApplication()->input;
 	echo sprintf(JText::_('COM_FASTRACK_FOOTER'), $input->get('FASTRACK_VERSION'));?>
 </div>
+
+<?php
+printAnObject($this);
+	printAnObject($input);

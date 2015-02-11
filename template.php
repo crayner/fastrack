@@ -17,6 +17,8 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
+ * @version date
+ * @since date
  */
 
 defined('_JEXEC') or die();

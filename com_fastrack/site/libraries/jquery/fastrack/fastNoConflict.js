@@ -1,0 +1,1 @@
+var fastjQuery = jQuery.noConflict();

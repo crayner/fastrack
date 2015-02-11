@@ -17,28 +17,47 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 9th February 2015
- * @since 9th February 2015
+ * @version 11th February 2015
+ * @since 11th February 2015
  */
 
 defined('_JEXEC') or die();
+
+class FastrackViewsDefaultHtml extends JViewHtml{
 /**
-  * Fastrack View Default HTML Class
-  *
-  * @version 9th February 2015
-  * @since 9th February 2015
-  */
-class FastrackViewsDefaultHtml extends JViewHtml {
+ * Form Object
+ * @var Object
+ */
+ 	protected $form = NULL;
 /**
-  * Render
-  *
-  * @version 9th February 2015
-  * @since 9th February 2015
-  * @param string TPL
-  * @return string
-  */
-  	public function render($tpl = NULL){
+ * Construct
+ * 
+ * @version 11th February 2015
+ * @since 11th February 2015
+ * @return 
+ */
+ 	public function __construct($modelClass, $paths) {
+	
+		return parent::__construct($modelClass, $paths);
+	}
+/**
+ * Render
+ *
+ * @version 11th February 2015
+ * @since 11th February 2015
+ * @param string ?????
+ * @retrun string
+ */
+	public function render() {
 		
-		return parent::render($tpl);
+		JToolBarHelper::title(JText::_('COM_FASTRACK'), 'Fastrack Title');
+
+		$canDo = FastrackHelper::getActions();
+		if ($canDo->get('core.admin')) {
+			JToolBarHelper::preferences('com_fastrack', 550);
+			JToolBarHelper::divider();
+		}
+
+		return parent::render();
 	}
 }

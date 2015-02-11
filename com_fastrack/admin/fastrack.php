@@ -33,7 +33,7 @@ $input = JFactory::getApplication()->input;
 $path = JPATH_ADMINISTRATOR.'/components/com_fastrack/fastrack.xml';
 if(file_exists($path)){
 	$manifest = simplexml_load_file($path);
-	$input->set(JText::_('FASTRACK_VERSION'), $manifest->version);
+	$input->set(JText::_('FASTRACK_VERSION'), (string)$manifest->version);
 }else{
 	$input->set(JText::_('FASTRACK_VERSION'), '');
 }

@@ -70,7 +70,7 @@ class FastrackHelper {
 		$document = JFactory::getDocument();
 		if (isset($libraries['jquery'])) {
 			JHtml::_('jquery.framework');
-			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/fastrack/gcNoConflict.js');
+			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/fastrack/fastNoConflict.js');
 		}
 
 		if (isset($libraries['jqueryui'])) {
@@ -97,18 +97,6 @@ class FastrackHelper {
 			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/fastrack/fastrack.css');
 		}
 
-		if (isset($libraries['maps'])) {
-			$document->addScript((JBrowser::getInstance()->isSSLConnection() ? "https" : "http").'://maps.googleapis.com/maps/api/js?sensor=true&language='.self::getGoogleLanguage());
-		}
-
-		if (isset($libraries['fullcalendar'])) {
-			$document->addScript(JURI::root().'components/com_fastrack/libraries/fullcalendar/fullcalendar.min.js');
-			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/fullcalendar/fullcalendar.css');
-			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/fastrack/jquery.fastrack-all.min.js');
-			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/jquery/fancybox/jquery.fancybox-1.3.4.css');
-			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/jquery/ext/tipTip.css');
-			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/ext/jquery.tipTip.minified.js');
-		}
 	}
 }
 

@@ -36,6 +36,8 @@ class FastrackControllerFastrack extends JControllerBase {
 
 		$app = $this->getApplication();
 		$input = $app->input;
+
+		$taskName = $input->get('task');
 	
 		// Get the document object.
 		$document = $app->getDocument();
@@ -50,6 +52,7 @@ class FastrackControllerFastrack extends JControllerBase {
 
 		$view = new $viewClass(new $modelClass, $paths);
 		$view->setLayout($layoutName);
+
  
     	// Render our view.
 		echo $view->render();

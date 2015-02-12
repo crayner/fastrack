@@ -29,13 +29,16 @@ $lang = JFactory::getLanguage();
 $lang->load('com_fastrack', JPATH_ADMINISTRATOR);
 
 $input = JFactory::getApplication()->input;
+$params = JFactory::getConfig('com_fastrack');
 
 $path = JPATH_ADMINISTRATOR.'/components/com_fastrack/fastrack.xml';
 if(file_exists($path)){
 	$manifest = simplexml_load_file($path);
-	$input->set(JText::_('FASTRACK_VERSION'), (string)$manifest->version);
+	$input->set('FASTRACK_VERSION', (string)$manifest->version);
+	$params->set('FASTRACK_VERSION', (string)$manifest->version);
 }else{
-	$input->set(JText::_('FASTRACK_VERSION'), '');
+	$input->set('FASTRACK_VERSION', '');
+	$params->set('FASTRACK_VERSION', '');
 }
 
 // Require specific controller if requested

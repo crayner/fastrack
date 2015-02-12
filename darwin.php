@@ -48,7 +48,7 @@
 		$config->ftpdir = '/home/vanderfi/public_html/fastrack/';
 		$config->hostroot = 'http://www.vanderfield.com.au/';
 		$config->documentroot = "/home/vanderfi/public_html/";
-		$config->datastore = "/home/vanderfi/public_html/fastrack-include/".$config->parsename/"/";
+		$config->datastore = "/home/vanderfi/public_html/fastrack-include/".$config->parsename."/";
 
 		
 		$config->pageitems = 10;

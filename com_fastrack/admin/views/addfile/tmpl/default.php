@@ -17,8 +17,8 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version date
- * @since date
+ * @version 12th February 2015
+ * @since 11th Fenruary 2015
  */
 
 defined('_JEXEC') or die();
@@ -57,10 +57,10 @@ JHtml::_('behavior.keepalive');
 
 <div align="center" style="clear: both">
 	<br>
-    <?php $input = JFactory::getApplication()->input;
-	echo sprintf(JText::_('COM_FASTRACK_FOOTER'), $input->get('FASTRACK_VERSION'));?>
+    <?php $params = JFactory::getConfig('com_fastrack');
+	echo JText::_('COM_FASTRACK_FOOTER').'. Version: '.$params->get('FASTRACK_VERSION');?>
 </div>
 
 <?php
-printAnObject($this);
-	printAnObject($input);
+
+	printAnObject($params);

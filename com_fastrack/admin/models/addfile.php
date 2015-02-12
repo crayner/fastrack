@@ -35,14 +35,15 @@ class FastrackModelsAddfile extends JModelBase {
  */
  	public $ftfile = NULL;
 /** 
- * Execute
+ * Construct
  * 
  * @version 11th February 2015
  * @since 11th February 2015
+ * @return void
  */
-	public function execute() {
+	public function __construct() {
 	
-		$this->ftfile = $this->loadFile
-		return true;
+		$this->ftfile = $this->loadFile();
+		return;
 	}	
 }

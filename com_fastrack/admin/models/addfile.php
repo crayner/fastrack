@@ -17,27 +17,22 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 11th February 2015
- * @since 11th February 2015
+ * @version 12th February 2015
+ * @since 9th February 2015
  */
 
 defined('_JEXEC') or die();
 /** 
  * Fastrack Models Default Class
  * 
- * @version 9th February 2015
+ * @version 12th February 2015
  * @since 9th February 2015
  */
-class FastrackModelsAddfile extends JModelBase {
-/**
- * Fastrack File Object
- * @var object
- */
- 	public $ftfile = NULL;
+class FastrackModelsAddfile extends FastrackModelsDefault {
 /** 
  * Construct
  * 
- * @version 11th February 2015
+ * @version 12th February 2015
  * @since 11th February 2015
  * @return void
  */

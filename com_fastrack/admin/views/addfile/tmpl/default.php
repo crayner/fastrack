@@ -27,10 +27,25 @@ JHtml::_('behavior.tooltip');
 JHtml::_('behavior.formvalidation');
 JHtml::_('behavior.keepalive');
 
+$ftfile = $this->model->ftfile;
 
 ?>
+<script type="text/javascript" language="jscript">
 
-<form action="<?php echo JRoute::_('index.php?option=com_fastrack&view=addfile&id='.(int) @$ftfile->id); ?>" method="post" name="adminForm" id="gicalreader-form" class="form-validate">
+
+	Joomla.submitbutton = function(task) {
+		if (task == 'fastrack.cancel' || document.formvalidator.isValid(document.id('fastrack-form'))) {
+			Joomla.submitform(task, document.getElementById('fastrack-form'));
+		} else {
+			alert('<?php echo $this->escape(JText::_("JGLOBAL_VALIDATION_FORM_FAILED")); ?>');
+		}
+	}
+	
+	
+</script>
+
+
+<form action="<?php echo JRoute::_('index.php?option=com_fastrack&view=addfile&id='.(int) @$ftfile->id); ?>" method="post" name="adminForm" id="fastrack-form" class="form-validate">
 	<div class="row-fluid">
 		<!-- Begin Content -->
 		<div class="span10 form-horizontal">
@@ -47,20 +62,36 @@ JHtml::_('behavior.keepalive');
 									<?php echo $this->form->getInput('name'); ?>
 								</div>
 							</div>
+							<div class="control-group">
+								<div class="control-label">
+									<?php echo $this->form->getLabel('path'); ?>
+								</div>
+								<div class="controls">
+									<?php echo $this->form->getInput('path'); ?>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="control-label">
+									<?php echo $this->form->getLabel('resultPath'); ?>
+								</div>
+								<div class="controls">
+									<?php echo $this->form->getInput('resultPath'); ?>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
             </div>
         </div>
 	</div>
+    <?php echo $this->form->getInput('id'); ?>
+    <input type="hidden" name="task" value="fastrack.edit" />
 </form>
 
 <div align="center" style="clear: both">
 	<br>
     <?php $params = JFactory::getConfig('com_fastrack');
-	echo JText::_('COM_FASTRACK_FOOTER').'. Version: '.$params->get('FASTRACK_VERSION');?>
+	echo JText::_('COM_FASTRACK_FOOTER').'. Version: '.$params->get('FASTRACK_VERSION');
+	printAnObject($this);
+	?>
 </div>
-
-<?php
-
-	printAnObject($params);

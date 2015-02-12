@@ -52,6 +52,8 @@ class FastrackViewsAddfileHtml extends JViewHtml{
 		JToolBarHelper::title(JText::_('COM_FASTRACK_ADDFILE'), 'Fastrack Title');
 		$this->form = JForm::getInstance('adminForm', JPATH_ADMINISTRATOR.'/components/com_fastrack/models/forms/fastrack.xml');
 		$this->addToolbar();
+		foreach ((array)$this->model->ftfile as $q=>$w)
+			$this->form->setValue($q, NULL, $w);
 		return parent::render();
 	}
 /**

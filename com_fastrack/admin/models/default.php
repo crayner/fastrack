@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 9th February 2015
+ * @version 12th February 2015
  * @since 9th February 2015
  */
 
@@ -29,5 +29,36 @@ defined('_JEXEC') or die();
  * @since 9th February 2015
  */
 class FastrackModelsDefault extends JModelBase {
-	
+/**
+ * Fastrack File Object
+ * @var object
+ */
+ 	public $ftfile = NULL;
+/**
+ * Load Fastrack File Object
+ *
+ * @version 12th February 2015	
+ * @since 12th February 2015	
+ * @return object 
+ */
+ 	protected function loadFile() {
+		
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->from($db->quoteName('#__fastrack_files'));
+		$query->select('*');
+		$input = JFactory::getApplication()->input;
+		$id = intval ( $input->get( 'id' ) );
+		$query->where($db->quoteName('id') . ' = ' . $id);
+		$db->setQuery($query);
+		$ft = $db->loadObject();
+		if (empty($ft)) {
+			$ft = new stdClass ;
+			$ft->id = 0;
+			$ft->name = '';
+			$ft->path = '';
+			$ft->resultPath = '';
+		}
+		return $ft;
+	}
 }

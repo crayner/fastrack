@@ -70,7 +70,7 @@ class FastrackHelper {
 		$document = JFactory::getDocument();
 		if (isset($libraries['jquery'])) {
 			JHtml::_('jquery.framework');
-			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/fastrack/fastNoConflict.js');
+			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/fastrack/ftNoConflict.js');
 		}
 
 		if (isset($libraries['jqueryui'])) {
@@ -97,6 +97,29 @@ class FastrackHelper {
 			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/fastrack/fastrack.css');
 		}
 
+	}
+/**
+ * Save File Definition
+ *
+ * @version 12th February 2015
+ * @since 12th February 2015
+ * @return integer File Definition ID
+ */
+  	static function saveFileDefinition() {
+		
+		$input = new JInput();
+		$record = new STDClass();
+		$record->id = $input->getInt('id', 0);
+		$record->name = $input->getString('name');
+		$record->path = $input->getString('path');
+		$record->resultPath = $input->getString('resultPath');
+		if ( (int) $record->id === 0)
+			$result = JFactory::getDbo()->insertObject("#__fastrack_files", $record, 'id');
+		else
+			$result = JFactory::getDbo()->updateObject("#__fastrack_files", $record, 'id');
+		if ($result)
+			$input->set('id', $record->id);
+		return $record->id;
 	}
 }
 

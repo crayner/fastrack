@@ -37,8 +37,23 @@ class FastrackControllerFastrack extends JControllerBase {
 		$app = $this->getApplication();
 		$input = $app->input;
 
-		$taskName = $input->get('task');
-	
+		$taskName = $input->get('task', 'default');
+		switch ($taskName) {
+			case 'fastrack.cancel':
+				$input->set('view', 'default');
+				break;
+			case 'fastrack.apply':
+				$id = FastrackHelper::saveFileDefinition();
+				$input->set('id', $id);
+				$input->set('view', 'addfile');
+				break;
+			case 'fastrack.save':
+				$id = FastrackHelper::saveFileDefinition();
+				$input->set('view', 'default');
+				break;
+			default:
+				printAnObject($taskName);
+		}
 		// Get the document object.
 		$document = $app->getDocument();
 		$viewName     = $input->get('view', 'default');

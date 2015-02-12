@@ -2,46 +2,107 @@
 /**
   * @author Craig Rayner Hill Range Services craig@hillrange.com.au
   * for Webdoor Solutions July 2014
+  * @version 12th February 2015
+  * @since July 2014
   */
-/*if ($_SERVER['HTTP_HOST'] == 'localhost') { 
-const FILENAME = "http://www.vanderfield.com.au/fastrack/toowoomba.xml";
-const PRODUCTIMAGES = "F:/wamp/www/vander/fastrack/product_images/";
-const HOSTROOT = "http://localhost/vander/";
-const DOCUMENTROOT = "F:/wamp/www/vander/";
-	?>  <link rel="stylesheet" href="rt_metropolis-custom.css" type="text/css" /><?php
-} else { */
-const FILENAME = '/home/vanderfi/public_html/fastrack/toowoomba.xml';
-const PRODUCTIMAGES = "/home/vanderfi/public_html/fastrack/";
-const HOSTROOT = "http://www.vanderfield.com.au/";
-const DOCUMENTROOT = "/home/vanderfi/public_html/";
-//}
-
-const PAGEITEMS = 10;
-const FIRSTPAGE = '<<';
-const LASTPAGE = '>>';
-const PREVPAGE = '<';
-const NEXTPAGE = '>';
-
 
 /**
   * Print an Object
   *
-  * @version OLD
+  * @version 10th November 2014
   * @since OLD
-  * @author Craig Rayner  craig at craigrayner dot com
   * @param mixed The object to be printed
   * @param boolean Stop execution after printing object.
   * @return void
   */
 	function printAnObject($object, $stop = false) {
 	
-		echo "<pre>";
+		$caller = debug_backtrace();
+		echo "<pre>\n";
+		echo $caller[0]['line'].': '.$caller[0]['file'];
+		//var_dump($caller);
+		echo "\n</pre>\n";
+		echo "<pre>\n";
 		print_r($object);
-		echo "</pre>";
+		//var_dump($object);
+		echo "\n</pre>\n";
 		if ($stop) 
-			exit();
+			trigger_error('Object Print Stop', E_USER_ERROR);
 		return ;
 	}
+
+/**
+ * get Configuration
+ *
+ * @version 12th February 2015
+ * @since 12th February 2015
+ * @return object
+ */
+ 	function getConfig() {
+	
+		$config = new stdClass() ;
+		// Absolute path of the xml file to parse
+		$config->parsename = 'toowoomba';
+		$config->filename = '/home/vanderfi/public_html/fastrack/'.$config->parsename.'.xml';
+		// Absolute path of the ftp directory
+		$config->ftpdir = '/home/vanderfi/public_html/fastrack/';
+		$config->hostroot = 'http://www.vanderfield.com.au/';
+		$config->documentroot = "/home/vanderfi/public_html/";
+		$config->datastore = "/home/vanderfi/public_html/fastrack-include/".$config->parsename/"/";
+		$config->filename = '/var/www/html/fastrack/'.$config->parsename.'.xml';
+		// Absolute path of the ftp directory
+		$config->ftpdir = '/var/www/html/fastrack/';
+		$config->hostroot = 'http://home.hillrange.com.au/';
+		$config->documentroot = "/var/www/html/";
+		$config->datastore = "/var/www/html/fastrack/".$config->parsename."/";
+		
+		$config->pageitems = 10;
+		$config->firstpage = '<<';
+		$config->lastpage = '>>';
+		$config->prevpage = '<';
+		$config->nextpage = '>';
+		
+		//The order is the list order for displayiong the information on the screen.
+		$order = array();
+		$order[] = "type";
+		$order[] = 'subtype';
+		$order[] = "make";
+		$order[] = "model";
+		$order[] = "config";
+		$order[] = "listingtype";
+		$order[] = "condition";
+		$order[] = "year";
+		$order[] = "hours";
+		$order[] = "stockref";
+		$order[] = "status";
+		$order[] = "engpower";
+		$order[] = "id";
+		$order[] = "description";
+		$order[] = 'price';
+		$config->order = $order;
+
+		//Test config.
+		if (! is_file($config->filename))
+			exit('The filename given in the configuration section is not available.');
+			
+		if (! is_dir($config->ftpdir))
+			exit('The ftp directory given in the configuration section is not available.');
+			
+		if (filter_var($config->hostroot, FILTER_VALIDATE_URL) === FALSE) 
+			exit('The host root given in the configuration section is not available.');
+			
+		if (! is_dir($config->documentroot))
+			exit('The document root given in the configuration section is not available.');
+			
+		if (! is_dir($config->datastore)) {
+			mkdir($config->datastore);
+			if (! is_dir($config->datastore))
+				exit('Not able to create data store directory.');
+		}
+		
+		return $config;
+	}
+
 /**
   * Sort Results
   *
@@ -226,12 +287,14 @@ class xmlParser {
     }
 }
 
+$config = getConfig();
+
 $reader = new xmlParser();
 try {
-	$x = file_get_contents(FILENAME);
+	$x = file_get_contents($config->filename);
 } catch (Exception $e) {
 	sleep ( 2 );
-	$x = file_get_contents(FILENAME);
+	$x = file_get_contents($config->filename);
 }
 	
 $xx = $reader->parseString($x);
@@ -285,17 +348,17 @@ if (!isset($_POST['startKey']))
 	$_POST['startKey'] = 1;
 if (strval(intval($_POST['startKey'])) == $_POST['startKey'])
 	$_POST['startKey'] = @$_POST['startKeyValues'][$_POST['startKey']];
-if ($_POST['startKey'] == FIRSTPAGE)
+if ($_POST['startKey'] == $config->firstpage)
 	$_POST['startKey'] = $_POST['startKeyValues'][1];
-if ($_POST['startKey'] == LASTPAGE)
+if ($_POST['startKey'] == $config->lastpage)
 	$_POST['startKey'] = $_POST['startKeyValues'][count($_POST['startKeyValues'])];
-if ($_POST['startKey'] == PREVPAGE) {
+if ($_POST['startKey'] == $config->prevpage) {
 	$was = intval(array_search($_POST['oldStartKey'], $_POST['startKeyValues'])) - 1;
 	if ($was < 1)
 		$was = 1;
 	$_POST['startKey'] = $_POST['startKeyValues'][$was];
 }
-if ($_POST['startKey'] == NEXTPAGE) {
+if ($_POST['startKey'] == $config->nextpage) {
 	$was = intval(array_search($_POST['oldStartKey'], $_POST['startKeyValues'])) + 1;
 	if ($was > count($_POST['startKeyValues']))
 		$was--;
@@ -458,23 +521,7 @@ foreach ($xx as $q=>$w) {
 
 
 # now build display
-
-$order = array();
-$order[] = "type";
-$order[] = 'subtype';
-$order[] = "make";
-$order[] = "model";
-$order[] = "config";
-$order[] = "listingtype";
-$order[] = "condition";
-$order[] = "year";
-$order[] = "hours";
-$order[] = "stockref";
-$order[] = "status";
-$order[] = "engpower";
-$order[] = "id";
-$order[] = "description";
-$order[] = 'price';
+$order = $config->order;
 
 
 
@@ -542,7 +589,7 @@ foreach($xx as $q=>$w){
 		$StartID = $w['id'];
 	}
 	$DisplayCount++;
-	if ($DisplayCount > PAGEITEMS - 1) {
+	if ($DisplayCount > $config->pageitems - 1) {
 
 		$PageCount++;
 		$yy[$PageCount] = $StartID;
@@ -577,8 +624,8 @@ $last = key($yy);
 
 foreach ($yy as $q=>$w) {
 	if ($q == $first) {
-		?><input type="submit" name="startKey" value="<?php echo FIRSTPAGE; ?>" class="Pagination" /> 
-		<input type="submit" name="startKey" value="<?php echo PREVPAGE; ?>" class="Pagination" />
+		?><input type="submit" name="startKey" value="<?php echo $config->firstpage; ?>" class="Pagination" /> 
+		<input type="submit" name="startKey" value="<?php echo $config->prevpage; ?>" class="Pagination" />
     
 		<?php	
 	}
@@ -593,8 +640,8 @@ foreach ($yy as $q=>$w) {
     <input type="hidden" name="startKeyValues[<?php echo $q; ?>]" value="<?php echo $w; ?>" />
     <?php	
 	if ($q == $last) {
-		?><input type="submit" name="startKey" value="<?php echo NEXTPAGE; ?>" class="Pagination" /> 
-		<input type="submit" name="startKey" value="<?php echo LASTPAGE; ?>" class="Pagination" /><?php	
+		?><input type="submit" name="startKey" value="<?php echo $config->nextpage; ?>" class="Pagination" /> 
+		<input type="submit" name="startKey" value="<?php echo $config->lastpage; ?>" class="Pagination" /><?php	
 	}
 }
 ?></p>
@@ -611,14 +658,14 @@ echo $pagination;
 
 
 <?php
-$ShowCount = PAGEITEMS;
-if ($count < PAGEITEMS)
+$ShowCount = $config->pageitems;
+if ($count < $config->pageitems)
 	$ShowCount = $count;
 ?>
 
 <div class="SaleItems">
 <?php echo $warning; ?>
-<p>Vanderfield currently has <?php echo $TotalAvailable; ?> used products in the catalogue.  Your search revealed <?php echo $count; ?> product<?php if ($count > 1) echo 's'; ?>, displayed <?php echo PAGEITEMS; ?> products to a page.</p>
+<p>Vanderfield currently has <?php echo $TotalAvailable; ?> used products in the catalogue.  Your search revealed <?php echo $count; ?> product<?php if ($count > 1) echo 's'; ?>, displayed <?php echo $config->pageitems; ?> products to a page.</p>
 <?php
 $DisplayCount = 0;
 $DisplayNow = false;
@@ -635,11 +682,11 @@ foreach ($xx as $q=>$w) {
 		$count = 0;
 		do {
 			$count++;
-			if (is_file(PRODUCTIMAGES.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
-				$xx[$q]['image'][$count] = PRODUCTIMAGES.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg';
+			if (is_file($config->ftpdir.$config->parsename.'_'.$w['id'].'_'.strval($count).'.jpg')) {
+				$xx[$q]['image'][$count] = $config->ftpdir.$config->parsename.'_'.$w['id'].'_'.strval($count).'.jpg';
 				if (empty($image))
-					$image = PRODUCTIMAGES.IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg';
-				if (! is_file(str_replace('fastrack', 'fastrack-include', PRODUCTIMAGES).IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg')) {
+					$image = $config->ftpdir.$config->parsename.'_'.$w['id'].'_'.strval($count).'.jpg';
+				if (! is_file( $config->datastore .$config->parsename.'_'.$w['id'].'_'.strval($count).'.jpg')) {
 					if (false !== ($im = @getimagesize($xx[$q]['image'][$count]))) {
 						$height = 245;
 						$y = $im[1]/$height;
@@ -647,7 +694,7 @@ foreach ($xx as $q=>$w) {
 						$thumb = imagecreatetruecolor($width, $height);
 						$source = imagecreatefromjpeg($xx[$q]['image'][$count]);
 						imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $im[0], $im[1]);
-						imagejpeg($thumb, str_replace('fastrack', 'fastrack-include', PRODUCTIMAGES).IMAGE_NAME.'_'.$w['id'].'_'.strval($count).'.jpg');
+						imagejpeg($thumb,  $config->datastore .$config->parsename.'_'.$w['id'].'_'.strval($count).'.jpg');
 						imagedestroy($source);
 						imagedestroy($thumb);
 					} else {
@@ -661,7 +708,7 @@ foreach ($xx as $q=>$w) {
 		} while ($ok);
 	
 	
-		$FileID = fopen(str_replace('fastrack', 'fastrack-include', PRODUCTIMAGES).$w['id'].".txt", "w");    
+		$FileID = fopen($config->datastore . $w['id'].".txt", "w");  
 		?><div class='SaleItem'><br />
 		<div class="SaleItemHeader">
 		<li class="MainTitle"><?php echo $w['make']; ?> - <?php echo $w['model']; ?></li>
@@ -762,7 +809,7 @@ foreach ($xx as $q=>$w) {
 		<!--<div style="text-align: center; float: left; width: 250px; ">-->
 		<div>
         <!--<p style="text-align: center ">--><p><!--<a href="index.php?option=com_rsform&formId=8&productID=<?php echo $xx[$q]['id']; ?>" target="_self">-->
-        <img class="firstImage" src='<?php echo str_replace(array('fastrack', DOCUMENTROOT), array('fastrack-include', ''). @$xx[$q]['image'][1]); ?>' alt='' width="245" /><!--</a>-->
+        <img class="firstImage" src='<?php echo str_replace(array($config->documentroot), array(''), @$xx[$q]['image'][1]); ?>' alt='' width="245" /><!--</a>-->
         </p>
        
 
@@ -777,8 +824,8 @@ foreach ($xx as $q=>$w) {
 			$th = 75;
 			$tw = intval($iv[0]/$s);
 			?>
-			<a class="thumb" href="#"><img src="<?php echo str_replace(array('fastrack', DOCUMENTROOT), array('fastrack-include', ''), $i); ?>" alt="" width="<?php echo $tw; ?>" height="<?php echo $th; ?>">
-			<span style="width: <?php echo strval($w + 4); ?>px; height: <?php echo strval($h+4); ?>px; "><img src="<?php echo str_replace(array('fastrack', DOCUMENTROOT), array('fastrack-include', ''), $i); ?>" alt="" width="<?php echo $w; ?>" height="<?php echo $h; ?>"></span></a>
+			<a class="thumb" href="#"><img src="<?php echo str_replace(array($config->documentroot), array(''), $i); ?>" alt="" width="<?php echo $tw; ?>" height="<?php echo $th; ?>">
+			<span style="width: <?php echo strval($w + 4); ?>px; height: <?php echo strval($h+4); ?>px; "><img src="<?php echo str_replace(array($config->documentroot), array(''), $i); ?>" alt="" width="<?php echo $w; ?>" height="<?php echo $h; ?>"></span></a>
 			<?php
 		}
 		
@@ -786,7 +833,7 @@ foreach ($xx as $q=>$w) {
 	
 		echo"</div> <!-- End of Sale Item -->\n" ;
 		$DisplayCount++;
-		if ($DisplayCount > PAGEITEMS - 1)
+		if ($DisplayCount > $config->pageitems - 1)
 			break;
 	}
 }
@@ -924,23 +971,20 @@ if ($displaysubtype) {
 
 
 # Now remove old image files from  created stack.
-$path = str_replace('fastrack', 'fastrack-include', PRODUCTIMAGES);
-$images = dir($path);
+$images = dir($config->datastore);
 
 while (false !== ($entry = $images->read())) {
-	if (is_file($path.$entry)) {
-		if (in_array(pathinfo($path.$entry, PATHINFO_EXTENSION), array('txt', 'jpg')))
-			if (date("Y-m-d", filemtime($path.$entry)) < date('Y-m-d', strtotime('-30 days')))
-				unlink($path.$entry);
+	if (is_file($config->datastore.$entry)) {
+		if (in_array(pathinfo($config->datastore.$entry, PATHINFO_EXTENSION), array('txt', 'jpg')))
+			if (date("Y-m-d", filemtime($config->datastore.$entry)) < date('Y-m-d', strtotime('-30 days')))
+				unlink($config->datastore.$entry);
 	}
 }
 
 
-
-
+echo "<!--   * @author Craig Rayner Hill Range Services craig (at) hillrange dot com dot au";
+echo "  * for Webdoor Solutions July 2014";
+echo "";
+echo "-->";
 
 ?>
-<!--   * @author Craig Rayner Hill Range Services craig (at) hillrange dot com dot au
-  * for Webdoor Solutions July 2014
-
--->

@@ -52,6 +52,7 @@ class FastrackViewsDefaultHtml extends JViewHtml{
 		
 		JToolBarHelper::title(JText::_('COM_FASTRACK'), 'Fastrack Title');
 
+
 		$canDo = FastrackHelper::getActions();
 		if ($canDo->get('core.admin')) {
 			JToolBarHelper::preferences('com_fastrack', 550);

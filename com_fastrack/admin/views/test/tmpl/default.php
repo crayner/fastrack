@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 13th February 2015
  */
 
@@ -27,8 +27,12 @@ defined('_JEXEC') or die();
 <h3><?php echo JText::_('COM_FASTRACK_TEST_TITLE'); ?></h3>
 <?php
 if (! empty($this->ftfile)): 
-	foreach ($this->results as $q=>$w) : ?>
-    	<p><?php echo JTEXT::_('COM_FASTRACK_FIELD_'.strtoupper($q).'_LABEL').': '.$this->ftfile->$q.': '.$w; ?></p>
+	foreach ($this->results as $q=>$w) : 
+		if (isset($this->ftfile->$q)) : ?>
+    		<p><?php echo JTEXT::_('COM_FASTRACK_FIELD_'.strtoupper($q).'_LABEL').': '.$this->ftfile->$q.': '.$w; ?></p>
+        <?php else : ?>
+     		<p><?php echo $w; ?></p>
+       <?php endif ?>
 	<?php endforeach ?>
 <?php endif ?>
 
@@ -37,7 +41,3 @@ if (! empty($this->ftfile)):
     <?php $params = JFactory::getApplication()->input;
 	echo JText::_('COM_FASTRACK_FOOTER').'. Version: '.$params->get('FASTRACK_VERSION');?>
 </div>
-
-<?php
-
-printAnObject($this);

@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 13th February 2015
  */
 
@@ -37,10 +37,11 @@ class FastrackModelsTest extends FastrackModelsDefault {
 
 
 	protected $config;
+	protected $parse;
 /**
  * Execute
  *
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 13th February 2015
  * @return array Results
  */
@@ -48,7 +49,7 @@ class FastrackModelsTest extends FastrackModelsDefault {
 		
 		$this->ftfile = $this->loadFile();
 		$results = array();
-		
+		$this->parse = new stdClass ;
 		$results['name'] = 'Ok';
 		$results['path'] = 'Ok';
 		$results['resultPath'] = 'Ok';
@@ -61,12 +62,12 @@ class FastrackModelsTest extends FastrackModelsDefault {
 				$result['path'] = JText::_('COM_FASTRACK_ERROR_PATH');
 
 		if (! is_dir($this->ftfile->resultPath)) {
-			if (! mkdir($this->ftfile->resultPath))
+			if (! @mkdir($this->ftfile->resultPath))
 				$result['resultPath'] = JText::_('COM_FASTRACK_ERROR_RESULTPATH');
 		}
 		
 		$this->config = $this->getConfig();
-printAnObject($this->config, true);		
+	
 		$reader = new xmlParser();
 		try {
 			$x = file_get_contents($this->config->filename);
@@ -77,14 +78,15 @@ printAnObject($this->config, true);
 			
 		$xx = $reader->parseString($x);
 		$xx = $reader->optXml($xx['dealer'][0]['listing']);
-		$TotalAvailable = count($xx);		
-		
+		$this->parse->TotalAvailable = count($xx);		
+		$this->parse->xx = $xx;
+		$results['parserTotal'] = sprintf(JText::_('COM_FASTRACK_PARSERTOTAL_MESSAGE'), $this->ftfile->name, $this->parse->TotalAvailable);
 		return $results;
 	} 
 /**
  * get Configuration
  *
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 13th February 2015
  * @return object
  */
@@ -97,7 +99,7 @@ printAnObject($this->config, true);
 		$config->filename = $this->ftfile->path.$this->ftfile->name;
 		// Absolute path of the ftp directory
 		$config->ftpdir = $this->ftfile->path;
-		$config->hostroot = JPATH_SITE;
+		$config->hostroot = str_replace(JURI::base(true), '', JURI::base()); ;
 		$config->documentroot = JPATH_ROOT;
 		$config->datastore = $this->ftfile->resultPath;
 		

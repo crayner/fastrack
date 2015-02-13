@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 9th February 2015
  */
 
@@ -27,7 +27,7 @@ class FastrackControllerFastrack extends JControllerBase {
 /**
   * Controller Execute
   *
-  * @version 13th February 2015
+  * @version 14th February 2015
   * @since 9th February 2015
   * @return void
   */
@@ -102,7 +102,11 @@ class FastrackControllerFastrack extends JControllerBase {
 		$view = new $viewClass(new $modelClass, $paths);
 		$view->setLayout($layoutName);
 
- 
+		if ($viewName !== 'addfile') {
+			JSubMenuHelper::addEntry(JText::_('COM_FASTRACK_CPANEL'), 'index.php?option=com_fastrack&view=default', $viewName == 'default');
+			JSubMenuHelper::addEntry(JText::_('COM_FASTRACK_LISTFILES'), 'index.php?option=com_fastrack&view=listfiles', $viewName == 'listfiles');
+			JSubMenuHelper::addEntry(JText::_('COM_FASTRACK_ADDFILE'), 'index.php?option=com_fastrack&view=addfile', $viewName == 'addfile');
+		}
     	// Render our view.
 		echo $view->render();
 	 

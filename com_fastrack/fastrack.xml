@@ -36,6 +36,12 @@
 	</update>
 	<scriptfile>script.php</scriptfile>
 	<administration>
+		<menu link="option=COM_FASTRACK">COM_FASTRACK</menu>
+		<submenu>
+			<menu view="default">COM_FASTRACK_CPANEL</menu>
+			<menu view="addfile">COM_FASTRACK_ADDFILE</menu>
+			<menu view="listfiles">COM_FASTRACK_LISTFILES</menu>
+		</submenu>
 		<files folder="admin">
 			<filename>index.html</filename>
 			<filename>access.xml</filename>

@@ -42,6 +42,26 @@ class FastrackControllerFastrack extends JControllerBase {
 			case 'fastrack.cancel':
 				$input->set('view', 'default');
 				break;
+			case 'fastrack.add':
+				$input->set('view', 'addfile');
+				$input->set('id', 0);
+				break;
+			case 'fastrack.edit':
+				$cid = $input->get('cid', array(), 'ARRAY');
+				if (isset($cid[0])) {
+					$input->set('view', 'addfile');
+					$input->set('id', $cid[0]);
+				}
+				break;
+			case 'fastrack.delete':
+				$cid = $input->get('cid', array(), 'ARRAY');
+				if (is_array($cid)) 
+					foreach ($cid as $id)
+						FastrackHelper::deleteFileDefinition($id);				
+				break;
+			case 'fastrack.edit1':
+				$input->set('view', 'addfile');
+				break;
 			case 'fastrack.apply':
 				$id = FastrackHelper::saveFileDefinition();
 				$input->set('view', 'addfile');
@@ -59,6 +79,9 @@ class FastrackControllerFastrack extends JControllerBase {
 				$input->set('id', 0);
 				$id = FastrackHelper::saveFileDefinition();
 				$input->set('view', 'addfile');
+				break;
+			case 'fastrack.test':
+				$input->set('view', 'test');				
 				break;
 			case 'default':
 				break;

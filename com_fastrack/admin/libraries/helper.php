@@ -121,17 +121,37 @@ class FastrackHelper {
 			$input->set('id', $record->id);
 		return $record->id;
 	}
+/**
+ * Save File Definition
+ *
+ * @version 12th February 2015
+ * @since 12th February 2015
+ * @param integer File ID
+ * @return void
+ */
+  	static function deleteFileDefinition($id) {
+		
+		if ( (int) $id < 1)
+			return ;
+		$sql = JFactory::getDbo();
+		$query = $sql->getQuery(true);
+		$query->delete($sql->quoteName('#__fastrack_files'));
+		$query->where($sql->quoteName('id') . ' = ' . $id);
+		$sql->setQuery($query);
+		$sql->execute();
+		return ;
+	}
 }
 
 /**
-  * Print an Object
-  *
-  * @version 10th November 2014
-  * @since OLD
-  * @param mixed The object to be printed
-  * @param boolean Stop execution after printing object.
-  * @return void
-  */
+ * Print an Object
+ *
+ * @version 10th November 2014
+ * @since OLD
+ * @param mixed The object to be printed
+ * @param boolean Stop execution after printing object.
+ * @return void
+ */
 	function printAnObject($object, $stop = false) {
 	
 		$caller = debug_backtrace();
@@ -148,14 +168,14 @@ class FastrackHelper {
 		return ;
 	}
 /**
-  * File an Object
-  *
-  * @version 10th November 2014
-  * @since OLD
-  * @param mixed The object to be printed
-  * @param string Name of File
-  * @return void
-  */
+ * File an Object
+ *
+ * @version 10th November 2014
+ * @since OLD
+ * @param mixed The object to be printed
+ * @param string Name of File
+ * @return void
+ */
 	function fileAnObject($object, $name = NULL) {
 	
 		$config = JFactory::getConfig();

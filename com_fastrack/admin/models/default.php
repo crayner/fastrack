@@ -35,6 +35,11 @@ class FastrackModelsDefault extends JModelBase {
  */
  	public $ftfile = NULL;
 /**
+ * Total Files Found
+ * @var integer
+ */
+ 	public $total = 0;
+/**
  * Load Fastrack File Object
  *
  * @version 12th February 2015	

@@ -32,6 +32,12 @@ JFactory::getDocument()->addStyleSheet('components/com_fastrack/views/default/tm
 <div id="cpanel" style="float:left">
     <div style="float:left; margin-right: 20px">
         <div class="icon">
+            <a href="index.php?option=com_fastrack&view=listfiles" >
+            <img src="<?php echo JURI::base(true);?>/../media/com_fastrack/images/FileListIcon.png" height="50px" width="50px">
+            <span><?php echo JText::_('COM_FASTRACK_LISTFILES'); ?></span>
+            </a>
+        </div>
+        <div class="icon">
             <a href="index.php?option=com_fastrack&view=addfile" >
             <img src="<?php echo JURI::base(true);?>/../media/com_fastrack/images/FileAddIcon.png" height="50px" width="50px">
             <span><?php echo JText::_('COM_FASTRACK_ADDFILE'); ?></span>

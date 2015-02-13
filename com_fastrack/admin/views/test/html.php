@@ -17,28 +17,57 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 12th February 2015
- * @since 9th February 2015
+ * @version 13th February 2015
+ * @since 13th February 2015
  */
 
 defined('_JEXEC') or die();
-/** 
- * Fastrack Models Add File Class
- * 
- * @version 12th February 2015
- * @since 9th February 2015
+/**
+ * Fastrack View List Files HTML Class
+ *
+ * @version 13th February 2015
+ * @since 13th February 2015
  */
-class FastrackModelsAddfile extends FastrackModelsDefault {
-/** 
+class FastrackViewsTestHtml extends JViewHtml{
+	protected $results = array();
+	protected $ftfile;
+/**
  * Construct
  * 
- * @version 12th February 2015
- * @since 11th February 2015
- * @return void
+ * @version 13th February 2015
+ * @since 13th February 2015
+ * @return 
  */
-	public function __construct() {
+ 	public function __construct($modelClass, $paths) {
 	
-		$this->ftfile = $this->loadFile();
-		return;
-	}	
+		return parent::__construct($modelClass, $paths);
+	}
+/**
+ * Add Toolbar
+ *
+ * @version 13th February 2015
+ * @since 13th February 2015
+ * return void
+ */
+	protected function addToolbar() {
+
+		return ;
+	}
+/**
+ * Render
+ *
+ * @version 13th February 2015
+ * @since 13th February 2015
+ * return void
+ */
+	public function render() {
+		
+		$this->results = $this->model->execute();
+		$this->ftfile = $this->model->ftfile;
+		JToolBarHelper::title(JText::_('COM_FASTRACK'), 'fastrack');
+	
+		$this->addToolBar();
+ 		return parent::render();
+	}
+	
 }

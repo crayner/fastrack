@@ -17,28 +17,27 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 12th February 2015
- * @since 9th February 2015
+ * @version 13th February 2015
+ * @since 13th February 2015
  */
 
 defined('_JEXEC') or die();
-/** 
- * Fastrack Models Add File Class
- * 
- * @version 12th February 2015
- * @since 9th February 2015
- */
-class FastrackModelsAddfile extends FastrackModelsDefault {
-/** 
- * Construct
- * 
- * @version 12th February 2015
- * @since 11th February 2015
- * @return void
- */
-	public function __construct() {
-	
-		$this->ftfile = $this->loadFile();
-		return;
-	}	
-}
+
+?>
+<h3><?php echo JText::_('COM_FASTRACK_TEST_TITLE'); ?></h3>
+<?php
+if (! empty($this->ftfile)): 
+	foreach ($this->results as $q=>$w) : ?>
+    	<p><?php echo JTEXT::_('COM_FASTRACK_FIELD_'.strtoupper($q).'_LABEL').': '.$this->ftfile->$q.': '.$w; ?></p>
+	<?php endforeach ?>
+<?php endif ?>
+
+<div align="center" style="clear: both">
+	<br>
+    <?php $params = JFactory::getApplication()->input;
+	echo JText::_('COM_FASTRACK_FOOTER').'. Version: '.$params->get('FASTRACK_VERSION');?>
+</div>
+
+<?php
+
+printAnObject($this);

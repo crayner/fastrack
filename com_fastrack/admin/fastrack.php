@@ -35,10 +35,8 @@ $path = JPATH_ADMINISTRATOR.'/components/com_fastrack/fastrack.xml';
 if(file_exists($path)){
 	$manifest = simplexml_load_file($path);
 	$input->set('FASTRACK_VERSION', (string)$manifest->version);
-	$params->set('FASTRACK_VERSION', (string)$manifest->version);
 }else{
 	$input->set('FASTRACK_VERSION', '');
-	$params->set('FASTRACK_VERSION', '');
 }
 
 // Require specific controller if requested

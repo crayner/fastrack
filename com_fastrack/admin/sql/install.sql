@@ -16,3 +16,9 @@ CREATE TABLE IF NOT EXISTS `#__fastrack_files` (
 ALTER TABLE `#__fastrack_files`
   ADD PRIMARY KEY (`id`), 
   ADD UNIQUE KEY `name` (`name`(25));
+
+--
+-- AUTO_INCREMENT for table `j3_fastrack_files`
+--
+ALTER TABLE `#__fastrack_files`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT = 1;

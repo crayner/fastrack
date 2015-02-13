@@ -92,6 +92,5 @@ $ftfile = $this->model->ftfile;
 	<br>
     <?php $params = JFactory::getConfig('com_fastrack');
 	echo JText::_('COM_FASTRACK_FOOTER').'. Version: '.$params->get('FASTRACK_VERSION');
-	printAnObject($this);
 	?>
 </div>

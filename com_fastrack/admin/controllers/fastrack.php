@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 9th February 2015
+ * @version 13th February 2015
  * @since 9th February 2015
  */
 
@@ -27,7 +27,7 @@ class FastrackControllerFastrack extends JControllerBase {
 /**
   * Controller Execute
   *
-  * @version 9th February 2015
+  * @version 13th February 2015
   * @since 9th February 2015
   * @return void
   */
@@ -44,12 +44,23 @@ class FastrackControllerFastrack extends JControllerBase {
 				break;
 			case 'fastrack.apply':
 				$id = FastrackHelper::saveFileDefinition();
-				$input->set('id', $id);
 				$input->set('view', 'addfile');
 				break;
 			case 'fastrack.save':
 				$id = FastrackHelper::saveFileDefinition();
 				$input->set('view', 'default');
+				break;
+			case 'fastrack.save2new':
+				$id = FastrackHelper::saveFileDefinition();
+				$input->set('id', 0);
+				$input->set('view', 'addfile');
+				break;
+			case 'fastrack.save2copy':
+				$input->set('id', 0);
+				$id = FastrackHelper::saveFileDefinition();
+				$input->set('view', 'addfile');
+				break;
+			case 'default':
 				break;
 			default:
 				printAnObject($taskName);

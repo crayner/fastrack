@@ -113,7 +113,7 @@ class FastrackHelper {
 		$record->name = $input->getString('name');
 		$record->path = $input->getString('path');
 		$record->resultPath = $input->getString('resultPath');
-		if ( (int) $record->id === 0)
+		if ( (int) $record->id === 0) 
 			$result = JFactory::getDbo()->insertObject("#__fastrack_files", $record, 'id');
 		else
 			$result = JFactory::getDbo()->updateObject("#__fastrack_files", $record, 'id');

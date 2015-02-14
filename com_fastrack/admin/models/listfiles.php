@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 13th February 2015
  */
 
@@ -25,14 +25,14 @@ defined('_JEXEC') or die();
 /** 
  * Fastrack Models List Files
  * 
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 13th February 2015
  */
 class FastrackModelsListfiles extends FastrackModelsDefault {
 /**
  * Execute
  *
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 13th February 2015
  * @param integer Limit Start
  * @param integer LImit
@@ -40,24 +40,23 @@ class FastrackModelsListfiles extends FastrackModelsDefault {
  */
  	public function execute($limitStart, $limit) {
 		
-		$query = $this->getFileListQuery($limitStart, $limit);
-		return $this->getFileList($query, $limitStart, $limit);
+		return $this->getFileList(NULL, $limitStart, $limit);
 	} 
 /**
  * get File Total
  *
- * @version 13th February 2015
+ * @version 14th February 2015
  * @since 13th February 2015
  * @return integer
  */
  	public function getFileTotal() {
 		
-		return $this->total;
+		return count($this->getFileList(NULL, 0, 10));
 	} 
 /**
- * get File LIst
+ * get File List
  *
- * @version 13th February 2015	
+ * @version 14th February 2015	
  * @since 13th February 2015	
  * @param object JQuery
  * @param integer LimitStart
@@ -66,28 +65,6 @@ class FastrackModelsListfiles extends FastrackModelsDefault {
  */
  	protected function getFileList($query, $limitstart, $limit) {
 	
-		$sql = JFactory::getDbo();
-		$sql->setQuery($query);
-		$result = $sql->loadObjectList();
-		$this->total = $sql->getAffectedRows();
-		return $result ;
-	}
-/**
- * get File List Query
- *
- * @version 13th February 2015	
- * @since 13th February 2015	
- * @param integer LimitStart
- * @param integer limit
- * @return object JDatabaseQuery 
- */
-	protected function getFileListQuery($limitstart, $limit) {
-	
-		$sql = JFactory::getDbo();
-		$query = $sql->getQuery(true);
-		$query->from($sql->quoteName('#__fastrack_files'));
-		$query->select('*');
-		$query->order(array($sql->quoteName('name'). ' ASC'));
-		return $query;
+		return FastrackHelper::getFileList($query, $limitstart, $limit);
 	}
 }

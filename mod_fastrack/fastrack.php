@@ -23,4 +23,6 @@
 
 defined('_JEXEC') or die();
 
-echo '14th February 2015';
+JLoader::import('components.com_fastrack.libraries.helper', JPATH_ADMINISTRATOR);
+
+require( JModuleHelper::getLayoutPath( 'mod_fastrack' ) );

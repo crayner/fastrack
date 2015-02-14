@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>3rd Dec 2014</creationDate>
+	<creationDate>14th Feb 2014</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -10,25 +10,18 @@
 	<authorEmail>info@hillrange.com.au
 	</authorEmail>
 	<authorUrl>fastrack.hillrange.com.au</authorUrl>
-	<version>1.0</version>
+	<version>Beta.0.0.1</version>
 	<description>MOD_FASTRACK_DESCRIPTION</description>
 	<files>
-		<filename module="mod_fastrack">mod_fastrack.php</filename>
+		<filename module="mod_fastrack">fastrack.php</filename>
 		<filename>index.html</filename>
-		<filename>helper.php</filename>
-		<filename>xmlparser.php</filename>
-		<filename>preparation.php</filename>
-		<filename>display.php</filename>
-		<folder>tmpl</folder>
 		<folder>language</folder>
-		<folder>fields</folder>
-		<folder>data</folder>
+		<folder>tmpl</folder>
 	</files>
 	<config>
-		<fields name="params"
-			addfieldpath="/modules/mod_fastrack/fields">
+		<fields name="params" addfieldpath="/administrator/components/mod_fastrack/models/fields">
 			<fieldset name="basic">
-				<field name="filename" type="text" default="" size="80"
+				<field name="filenames" type="fastrack" default="" size="80"
 					label="MOD_FASTRACK_FIELD_FILENAME_LABEL"
 					description="MOD_FASTRACK_FIELD_FILENAME_DESC" />
 				<field name="pageitems" type="text" size="80" default="10"
@@ -94,6 +87,8 @@
 					<content><![CDATA[]]></content>
 					<description>MOD_FASTRACK_FIELD_ENQUIRY_URL_DESC</description>
 				</field>
+				<field name="moduleclass_sfx" type="text"
+						label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL" description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
 			</fieldset>
 		</fields>
 	</config>

@@ -141,6 +141,43 @@ class FastrackHelper {
 		$sql->execute();
 		return ;
 	}
+/**
+ * get File LIst
+ *
+ * @version 13th February 2015	
+ * @since 13th February 2015	
+ * @param object JQuery
+ * @param integer LimitStart
+ * @param integer limit
+ * @return object 
+ */
+ 	static function getFileList($query, $limitstart, $limit) {
+	
+		if (! is_a($query, 'JDatabaseQueryMysqli'))
+			$query = FastrackHelper::getFileListQuery($limitstart, $limit);
+		$sql = JFactory::getDbo();
+		$sql->setQuery($query);
+		$result = $sql->loadObjectList();
+		return $result ;
+	}
+/**
+ * get File List Query
+ *
+ * @version 13th February 2015	
+ * @since 13th February 2015	
+ * @param integer LimitStart
+ * @param integer limit
+ * @return object JDatabaseQuery 
+ */
+	static function getFileListQuery($limitstart, $limit) {
+	
+		$sql = JFactory::getDbo();
+		$query = $sql->getQuery(true);
+		$query->from($sql->quoteName('#__fastrack_files'));
+		$query->select('*');
+		$query->order(array($sql->quoteName('name'). ' ASC'));
+		return $query;
+	}
 }
 
 /**

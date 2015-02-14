@@ -11,10 +11,6 @@
 		GNU/GPL</license>
 	<version>Beta.0.0.1</version>
 	<description>COM_FASTRACK_XML_DESCRIPTION</description>
-	<files folder="site">
-		<filename>index.html</filename>
-		<folder>libraries</folder>
-	</files>
 	<media destination="com_fastrack" folder="media">
 		<filename>index.html</filename>
 		<folder>images</folder>
@@ -34,7 +30,6 @@
 			<schemapath type="mysql">sql/updates/mysql</schemapath>
 		</schemas>
 	</update>
-	<scriptfile>script.php</scriptfile>
 	<administration>
 		<menu link="option=COM_FASTRACK">COM_FASTRACK</menu>
 		<submenu>

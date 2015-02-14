@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 9th February 2015
+ * @version 14th February 2015
  * @since 9th February 2015
  */
 
@@ -25,10 +25,30 @@ defined('_JEXEC') or die();
 /**
  * Fastrack Helper
  *
- * @version 9th February 2015
+ * @version 14th February 2015
  * @since 9th February 2015
  */
 class FastrackHelper {
+/**
+ * Parameters
+ * @var Registry object
+ */
+ 	static $params;
+/**
+ * Conditions
+ * @var Standardobject
+ */
+ 	static $Conditions;
+/**
+ * File Name
+ * @var string
+ */
+ 	static $fileName;
+/**
+ * File Names
+ * @var array
+ */
+ 	static $fileNames;
 /**
  * Get Actions
  *
@@ -66,11 +86,10 @@ class FastrackHelper {
 		if (JFactory::getDocument()->getType() != 'html') {
 			return ;
 		}
-
 		$document = JFactory::getDocument();
 		if (isset($libraries['jquery'])) {
 			JHtml::_('jquery.framework');
-			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/fastrack/ftNoConflict.js');
+			$document->addScript(JPATH_ADMINISTRATOR.'components/com_fastrack/libraries/jquery/fastrack/ftNoConflict.js');
 		}
 
 		if (isset($libraries['jqueryui'])) {
@@ -80,8 +99,8 @@ class FastrackHelper {
 			} else {
 				$libraries['bootstrap'] = true;
 			}
-			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/jquery/themes/'.$theme.'/jquery-ui.custom.css');
-			$document->addScript(JURI::root().'components/com_fastrack/libraries/jquery/ui/jquery-ui.custom.min.js');
+			$document->addStyleSheet(JPATH_ADMINISTRATOR.'components/com_fastrack/libraries/jquery/themes/'.$theme.'/jquery-ui.custom.css');
+			$document->addScript(JPATH_ADMINISTRATOR.'components/com_fastrack/libraries/jquery/ui/jquery-ui.custom.min.js');
 		}
 
 		if (isset($libraries['bootstrap'])) {
@@ -93,8 +112,8 @@ class FastrackHelper {
 		}
 
 		if (isset($libraries['fastrack'])) {
-			$document->addScript(JURI::root().'components/com_fastrack/libraries/fastrack/fastrack.js');
-			$document->addStyleSheet(JURI::root().'components/com_fastrack/libraries/fastrack/fastrack.css');
+			$document->addScript(JPATH_ADMINISTRATOR.'components/com_fastrack/libraries/fastrack/fastrack.js');
+			$document->addStyleSheet(JPATH_ADMINISTRATOR.'components/com_fastrack/libraries/fastrack/fastrack.css');
 		}
 
 	}
@@ -151,7 +170,7 @@ class FastrackHelper {
  * @param integer limit
  * @return object 
  */
- 	static function getFileList($query, $limitstart, $limit) {
+ 	static function getFileList($query = NULL, $limitstart = 0, $limit = 10) {
 	
 		if (! is_a($query, 'JDatabaseQueryMysqli'))
 			$query = FastrackHelper::getFileListQuery($limitstart, $limit);
@@ -177,6 +196,82 @@ class FastrackHelper {
 		$query->select('*');
 		$query->order(array($sql->quoteName('name'). ' ASC'));
 		return $query;
+	}
+/**	
+  * Execute mod_fastrack
+  *
+  * @version 14th February 2015
+  * @since 27th November 2014
+  * @param object mod_fastrack Registry
+  * @return array Machinery
+  */
+	public static function mod_fastrack($params){
+
+		self::loadModFastrackParams($params);
+		self::$Conditions = new stdClass();
+
+		$reader = new xmlParser();
+		$filename = self::fileName();
+		try {
+			$x = file_get_contents($filename);
+		} catch (Exception $e) {
+			sleep ( 2 );
+			if (is_file($filename)) {
+				$x = file_get_contents($filename);
+			} else
+				return array();
+		}
+			
+		$xx = $reader->parseString($x);
+		$xx = $reader->optXml($xx['dealer'][0]['listing']);
+		self::setCondition('TotalAvailable', count($xx));
+		self::setCondition('xx', $xx);
+		return $xx;
+	}
+/**
+ * Load mod Fastrack Params
+ *
+ * @version 27th November 2014
+ * @since 27th November 2014
+ * return void
+ */
+  	private static function loadModFastrackParams($params) {
+
+		self::$params = $params;
+		return ;
+	}
+/**	
+  * return File Name
+  *
+  * @version 1st December 2014
+  * @since 27th November 2014
+  * @return string FileName and Path
+  */
+	public static function fileName(){
+	
+		if (self::$fileName != '')
+			return self::$fileName;
+		$fileNames = self::getFileNames();
+		self::$fileName = reset($fileNames);
+		self::$fileName = self::$fileName->fileName;
+		return self::$fileName;
+	}
+/**	
+  * get File Names
+  *
+  * @version 14th February 2015
+  * @since 14th February 2015
+  * @return array 
+  */
+	public static function getFileNames(){
+	
+		$x = FastrackHelper::getFileList();
+		$result = array();
+		foreach ($x as $w) {
+			$result[$w->id] = $w;
+			$result[$w->id]->fileName = $w->path.$w->name;
+		}
+		return $result;
 	}
 }
 

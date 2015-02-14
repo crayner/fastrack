@@ -23,6 +23,14 @@
 
 defined('_JEXEC') or die();
 
+
 JLoader::import('components.com_fastrack.libraries.helper', JPATH_ADMINISTRATOR);
+JLoader::import('components.com_fastrack.libraries.parser', JPATH_ADMINISTRATOR);
+JLoader::import('modules.mod_fastrack.preparation', JPATH_SITE);
+
+ModFastrackPreparation::execute($params);
+
+$xx = FastrackHelper::getCondition('xx');
+
 
 require( JModuleHelper::getLayoutPath( 'mod_fastrack' ) );

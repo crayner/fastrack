@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 15th February 2015
+ * @version 16th February 2015
  * @since 9th February 2015
  */
 
@@ -44,6 +44,11 @@ class FastrackHelper {
  * @var string
  */
  	static $fileName;
+/**
+ * File Identifier
+ * @var string
+ */
+ 	static $fileID;
 /**
  * File Names
  * @var array
@@ -120,7 +125,7 @@ class FastrackHelper {
 /**
  * Save File Definition
  *
- * @version 14th February 2015
+ * @version 16th February 2015
  * @since 12th February 2015
  * @return integer File Definition ID
  */
@@ -133,6 +138,7 @@ class FastrackHelper {
 		$record->path = $input->getString('path');
 		$record->resultPath = $input->getString('resultPath');
 		$record->imageURL = $input->getString('imageURL');
+		$record->enquiryURL = $input->getString('enquiryURL');
 		if ( (int) $record->id === 0) 
 			$result = JFactory::getDbo()->insertObject("#__fastrack_files", $record, 'id');
 		else
@@ -201,7 +207,7 @@ class FastrackHelper {
 /**	
   * Execute mod_fastrack
   *
-  * @version 14th February 2015
+  * @version 16th February 2015
   * @since 27th November 2014
   * @param object mod_fastrack Registry
   * @return array Machinery
@@ -210,23 +216,33 @@ class FastrackHelper {
 
 		self::loadModFastrackParams($params);
 		self::$Conditions = new stdClass();
-
-		$reader = new xmlParser();
-		$filename = self::fileName();
-		try {
-			$x = file_get_contents($filename);
-		} catch (Exception $e) {
-			sleep ( 2 );
-			if (is_file($filename)) {
+		$fileids = 	self::$params->get('filenames');
+		self::setCondition('FileNames', self::getFileNames());
+		self::setCondition('TotalAvailable', 0);
+		self::setCondition('xx', array());
+		foreach($fileids as $id) {
+			$save = false;
+			$reader = new xmlParser();
+			$filename = self::fileName($id);
+			try {
 				$x = file_get_contents($filename);
-			} else
-				return array();
-		}
+			} catch (Exception $e) {
+				sleep ( 2 );
+				if (is_file($filename)) {
+					$x = file_get_contents($filename);
+				} else
+					$save = true;
+			}
 			
-		$xx = $reader->parseString($x);
-		$xx = $reader->optXml($xx['dealer'][0]['listing']);
-		self::setCondition('TotalAvailable', count($xx));
-		self::setCondition('xx', $xx);
+			$xx = $reader->parseString($x);
+			$xx = $reader->optXml($xx['dealer'][0]['listing']);
+			foreach($xx as $q=>$w) {
+				$xx[$q]['fileid'] = self::getCondition('ftfile')->id;
+			}
+			$xx = array_merge(self::getCondition('xx'), $xx);
+			self::setCondition('TotalAvailable', count($xx));
+			self::setCondition('xx', $xx);
+		}
 		return $xx;
 	}
 /**
@@ -244,17 +260,17 @@ class FastrackHelper {
 /**	
   * return File Name
   *
-  * @version 15th February 2015
+  * @version 16th February 2015
   * @since 27th November 2014
+  * @param integer FileID
   * @return string FileName and Path
   */
-	public static function fileName(){
+	public static function fileName($id){
 	
-		if (self::$fileName != '')
-			return self::$fileName;
 		$fileNames = self::getFileNames();
 		$fileid = self::$params->get('filenames');
-		self::$fileName = $fileNames[$fileid[0]];
+		$files = self::getFileNames();
+		self::$fileName = $fileNames[$id];
 		self::setCondition('ftfile', self::$fileName);
 		self::$fileName = self::$fileName->fileName;
 		return self::$fileName;

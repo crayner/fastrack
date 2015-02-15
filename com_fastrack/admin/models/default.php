@@ -42,7 +42,7 @@ class FastrackModelsDefault extends JModelBase {
 /**
  * Load Fastrack File Object
  *
- * @version 12th February 2015	
+ * @version 16th February 2015	
  * @since 12th February 2015	
  * @return object 
  */
@@ -63,6 +63,8 @@ class FastrackModelsDefault extends JModelBase {
 			$ft->name = '';
 			$ft->path = '';
 			$ft->resultPath = '';
+			$ft->imageURL = '';
+			$ft->enquiryURL = '';
 		}
 		return $ft;
 	}

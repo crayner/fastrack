@@ -1,0 +1,43 @@
+<div id="SaleItems">
+{{warning}}
+<p>Vanderfield currently has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
+{{items}}
+</div>
+
+
+
+
+
+
+<div class="SaleItem">
+	<div class="SaleItemHeader">
+		<li class="MainTitle">{{make}} - {{model}}</li>
+		<li class="PriceTitle">
+			<span class="audgst">{{currency}}</span> {{cost}} <span class="audgst">{{gst}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('{{enquiry}}', '_self')" />
+		</li>
+		<div style="clear:both;"></div>
+	</div> <!-- End of SaleItemHeader -->
+	<div class="Specifications">
+		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
+		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
+		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
+		<p><b>{{config_name}}:</b> {{config_value}}</p>
+		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
+		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
+		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}
+		{{#hours}}<p><b>Hours:</b> {{hours}}</p>{{/hours}}
+		{{#stockref}}<p><b>Stock Ref #:</b> {{stockref}}</p>{{/stockref}}
+		{{#engpower}}<p><b>Eng. Power:</b> {{engpower}}</p>{{/engpower}}
+		{{#status}}<p><b>Status:</b> {{status}}</p>{{/status}}
+		<!-- <p><b>ID:</b> {{id}}</p> -->
+		{{#description}}<p><b>Description:</b> {{description}}</p>{{/description}}
+		{{#miscellaneous}}{{miscellaneous}}{{/miscellaneous}}
+	</div> <!-- End of Specifications -->
+	<div id="FirstImageHolder">
+		<p><img id="firstImage" src='{{firstimage}}' alt='' width="245" /></p>
+        {{#thumbimages}}<div class="SaleThumbs">
+            {{thumbimages}}
+        </div> <!-- End of SaleThumbs -->{{/thumbimages}}
+	</div> <!-- End of FirstImageHolder -->
+</div> <!-- End of SaleItem -->

@@ -7,7 +7,8 @@ CREATE TABLE IF NOT EXISTS `#__fastrack_files` (
   `name` text NOT NULL,
   `path` text NOT NULL,
   `resultPath` text NOT NULL,
-  `imageURL` text NOT NULL
+  `imageURL` text NOT NULL,
+  `enquiryURL` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Fastrack File Definitions';
 
 --

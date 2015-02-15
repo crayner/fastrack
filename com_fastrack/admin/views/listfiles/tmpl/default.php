@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 13th February 2015
+ * @version 16th February 2015
  * @since 13th February 2015
  */
 
@@ -46,6 +46,9 @@ JHtml::_('behavior.tooltip');
 				<?php echo JText::_('COM_FASTRACK_FIELD_IMAGEURL_LABEL'); ?>
 			</th>
 			<th>
+				<?php echo JText::_('COM_FASTRACK_FIELD_ENQUIRYURL_LABEL'); ?>
+			</th>
+			<th>
 				<?php echo JText::_('COM_FASTRACK_TESTFILE'); ?>
 			</th>
 		</tr>
@@ -64,6 +67,7 @@ JHtml::_('behavior.tooltip');
 				<td class="nowrap has-context"><?php echo $item->path ?></td>
 				<td class="nowrap has-context"><?php echo $item->resultPath; ?></td>
 				<td class="nowrap has-context"><?php echo $item->imageURL; ?></td>
+				<td class="nowrap has-context"><?php echo $item->enquiryURL; ?></td>
                 <td class="nowrap has-context"><a href="<?php echo JRoute::_( 'index.php?option=com_fastrack&task=fastrack.test&id='. $item->id ); ?>" title="<?php echo JText::_('JACTION_TEST');?>">
 						Test &amp; Parse
 					</a></td>
@@ -72,7 +76,7 @@ JHtml::_('behavior.tooltip');
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="6">
+			<td colspan="7">
 				<?php echo $this->pagination->getListFooter(); ?>
 				<br/><br/>
 			</td>

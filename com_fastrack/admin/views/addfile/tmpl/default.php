@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 12th February 2015
+ * @version 16th February 2015
  * @since 11th Fenruary 2015
  */
 
@@ -84,6 +84,14 @@ $ftfile = $this->model->ftfile;
 								</div>
 								<div class="controls">
 									<?php echo $this->form->getInput('imageURL'); ?>
+								</div>
+							</div>
+							<div class="control-group">
+								<div class="control-label">
+									<?php echo $this->form->getLabel('enquiryURL'); ?>
+								</div>
+								<div class="controls">
+									<?php echo $this->form->getInput('enquiryURL'); ?>
 								</div>
 							</div>
 						</div>

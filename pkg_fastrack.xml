@@ -10,7 +10,7 @@
 		GNU/GPL</license>
 	<authorEmail>info@hillrange.com.au</authorEmail>
 	<authorUrl>fastrack.hillrange.com.au</authorUrl>
-	<version>Beta.0.0.1</version>
+	<version>0.0.1.Beta</version>
 	<files>
 		<file id="com_fastrack" type="component" client="administrator">com_fastrack.zip</file>
 		<file id="mod_fastrack" type="module" client="site">mod_fastrack.zip</file>

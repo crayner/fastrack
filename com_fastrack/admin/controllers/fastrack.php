@@ -77,6 +77,7 @@ class FastrackControllerFastrack extends JControllerBase {
 				break;
 			case 'fastrack.save2copy':
 				$input->set('id', 0);
+				$input->set('name', 'copy_of_'.$input->getString('name'));
 				$id = FastrackHelper::saveFileDefinition();
 				$input->set('view', 'addfile');
 				break;

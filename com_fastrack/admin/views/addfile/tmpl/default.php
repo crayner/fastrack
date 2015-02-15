@@ -78,6 +78,14 @@ $ftfile = $this->model->ftfile;
 									<?php echo $this->form->getInput('resultPath'); ?>
 								</div>
 							</div>
+							<div class="control-group">
+								<div class="control-label">
+									<?php echo $this->form->getLabel('imageURL'); ?>
+								</div>
+								<div class="controls">
+									<?php echo $this->form->getInput('imageURL'); ?>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

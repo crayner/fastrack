@@ -42,7 +42,10 @@ JHtml::_('behavior.tooltip');
 			<th>
 				<?php echo JText::_('COM_FASTRACK_FIELD_RESULTPATH_LABEL'); ?>
 			</th>
-			<th width="25%">
+			<th>
+				<?php echo JText::_('COM_FASTRACK_FIELD_IMAGEURL_LABEL'); ?>
+			</th>
+			<th>
 				<?php echo JText::_('COM_FASTRACK_TESTFILE'); ?>
 			</th>
 		</tr>
@@ -60,6 +63,7 @@ JHtml::_('behavior.tooltip');
 				</td>
 				<td class="nowrap has-context"><?php echo $item->path ?></td>
 				<td class="nowrap has-context"><?php echo $item->resultPath; ?></td>
+				<td class="nowrap has-context"><?php echo $item->imageURL; ?></td>
                 <td class="nowrap has-context"><a href="<?php echo JRoute::_( 'index.php?option=com_fastrack&task=fastrack.test&id='. $item->id ); ?>" title="<?php echo JText::_('JACTION_TEST');?>">
 						Test &amp; Parse
 					</a></td>
@@ -68,7 +72,7 @@ JHtml::_('behavior.tooltip');
 	</tbody>
 	<tfoot>
 		<tr>
-			<td colspan="5">
+			<td colspan="6">
 				<?php echo $this->pagination->getListFooter(); ?>
 				<br/><br/>
 			</td>

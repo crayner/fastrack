@@ -11,6 +11,9 @@
 		<field name="resultPath" type="text" label="COM_FASTRACK_FIELD_RESULTPATH_LABEL"
 			description="COM_FASTRACK_FIELD_RESULTPATH_DESC" size="100%" class="inputbox"
 			required="true" default="" />
+		<field name="imageURL" type="text" label="COM_FASTRACK_FIELD_IMAGEURL_LABEL"
+			description="COM_FASTRACK_FIELD_IMAGEURL_DESC" size="100%" class="inputbox"
+			required="true" default="" />
 	</fieldset>
 	<fieldset name="acl">
 		<field name="access" type="hidden" label="JFIELD_ACCESS_LABEL"

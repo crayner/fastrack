@@ -41,8 +41,8 @@ class ModFastrackPreparation {
 			self::$params = $params;
 		$input = JFactory::getApplication()->input;
 		$xx = FastrackHelper::mod_fastrack(self::$params);
-		$TotalAvailable = ModFastrackHelper::getCondition('TotalAvailable');
-		$warning = ModFastrackHelper::setCondition('warning', '');
+		$TotalAvailable = FastrackHelper::getCondition('TotalAvailable');
+		$warning = FastrackHelper::setCondition('warning', '');
 		# $_POST Management
 		if (isset($_POST['New_Search']))
 			unset($_POST);
@@ -69,7 +69,7 @@ class ModFastrackPreparation {
 			if (count($DisplayList) > 0) {
 				$xx = $DisplayList;
 			} else {
-				$warning = ModFastrackHelper::setCondition('warning', "<p style='color: red'><strong>Your search for '".implode(',', $search)."' did not find any results.</strong></p>");
+				$warning = FastrackHelper::setCondition('warning', "<p style='color: red'><strong>Your search for '".implode(',', $search)."' did not find any results.</strong></p>");
 			}
 			unset($DisplayList);
 		}
@@ -108,7 +108,7 @@ class ModFastrackPreparation {
 		}
 		
 		
-		ModFastrackHelper::setSearchControls($xx);
+		FastrackHelper::setSearchControls($xx);
 		
 		# Analyse Attributes and convert to items
 		
@@ -198,26 +198,7 @@ class ModFastrackPreparation {
 		}
 		
 		
-		# now build display
-		
-		$order = array();
-		$order[] = "type";
-		$order[] = 'subtype';
-		$order[] = "make";
-		$order[] = "model";
-		$order[] = "config";
-		$order[] = "listingtype";
-		$order[] = "condition";
-		$order[] = "year";
-		$order[] = "hours";
-		$order[] = "stockref";
-		$order[] = "status";
-		$order[] = "engpower";
-		$order[] = "id";
-		$order[] = "description";
-		$order[] = 'price';
-		
-		
+	
 		
 		
 		
@@ -261,10 +242,28 @@ class ModFastrackPreparation {
 			if ($display)
 				$yy[$q] = $xx[$q];
 		}
+		# now build display
 		
-		$xx = ModFastrackHelper::setCondition('xx', ModFastrackHelper::SortResults($yy, array('listprice'=>'DESC', 'make'=>'ASC', 'model' => 'ASC')));
-		$count = ModFastrackHelper::setCondition('count', count($xx));
-		$order = ModFastrackHelper::setCondition('order', $order);
+		$order = array();
+		$order[] = "type";
+		$order[] = 'subtype';
+		$order[] = "make";
+		$order[] = "model";
+		$order[] = "config";
+		$order[] = "listingtype";
+		$order[] = "condition";
+		$order[] = "year";
+		$order[] = "hours";
+		$order[] = "stockref";
+		$order[] = "status";
+		$order[] = "engpower";
+		$order[] = "id";
+		$order[] = "description";
+		$order[] = 'price';
+
+		$xx = FastrackHelper::setCondition('xx', FastrackHelper::SortResults($yy, array('listprice'=>'DESC', 'make'=>'ASC', 'model' => 'ASC')));
+		$count = FastrackHelper::setCondition('count', count($xx));
+		$order = FastrackHelper::setCondition('order', $order);
 		self::startKeyValues($xx);
 	}
 /**

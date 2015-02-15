@@ -30,7 +30,4 @@ JLoader::import('modules.mod_fastrack.preparation', JPATH_SITE);
 
 ModFastrackPreparation::execute($params);
 
-$xx = FastrackHelper::getCondition('xx');
-
-
 require( JModuleHelper::getLayoutPath( 'mod_fastrack' ) );

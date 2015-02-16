@@ -52,7 +52,7 @@ $make = $input->get('make', array(), 'ARRAY');
 		<li><input type="radio" name="type" value="All Types" onclick="TheSearchForm.submit()">
       All Types (<?php echo $TypeTotal; ?>)</li>
 <?php
-echo ModFastrackHelper::buildPagination($xx, 'hidden');
+echo FastrackHelper::buildPagination($xx, 'hidden');
 $m = '';
 $displaysubtype = false;
 foreach ($menu['type'] as $w) {

@@ -30,7 +30,7 @@ class ModFastrackPreparation {
 /**
   * Execute
   *
-  * @version 30th November 2014
+  * @version 16th February 2015
   * @since 26th November 2014
   * @param object Registry
   * @return void
@@ -43,7 +43,8 @@ class ModFastrackPreparation {
 		$xx = FastrackHelper::mod_fastrack(self::$params);
 		$TotalAvailable = FastrackHelper::getCondition('TotalAvailable');
 		$warning = FastrackHelper::setCondition('warning', '');
-		# $_POST Management
+		$pagin = FastrackHelper::getCondition('pagin', array());
+				# $_POST Management
 		if (isset($_POST['New_Search']))
 			unset($_POST);
 		if (isset($_POST['keywords']) AND ! empty($_POST['keywords'])) {
@@ -79,36 +80,38 @@ class ModFastrackPreparation {
 		if (empty($_POST['OldType']) AND isset($_POST['OldType']))
 			unset($_POST['OldType']);
 		if (@$_POST['make'] == "All Makes")
-			unset($_POST['make'], $_POST['startKey'],$_POST['startKeyValues']);
+			unset($_POST['make'], $pagin['startKey'],$pagin['startKeyValues']);
 		if (@$_POST['type'] == "All Types")
-			unset($_POST['type'], $_POST['startKey']);
+			unset($_POST['type'], $pagin['startKey']);
 		if (@$_POST['OldMake'] !== @$_POST['make'] AND isset($_POST['make']))
-			unset($_POST['model'], $_POST['startKey'],$_POST['startKeyValues']);
+			unset($_POST['model'], $pagin['startKey'],$pagin['startKeyValues']);
 		if (@$_POST['OldType'] !== @$_POST['type'])
-			unset($_POST['subtype'], $_POST['startKey'],$_POST['startKeyValues']);
-		if (! empty($_POST)) {
-			if (isset($_POST['startKeyValues'][$_POST['startKey']]))
-				$_POST['startKey'] = $_POST['startKeyValues'][$_POST['startKey']];
-			if ($_POST['startKey'] == $input->get('firstpage'))
-				$_POST['startKey'] = $_POST['startKeyValues'][1];
-			if ($_POST['startKey'] == $input->get('lasttpage'))
-				$_POST['startKey'] = $_POST['startKeyValues'][count($_POST['startKeyValues'])];
-			if ($_POST['startKey'] == $input->get('prevpage')) {
-				$was = intval(array_search($_POST['oldStartKey'], $_POST['startKeyValues'])) - 1;
+			unset($_POST['subtype'], $pagin['startKey'],$pagin['startKeyValues']);
+		if (! empty($pagin)) {
+			if (isset($pagin['startKeyValues'][$pagin['startKey']]))
+				$pagin['startKey'] = $pagin['startKeyValues'][$pagin['startKey']];
+			if ($pagin['startKey'] == $input->get('firstpage'))
+				$pagin['startKey'] = $pagin['startKeyValues'][1];
+			if ($pagin['startKey'] == $input->get('lasttpage'))
+				$pagin['startKey'] = $pagin['startKeyValues'][count($pagin['startKeyValues'])];
+			if ($pagin['startKey'] == $input->get('prevpage')) {
+				$was = intval(array_search($pagin['oldStartKey'], $pagin['startKeyValues'])) - 1;
 				if ($was < 1)
 					$was = 1;
-				$_POST['startKey'] = $_POST['startKeyValues'][$was];
+				$pagin['startKey'] = $pagin['startKeyValues'][$was];
 			}
-			if ($_POST['startKey'] == $input->get('nextpage')) {
-				$was = intval(array_search($_POST['oldStartKey'], $_POST['startKeyValues'])) + 1;
-				if ($was > count($_POST['startKeyValues']))
+			if ($pagin['startKey'] == $input->get('nextpage')) {
+				$was = intval(array_search($pagin['oldStartKey'], $pagin['startKeyValues'])) + 1;
+				if ($was > count($pagin['startKeyValues']))
 					$was--;
-				$_POST['startKey'] = $_POST['startKeyValues'][$was];
+				$pagin['startKey'] = $pagin['startKeyValues'][$was];
 			}
 		}
-		
+
+		$pagin = FastrackHelper::setCondition('pagin', $pagin);
 		
 		FastrackHelper::setSearchControls($xx);
+
 		
 		# Analyse Attributes and convert to items
 		
@@ -264,30 +267,30 @@ class ModFastrackPreparation {
 		$xx = FastrackHelper::setCondition('xx', FastrackHelper::SortResults($yy, array('listprice'=>'DESC', 'make'=>'ASC', 'model' => 'ASC')));
 		$count = FastrackHelper::setCondition('count', count($xx));
 		$order = FastrackHelper::setCondition('order', $order);
-		self::startKeyValues($xx);
 	}
 /**
   * Execute
   *
-  * @version 30th November 2014
+  * @version 16th February 2015
   * @since 26th November 2014
   * @param array Items
   * @retrun array
   */
-	static private function startKeyValues($xx) {
+	static public function startKeyValues($xx) {
 		
-		$_POST['startKeyValues'] = array();
+		$pagin['startKeyValues'] = array();
 		$pageItems = self::$params->get('pageitems');
 		$x = 1;
 		$page = 1;
 		foreach($xx as $w) {
 			if ($x == 1) {
-				$_POST['startKeyValues'][$page++] = $w['id'];
+				$pagin['startKeyValues'][$page++] = $w['id'];
 			}
 			$x++;
 			if ($x >= $pageItems)
 				$x = 1;
 		}
-		return $_POST['startKeyValues'];
+		FastrackHelper::setCondition('startKeyValues', $pagin['startKeyValues']); 
+		return $pagin['startKeyValues'];
  	}
 }

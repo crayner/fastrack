@@ -216,6 +216,9 @@ class FastrackHelper {
 
 		self::loadModFastrackParams($params);
 		self::$Conditions = new stdClass();
+		$input = Jfactory::getApplication()->input;
+		$pagin = $input->post->get('pagin', array(), 'ARRAY');
+		$pagin = self::setCondition('pagin', $pagin );
 		$fileids = 	self::$params->get('filenames');
 		self::setCondition('FileNames', self::getFileNames());
 		self::setCondition('TotalAvailable', 0);
@@ -295,17 +298,20 @@ class FastrackHelper {
 /**	
   * get Condition
   *
-  * @version 27th November 2014
+  * @version 16th February 2015
   * @since 27th November 2014
   * @param string Condition Name
+  * @param mixed Default Value
   * @return mixed Condition Value
   */
-	public static function getCondition($name){
+	public static function getCondition($name, $default = NULL) {
 	
-		return self::$Conditions->$name;
+		if ( isset ( self::$Conditions->$name ) )
+			return self::$Conditions->$name;
+		return self::setCondition( $name, $default );
 	}
 /**	
-  * get Condition
+  * set Condition
   *
   * @version 27th November 2014
   * @since 27th November 2014
@@ -313,7 +319,7 @@ class FastrackHelper {
   * @param mixed Condition Value
   * @return mixed Condition Value
   */
-	public static function setCondition($name, $value){
+	public static function setCondition($name, $value) {
 	
 		self::$Conditions->$name = $value;
 		return self::$Conditions->$name;
@@ -321,37 +327,43 @@ class FastrackHelper {
 /**	
   * set Search Controls
   *
-  * @version 14th February 2015
+  * @version 16th February 2015
   * @since 27th November 2014
   * @param string Condition Name
   * @return mixed ConditionValue
   */
 	public static function setSearchControls($xx){
 
+		$pagin = self::getCondition('pagin', array());
 		$type = array();
 		$make = array();
 		$menu = array();
 		$total = 0;
 		$MakeTotal = 0;
 		$TypeTotal = 0;
-		if (isset($_POST['startKey']) and (isset($_POST['oldStartKey']))) {
-			if ($_POST['startKey'] == '<') {
-				$k = array_search($_POST['oldStartKey'], $_POST['startKeyValues']) - 1;
-				if ( $k < 1 )
-					$k = 1;
-				$_POST['startKey'] = $_POST['startKeyValues'][$k];
+		if (isset($pagin['startKey']) and (isset($pagin['oldStartKey']))) {
+			switch ($pagin['startKey']){
+				case '<':
+					$k = array_search($pagin['oldStartKey'], $pagin['startKeyValues']) - 1;
+					if ( $k < 1 )
+						$k = 1;
+					$pagin['startKey'] = $pagin['startKeyValues'][$k];
+					break;
+				case '>':
+					$k = array_search($pagin['oldStartKey'], $pagin['startKeyValues']) + 1;
+					if ( $k > count($pagin['startKeyValues']) )
+						$k = count($pagin['startKeyValues']);
+					$pagin['startKey'] = $pagin['startKeyValues'][$k];
+					break;
+				case '>>':
+					$pagin['startKey'] = $pagin['startKeyValues'][count($pagin['startKeyValues'])];
+					break;
+				case '<<':
+					$pagin['startKey'] = $pagin['startKeyValues'][1];
+					break;
 			}
-			if ($_POST['startKey'] == '>') {
-				$k = array_search($_POST['oldStartKey'], $_POST['startKeyValues']) + 1;
-				if ( $k > count($_POST['startKeyValues']) )
-					$k = count($_POST['startKeyValues']);
-				$_POST['startKey'] = $_POST['startKeyValues'][$k];
-			}
-			if ($_POST['startKey'] == '<<') 
-				$_POST['startKey'] = $_POST['startKeyValues'][1];
-			if ($_POST['startKey'] == '>>') 
-				$_POST['startKey'] = $_POST['startKeyValues'][count($_POST['startKeyValues'])];
 		}
+		$pagin = self::setCondition('pagin', $pagin);
 		foreach($xx as $q=>$w) {
 			//Limit the Make/model based on type selection
 			if ( isset($_POST['type']) AND empty ($_POST['subtype'])) {
@@ -411,6 +423,7 @@ class FastrackHelper {
 		$total = FastrackHelper::setCondition('total', $total);
 		$MakeTotal = FastrackHelper::setCondition('MakeTotal', $MakeTotal);
 		$TypeTotal = FastrackHelper::setCondition('TypeTotal', $TypeTotal);
+		return ;
 	}
 /**
   * Sort Results
@@ -454,7 +467,7 @@ class FastrackHelper {
 /**
   * Build Pagination Form Elements
   *
-  * @version 1st December 2014
+  * @version 16th February 2015
   * @since 27th November 2014
   * @param array Items
   * @param string Input Element Types
@@ -463,22 +476,22 @@ class FastrackHelper {
   	public static function buildPagination($xx, $inputType = 'submit') {
 	
 
-		$yy = $_POST['startKeyValues'];
+		$pagin = self::getCondition('pagin', array());
+		$yy = ModFastrackPreparation::startKeyValues($xx);
 		$t = '';
 		$m = '';
-		if (empty($_POST['startKey']))
-			$_POST['startKey'] = 0;
-		if ($_POST['startKey'] == 0)
+		if (empty($pagin['startKey']))
+			$pagin['startKey'] = 0;
+		if ($pagin['startKey'] == 0)
 			foreach($xx as $q=>$w) {
-				$_POST['startKey'] = $w['id'];
+				$pagin['startKey'] = $w['id'];
 				break ;
 			}
 		
 		$pagination = '';
 		ob_start(); ?>
 		<div style="text-align: center; clear:both">
-		<p>
-		<input type="hidden" value="<?php echo $_POST['startKey']; ?>" name="oldStartKey" />
+		<p><input type="hidden" name="pagin[oldStartKey]" value="<?php echo $pagin['startKey']; ?>" />
 		<?php
 
 		if (self::$params->get('firstpage', '') == "") {
@@ -491,28 +504,28 @@ class FastrackHelper {
 		}
 		$first = reset($yy);
 		$last = end($yy);
-		$_POST['startKeyValues'] = $yy;
+		$pagin['startKeyValues'] = $yy;
 		$x = 1;
 		foreach ($yy as $q=>$w) {
 			if ($w == $first) {
-				?><input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo self::$params->get('firstpage'); ?>" class="Pagination" /> 
-				<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo self::$params->get('prevpage'); ?>" class="Pagination" />
+				?><input type="<?php echo $inputType; ?>" name="pagin[startKey]" value="<?php echo self::$params->get('firstpage'); ?>" class="Pagination" /> 
+				<input type="<?php echo $inputType; ?>" name="pagin[startKey]" value="<?php echo self::$params->get('prevpage'); ?>" class="Pagination" />
 			
 				<?php	
 			}
 			?>
-			<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo $q; ?>"  <?php 
-				if ($w == $_POST['startKey']) {
+			<input type="<?php echo $inputType; ?>" name="pagin[startKey]" value="<?php echo $q; ?>"  <?php 
+				if ($w == $pagin['startKey']) {
 					?> class="Pagination PaginationChecked " <?php
 				} else { ?>
 				 class="Pagination"
 				<?php }
 			?> />
-			<input type="hidden" name="startKeyValues[<?php echo $q; ?>]" value="<?php echo $w; ?>" />
+			<input type="hidden" name="pagin[startKeyValues][<?php echo $q; ?>]" value="<?php echo $w; ?>" />
 			<?php	
 			if ($w == $last) {
-				?><input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo self::$params->get('nextpage'); ?>" class="Pagination" /> 
-				<input type="<?php echo $inputType; ?>" name="startKey" value="<?php echo self::$params->get('lastpage'); ?>" class="Pagination" /><?php	
+				?><input type="<?php echo $inputType; ?>" name="pagin[startKey]" value="<?php echo self::$params->get('nextpage'); ?>" class="Pagination" /> 
+				<input type="<?php echo $inputType; ?>" name="pagin[startKey]" value="<?php echo self::$params->get('lastpage'); ?>" class="Pagination" /><?php	
 			}
 		}
 		?></p>
@@ -523,7 +536,7 @@ class FastrackHelper {
 		ob_end_clean();
 		if (count($yy) < 2)
 			$pagination = '';
-		self::setCondition('yy', $yy);
+		self::setCondition('pagin', $pagin);
 		return $pagination;
 	}
 /**
@@ -577,22 +590,23 @@ class FastrackHelper {
 /**
  * Print an Object
  *
- * @version 10th November 2014
+ * @version 16th February 2015
  * @since OLD
  * @param mixed The object to be printed
  * @param boolean Stop execution after printing object.
+ * @param boolean Stop execution after printing object.
  * @return void
  */
-	function printAnObject($object, $stop = false) {
+	function printAnObject($object, $stop = false, $full = false) {
 	
 		$caller = debug_backtrace();
 		echo "<pre>\n";
 		echo $caller[0]['line'].': '.$caller[0]['file'];
-		//var_dump($caller);
 		echo "\n</pre>\n";
 		echo "<pre>\n";
 		print_r($object);
-		//var_dump($object);
+		if ($full) 
+			print_r($caller);
 		echo "\n</pre>\n";
 		if ($stop) 
 			trigger_error('Object Print Stop', E_USER_ERROR);

@@ -224,7 +224,11 @@ $ftfile = FastrackHelper::getCondition('ftfile');
 $doc->addStyleDeclaration($params->get('css_contents', $css));
 
 $pagination = FastrackHelper::buildPagination($xx, 'submit', $params);
+
 echo $pagination;
+
+$pagin = FastrackHelper::getCondition('pagin');
+
 
 $ShowCount = $params->get('pageitems', 10);
 if ($count < $params->get('pageitems', 10))
@@ -306,7 +310,7 @@ $DisplayNow = false;
 
 foreach ($xx as $q=>$w) {
 	$ftfile = $fileNames[$w['fileid']];
-	if ($w['id'] == $_POST['startKey'])
+	if ($w['id'] == $pagin['startKey'])
 		$DisplayNow = true;
 	if ($DisplayNow) {
 		$item = new FastrackDisplay();

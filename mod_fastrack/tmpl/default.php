@@ -17,13 +17,15 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 14th February 2015
+ * @version 17th February 2015
  * @since 14th February 2015
  */
 
 defined('_JEXEC') or die();
 
 JLoader::import('modules.mod_fastrack.display', JPATH_SITE);
+
+JLoader::import('modules.mod_fastrack_search.search', JPATH_SITE);
 
 $css = <<<CSS
 /* CSS Document */
@@ -228,6 +230,7 @@ $pagination = FastrackHelper::buildPagination($xx, 'submit', $params);
 echo $pagination;
 
 $pagin = FastrackHelper::getCondition('pagin');
+$control = FastrackHelper::getCondition('control');
 
 
 $ShowCount = $params->get('pageitems', 10);
@@ -270,7 +273,7 @@ $itemTemplate = <<<ooo
 		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
 		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
 		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
-		<p><b>{{config_name}}:</b> {{config_value}}</p>
+		{{#config_name}}<p><b>{{config_name}}:</b> {{config_value}}</p>{{/config_name}}
 		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
 		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
 		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}
@@ -445,7 +448,12 @@ foreach ($xx as $q=>$w) {
 
 <div id="StartFooter">&nbsp;</div>
 
-<?php echo $pagination; ?>
+<?php echo $pagination; 
+
+echo ModFastrackSearch::hiddenSearch();
+?>
+
+
 </form>
 
 <?php
@@ -463,4 +471,3 @@ foreach($fileNames as $ftfile) {
 		}
 	}
 }
-?>

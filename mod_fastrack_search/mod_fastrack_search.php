@@ -17,13 +17,18 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 26th November 2014
+ * @version 17th February 2015
  */
 
 defined('_JEXEC') or die();
 
 
-JLoader::import('modules.mod_fastrack.helper', JPATH_SITE);
-include JPATH_SITE.'/modules/mod_fastrack/preparation.php';
+JLoader::import('components.com_fastrack.libraries.helper', JPATH_ADMINISTRATOR);
+JLoader::import('components.com_fastrack.libraries.parser', JPATH_ADMINISTRATOR);
+
+JLoader::import('modules.mod_fastrack.preparation', JPATH_SITE);
+JLoader::import('modules.mod_fastrack_search.search', JPATH_SITE);
+
+ModFastrackSearch::execute($params);
 
 require( JModuleHelper::getLayoutPath( 'mod_fastrack_search' ) );

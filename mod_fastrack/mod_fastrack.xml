@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>16th Feb 2014</creationDate>
+	<creationDate>17th Feb 2014</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -10,7 +10,7 @@
 	<authorEmail>info@hillrange.com.au
 	</authorEmail>
 	<authorUrl>fastrack.hillrange.com.au</authorUrl>
-	<version>0.0.1.Beta</version>
+	<version>1.0</version>
 	<description>MOD_FASTRACK_DESCRIPTION</description>
 	<files>
 		<filename module="mod_fastrack">mod_fastrack.php</filename>
@@ -41,7 +41,7 @@
 					rows="10" cols="80" filter="raw">
 					<content><![CDATA[<div id="SaleItems">
 {{warning}}
-<p>Vanderfield currently has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
+<p>The data files has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
 {{items}}
 </div>]]></content>
 					<description>MOD_FASTRACK_FIELD_ITEMS_CONTENT_DESC</description>
@@ -49,7 +49,7 @@
 				<field name="item_content" type="textarea2" default="" label="MOD_FASTRACK_FIELD_ITEM_CONTENT_LABEL"
 					rows="10" cols="80" filter="raw">
 					<content><![CDATA[
-
+					
 <div class="SaleItem">
 	<div class="SaleItemHeader">
 		<li class="MainTitle">{{make}} - {{model}}</li>
@@ -63,7 +63,7 @@
 		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
 		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
 		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
-		<p><b>{{config_name}}:</b> {{config_value}}</p>
+		{{#config_name}}<p><b>{{config_name}}:</b> {{config_value}}</p>{{/config_name}}
 		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
 		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
 		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}

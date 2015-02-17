@@ -1,9 +1,8 @@
 <div id="SaleItems">
 {{warning}}
-<p>Vanderfield currently has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
+<p>The data files has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
 {{items}}
 </div>
-
 
 
 
@@ -22,7 +21,7 @@
 		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
 		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
 		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
-		<p><b>{{config_name}}:</b> {{config_value}}</p>
+		{{#config_name}}<p><b>{{config_name}}:</b> {{config_value}}</p>{{/config_name}}
 		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
 		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
 		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}

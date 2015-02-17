@@ -29,7 +29,13 @@ defined('_JEXEC') or die();
 if (! empty($this->ftfile)): 
 	foreach ($this->results as $q=>$w) : 
 		if (isset($this->ftfile->$q)) : ?>
-    		<p><?php echo JTEXT::_('COM_FASTRACK_FIELD_'.strtoupper($q).'_LABEL').': '.$this->ftfile->$q.': '.$w; ?></p>
+    		<p>
+            <?php if ($w == 'Ok') : ?>
+            <img src="<?php echo JURI::base(true);?>/../media/com_fastrack/images/tick.png"  width="20px">
+            <?php else : ?>
+            <img src="<?php echo JURI::base(true);?>/../media/com_fastrack/images/cross.png"  width="20px">
+            <?php endif ?>
+            &nbsp;&nbsp;&nbsp;<?php echo JTEXT::_('COM_FASTRACK_FIELD_'.strtoupper($q).'_LABEL').': '.$this->ftfile->$q.': '.$w; ?></p>
         <?php else : ?>
      		<p><?php echo $w; ?></p>
        <?php endif ?>

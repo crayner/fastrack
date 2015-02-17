@@ -219,6 +219,8 @@ class FastrackHelper {
 		$input = Jfactory::getApplication()->input;
 		$pagin = $input->post->get('pagin', array(), 'ARRAY');
 		$pagin = self::setCondition('pagin', $pagin );
+		$control = $input->post->get('control', array(), 'ARRAY');
+		$control = self::setCondition('control', $control );
 		$fileids = 	self::$params->get('filenames');
 		self::setCondition('FileNames', self::getFileNames());
 		self::setCondition('TotalAvailable', 0);
@@ -335,6 +337,7 @@ class FastrackHelper {
 	public static function setSearchControls($xx){
 
 		$pagin = self::getCondition('pagin', array());
+		$control = self::getCondition('control', array());
 		$type = array();
 		$make = array();
 		$menu = array();
@@ -366,15 +369,15 @@ class FastrackHelper {
 		$pagin = self::setCondition('pagin', $pagin);
 		foreach($xx as $q=>$w) {
 			//Limit the Make/model based on type selection
-			if ( isset($_POST['type']) AND empty ($_POST['subtype'])) {
-				if ($w['type'] == $_POST['type']) {
+			if ( isset($control['type']) AND empty ($control['subtype'])) {
+				if ($w['type'] == $control['type']) {
 					@$menu['make'][] = $w['make']."::".$w['model'];
 					@$make[$w['make']]['count']++;
 					@$make[$w['make']][$w['model']]['count']++;
 					$MakeTotal++;
 				}
-			} elseif ( isset($_POST['type']) AND isset ($_POST['subtype'])) {
-				if ($w['type'] == $_POST['type'] AND $w['subtype'] == $_POST['subtype']) {
+			} elseif ( isset($control['type']) AND isset ($control['subtype'])) {
+				if ($w['type'] == $control['type'] AND $w['subtype'] == $control['subtype']) {
 					@$menu['make'][] = $w['make']."::".$w['model'];
 					@$make[$w['make']]['count']++;
 					@$make[$w['make']][$w['model']]['count']++;
@@ -388,15 +391,15 @@ class FastrackHelper {
 			}
 		
 			//Limit the Type/subtype based on make selection
-			if ( isset($_POST['make']) AND empty ($_POST['model'])) {
-				if ($w['make'] == $_POST['make']) {
+			if ( isset($control['make']) AND empty ($control['model'])) {
+				if ($w['make'] == $control['make']) {
 					@$menu['type'][] = $w['type']."::".$w['subtype'];
 					@$type[$w['type']]['count']++;
 					@$type[$w['type']][$w['subtype']]['count']++;
 					$TypeTotal++;
 				}
-			} elseif ( isset($_POST['make']) AND isset ($_POST['model'])) {
-				if ($w['make'] == $_POST['make'] AND $w['model'] == $_POST['model']) {
+			} elseif ( isset($control['make']) AND isset ($control['model'])) {
+				if ($w['make'] == $control['make'] AND $w['model'] == $control['model']) {
 					@$menu['type'][] = $w['type']."::".$w['subtype'];
 					@$type[$w['type']]['count']++;
 					@$type[$w['type']][$w['subtype']]['count']++;

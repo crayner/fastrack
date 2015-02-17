@@ -53,7 +53,7 @@ class FastrackModelsTest extends FastrackModelsDefault {
 		$results['name'] = 'Ok';
 		$results['path'] = 'Ok';
 		$results['resultPath'] = 'Ok';
-		
+		$results['enquiryURL'] = 'Ok';
 		if (! is_file($this->ftfile->path.$this->ftfile->name))
 			$result['name'] = JText::_('COM_FASTRACK_ERROR_NAME');
 			
@@ -65,6 +65,12 @@ class FastrackModelsTest extends FastrackModelsDefault {
 			if (! @mkdir($this->ftfile->resultPath))
 				$result['resultPath'] = JText::_('COM_FASTRACK_ERROR_RESULTPATH');
 		}
+		if (strtolower(substr($this->ftfile->enquiryURL, 0, 4)) == 'http')
+			$file_headers = @get_headers( $this->ftfile->enquiryURL );
+		else 
+			$file_headers = @get_headers( JUri::root().$this->ftfile->enquiryURL );
+		if ($file_headers[0] != "HTTP/1.1 200 OK")
+			$results['enquiryURL'] = $file_headers[0].' '.JText::_('COM_FASTRACK_ERROR_ENQUIRYURL');
 		
 		$this->config = $this->getConfig();
 	
@@ -81,6 +87,9 @@ class FastrackModelsTest extends FastrackModelsDefault {
 		$this->parse->TotalAvailable = count($xx);		
 		$this->parse->xx = $xx;
 		$results['parserTotal'] = sprintf(JText::_('COM_FASTRACK_PARSERTOTAL_MESSAGE'), $this->ftfile->name, $this->parse->TotalAvailable);
+
+
+
 		return $results;
 	} 
 /**

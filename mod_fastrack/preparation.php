@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 30th November 2014
+ * @version 17th February 2015
  * @since 26th November 2014
  */
 
@@ -30,7 +30,7 @@ class ModFastrackPreparation {
 /**
   * Execute
   *
-  * @version 16th February 2015
+  * @version 17th February 2015
   * @since 26th November 2014
   * @param object Registry
   * @return void
@@ -44,14 +44,18 @@ class ModFastrackPreparation {
 		$TotalAvailable = FastrackHelper::getCondition('TotalAvailable');
 		$warning = FastrackHelper::setCondition('warning', '');
 		$pagin = FastrackHelper::getCondition('pagin', array());
-				# $_POST Management
-		if (isset($_POST['New_Search']))
-			unset($_POST);
-		if (isset($_POST['keywords']) AND ! empty($_POST['keywords'])) {
-			$search = explode(',', strtoupper($_POST['keywords']));
+		$control = FastrackHelper::getCondition('control', array());
+		if (isset($control['NewSearch']))  {
+			$control = FastrackHelper::setCondition('control', array());
+			$pagin = FastrackHelper::setCondition('pagin', array());
+		}
+		if (isset($control['keywords']) AND ! empty($control['keywords'])) {
+			$search = explode(',', strtoupper($control['keywords']));
 			foreach ($search as $q=>$w)
 				$search[$q] = trim($w);
-			unset($_POST);
+			$control = FastrackHelper::setCondition('control', array());
+			$control['keywords'] = $search;
+			$pagin = FastrackHelper::setCondition('pagin', array());
 			$DisplayList = array();
 			foreach ($xx as $q=>$w) {
 				$test = strtoupper(serialize($w));
@@ -75,18 +79,18 @@ class ModFastrackPreparation {
 			unset($DisplayList);
 		}
 		
-		if (empty($_POST['OldMake']) AND isset($_POST['OldMake']))
-			unset($_POST['OldMake']);
-		if (empty($_POST['OldType']) AND isset($_POST['OldType']))
-			unset($_POST['OldType']);
-		if (@$_POST['make'] == "All Makes")
-			unset($_POST['make'], $pagin['startKey'],$pagin['startKeyValues']);
-		if (@$_POST['type'] == "All Types")
-			unset($_POST['type'], $pagin['startKey']);
-		if (@$_POST['OldMake'] !== @$_POST['make'] AND isset($_POST['make']))
-			unset($_POST['model'], $pagin['startKey'],$pagin['startKeyValues']);
-		if (@$_POST['OldType'] !== @$_POST['type'])
-			unset($_POST['subtype'], $pagin['startKey'],$pagin['startKeyValues']);
+		if (empty($control['OldMake']) AND isset($control['OldMake']))
+			unset($control['OldMake']);
+		if (empty($control['OldType']) AND isset($control['OldType']))
+			unset($control['OldType']);
+		if (@$control['make'] == "All Makes")
+			unset($control['make'], $pagin);
+		if (@$control['type'] == "All Types")
+			unset($control['type'], $pagin);
+		if (@$control['OldMake'] !== @$control['make'] AND isset($control['make']))
+			unset($control['model'], $pagin);
+		if (@$control['OldType'] !== @$control['type'])
+			unset($control['subtype'], $pagin);
 		if (! empty($pagin)) {
 			if (isset($pagin['startKeyValues'][$pagin['startKey']]))
 				$pagin['startKey'] = $pagin['startKeyValues'][$pagin['startKey']];
@@ -107,10 +111,15 @@ class ModFastrackPreparation {
 				$pagin['startKey'] = $pagin['startKeyValues'][$was];
 			}
 		}
-
+		if (! isset($pagin))
+			$pagin = array();
 		$pagin = FastrackHelper::setCondition('pagin', $pagin);
+		$control = FastrackHelper::setCondition('control', $control);
 		
 		FastrackHelper::setSearchControls($xx);
+
+		$pagin = FastrackHelper::getCondition('pagin', $pagin);
+		$control = FastrackHelper::getCondition('control', $control);
 
 		
 		# Analyse Attributes and convert to items
@@ -207,37 +216,36 @@ class ModFastrackPreparation {
 		
 		
 		$yy = array();
-		
 		foreach ($xx as $q=>$w) {
 			$display = false;
-			if (!isset($_POST['make']) AND !isset($_POST['type'])) 
+			if (!isset($control['make']) AND !isset($control['type'])) 
 				$display = true;
-			elseif (isset($_POST['make']) AND !isset($_POST['type'])) {
-				if (isset($_POST['model'])) {
-					if ($w['make'] == $_POST['make'] AND $w['model'] == $_POST['model'])
+			elseif (isset($control['make']) AND !isset($control['type'])) {
+				if (isset($control['model'])) {
+					if ($w['make'] == $control['make'] AND $w['model'] == $control['model'])
 						$display = true;
 				} else {
-					if ($w['make'] == $_POST['make'])
+					if ($w['make'] == $control['make'])
 						$display = true;
 				}
 					
-			} elseif (!isset($_POST['make']) AND isset($_POST['type'])) {
-				if (isset($_POST['subtype'])) {
-					if ($w['type'] == $_POST['type'] AND $w['subtype'] == $_POST['subtype'])
+			} elseif (!isset($control['make']) AND isset($control['type'])) {
+				if (isset($control['subtype'])) {
+					if ($w['type'] == $control['type'] AND $w['subtype'] == $control['subtype'])
 						$display = true;
 				} else {
-					if ($w['type'] == $_POST['type'])
+					if ($w['type'] == $control['type'])
 						$display = true;
 				}
 			} else {
 				$x = 0;
-				if($_POST['make'] == $w['make'] )
+				if($control['make'] == $w['make'] )
 					$x++;
-				if( @$_POST['model'] == $w['model'] OR !isset( $_POST['model'] ) )
+				if( @$control['model'] == $w['model'] OR !isset( $control['model'] ) )
 					$x++;
-				if($_POST['type'] == $w['type'] )
+				if($control['type'] == $w['type'] )
 					$x++;
-				if( @$_POST['subtype'] == $w['subtype'] OR !isset( $_POST['subtype'] ) )
+				if( @$control['subtype'] == $w['subtype'] OR !isset( $control['subtype'] ) )
 					$x++;
 				if ($x == 4)
 					$display = true;
@@ -265,8 +273,19 @@ class ModFastrackPreparation {
 		$order[] = 'price';
 
 		$xx = FastrackHelper::setCondition('xx', FastrackHelper::SortResults($yy, array('listprice'=>'DESC', 'make'=>'ASC', 'model' => 'ASC')));
+
+		$pagin = FastrackHelper::setCondition('pagin', $pagin);
+		$control = FastrackHelper::setCondition('control', $control);
+		
+		FastrackHelper::setSearchControls($xx);
+
+		$pagin = FastrackHelper::getCondition('pagin', $pagin);
+		$control = FastrackHelper::getCondition('control', $control);
+
+
 		$count = FastrackHelper::setCondition('count', count($xx));
 		$order = FastrackHelper::setCondition('order', $order);
+		return ;
 	}
 /**
   * Execute
@@ -293,4 +312,46 @@ class ModFastrackPreparation {
 		FastrackHelper::setCondition('startKeyValues', $pagin['startKeyValues']); 
 		return $pagin['startKeyValues'];
  	}
+/**
+  * Hidden Pagination Controls
+  *
+  * @version 17th February 2015
+  * @since 17th February 2015
+  * @retrun string
+  */
+	static public function hiddenPagin() {
+		
+		return '';
+		$pagin = FastrackHelper::getCondition('pagin', array());
+		return ModFastrackPreparation::hiddenPaginInput($pagin, 'pagin');
+	}
+/**
+  * Hidden Pagination Controls
+  *
+  * @version 17th February 2015
+  * @since 17th February 2015
+  * @retrun string
+  */
+	static public function hiddenPaginInput($data, $name) {
+		
+		if (! is_array($data))
+			return '';
+		$result = '';
+		foreach($data as $q=>$w) {
+			if (is_array($w))
+				$result .= ModFastrackPreparation::hiddenPaginInput($w, $name.'['.$q.']');
+			else {
+				$p = $q;
+				switch ($p) {
+					case 'oldStartKey':
+						break;
+					case 'startKey':
+						$p = 'oldStartKey';
+					default:
+						$result .= '<input type="hidden" name="'.$name.'['.$p.']'.'" value="'.$w.'" />'."\n";
+				}
+			}
+		}
+		return $result;
+	}
 }

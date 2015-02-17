@@ -171,4 +171,19 @@ class FastrackDisplay {
 		}
 		return ;
 	}
+/**
+ * set Sub Attribute
+ *
+ * @version 17th February 2015
+ * @since 17th February 2015
+ * @return void
+ */
+ 	public function setSubAttribute($name, $parent = NULL) {
+	
+		if ($parent === NULL)
+			$parent = array();
+		else
+			$parent = explode('.', $parent);
+	printAnObject($parent, true);
+	}
 }

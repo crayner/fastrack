@@ -372,21 +372,21 @@ class FastrackHelper {
 			if ( isset($control['type']) AND empty ($control['subtype'])) {
 				if ($w['type'] == $control['type']) {
 					@$menu['make'][] = $w['make']."::".$w['model'];
-					@$make[$w['make']]['count']++;
-					@$make[$w['make']][$w['model']]['count']++;
+					@$make[FastrackHelper::createSafeKey($w['make'])]['count']++;
+					@$make[FastrackHelper::createSafeKey($w['make'])][FastrackHelper::createSafeKey($w['model'])]['count']++;
 					$MakeTotal++;
 				}
 			} elseif ( isset($control['type']) AND isset ($control['subtype'])) {
 				if ($w['type'] == $control['type'] AND $w['subtype'] == $control['subtype']) {
 					@$menu['make'][] = $w['make']."::".$w['model'];
-					@$make[$w['make']]['count']++;
-					@$make[$w['make']][$w['model']]['count']++;
+					@$make[FastrackHelper::createSafeKey($w['make'])]['count']++;
+					@$make[FastrackHelper::createSafeKey($w['make'])][FastrackHelper::createSafeKey($w['model'])]['count']++;
 					$MakeTotal++;
 				}
 			} else {
 				@$menu['make'][] = $w['make']."::".$w['model'];
-				@$make[$w['make']]['count']++;
-				@$make[$w['make']][$w['model']]['count']++;
+				@$make[FastrackHelper::createSafeKey($w['make'])]['count']++;
+				@$make[FastrackHelper::createSafeKey($w['make'])][FastrackHelper::createSafeKey($w['model'])]['count']++;
 				$MakeTotal++;
 			}
 		
@@ -394,26 +394,26 @@ class FastrackHelper {
 			if ( isset($control['make']) AND empty ($control['model'])) {
 				if ($w['make'] == $control['make']) {
 					@$menu['type'][] = $w['type']."::".$w['subtype'];
-					@$type[$w['type']]['count']++;
-					@$type[$w['type']][$w['subtype']]['count']++;
+					@$type[FastrackHelper::createSafeKey($w['type'])]['count']++;
+					@$type[FastrackHelper::createSafeKey($w['type'])][FastrackHelper::createSafeKey($w['subtype'])]['count']++;
 					$TypeTotal++;
 				}
 			} elseif ( isset($control['make']) AND isset ($control['model'])) {
 				if ($w['make'] == $control['make'] AND $w['model'] == $control['model']) {
 					@$menu['type'][] = $w['type']."::".$w['subtype'];
-					@$type[$w['type']]['count']++;
-					@$type[$w['type']][$w['subtype']]['count']++;
+					@$type[FastrackHelper::createSafeKey($w['type'])]['count']++;
+					@$type[FastrackHelper::createSafeKey($w['type'])][FastrackHelper::createSafeKey($w['subtype'])]['count']++;
 					$TypeTotal++;
 				}
 			} else {
 				@$menu['type'][] = $w['type']."::".$w['subtype'];
-				@$type[$w['type']]['count']++;
-				@$type[$w['type']][$w['subtype']]['count']++;
+				@$type[FastrackHelper::createSafeKey($w['type'])]['count']++;
+				@$type[FastrackHelper::createSafeKey($w['type'])][FastrackHelper::createSafeKey($w['subtype'])]['count']++;
 				$TypeTotal++;
 			}
 		
 			if (! isset($type[$w['type']]['image']))
-				@$type[$w['type']]['image'] = $image;
+				@$type[FastrackHelper::createSafeKey($w['type'])]['image'] = $image;
 			$total++;
 		}
 		$menu['make'] = array_unique($menu['make']);
@@ -587,6 +587,18 @@ class FastrackHelper {
 			}
 		} while ($ok);
 		return $w;
+	}
+/**
+ * create Safe Key
+ *
+ * @version 17th February 2015
+ * @since 17th February 2015
+ * @param string Key
+ * @return string Key
+ */
+	static public function createSafeKey($key) {
+	
+		return strtolower('fts'.str_replace(array(' ', "\n", "\r", ',', '.'), '', trim($key)).'FTS');
 	}
 }
 

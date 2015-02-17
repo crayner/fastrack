@@ -1,0 +1,116 @@
+<div id="ProductMenu">
+<p style="margin-bottom: 5px;">Keyword Search: Separate by commas:</p>
+<div>
+<form name="TheSearchForm" id="TheSearchForm" method="post">
+
+<p><input type="text" name="control[keywords]" size="10" maxlength="75" style="width: 80%" value="{{keywords}}" />
+<input class="searchbutton" type="submit" value="Search Now" name="control[Search]"  />
+<input type="submit" value="&nbsp;Refresh Display&nbsp;"  />
+<input type="submit" value="&nbsp;New Search&nbsp;" name="control[NewSearch]" /></p>
+{{#ProductTypes}}
+	<p>Type/SubType</p>
+		<ul>
+		<li><input type="radio" name="control[type]" value="All Types" onclick="TheSearchForm.submit()">
+        
+{{/ProductTypes}}
+		
+      All Types (55)</li>
+<li><input type="radio" name="control[type]" value="Harvester/Header"  onclick="TheSearchForm.submit()()">
+      Harvester/Header (23)</li>
+<li><input type="radio" name="control[type]" value="Lawn Equipment"  onclick="TheSearchForm.submit()()">
+      Lawn Equipment (1)</li>
+<li><input type="radio" name="control[type]" value="Seeding/Planting Equip"  onclick="TheSearchForm.submit()()">
+      Seeding/Planting Equip (2)</li>
+<li><input type="radio" name="control[type]" value="Sprayer"  onclick="TheSearchForm.submit()()">
+      Sprayer (4)</li>
+<li><input type="radio" name="control[type]" value="Tractor"  onclick="TheSearchForm.submit()()">
+      Tractor (25)</li>
+</ul>
+
+
+
+<p>Make/Model</p>
+<ul>
+		<li><input type="radio" name="control[make]" value="All Makes" onclick="TheSearchForm.submit()">
+      All Makes (55)</li>
+        <li>
+      			<input type="radio" name="control[make]" value="John Deere"checked onclick="TheSearchForm.submit()()">
+      John Deere (55)
+       <ul>
+             <li><input type="radio" name="control[model]" value="1700"  onclick="TheSearchForm.submit()()" />
+	  1700 (1)</li>
+       <li><input type="radio" name="control[model]" value="1720"  onclick="TheSearchForm.submit()()" />
+	  1720 (1)</li>
+       <li><input type="radio" name="control[model]" value="4320"  onclick="TheSearchForm.submit()()" />
+	  4320 (1)</li>
+       <li><input type="radio" name="control[model]" value="4450"  onclick="TheSearchForm.submit()()" />
+	  4450 (1)</li>
+       <li><input type="radio" name="control[model]" value="4930"  onclick="TheSearchForm.submit()()" />
+	  4930 (3)</li>
+       <li><input type="radio" name="control[model]" value="4940"  onclick="TheSearchForm.submit()()" />
+	  4940 (1)</li>
+       <li><input type="radio" name="control[model]" value="6210"  onclick="TheSearchForm.submit()()" />
+	  6210 (1)</li>
+       <li><input type="radio" name="control[model]" value="6320"  onclick="TheSearchForm.submit()()" />
+	  6320 (1)</li>
+       <li><input type="radio" name="control[model]" value="6330"  onclick="TheSearchForm.submit()()" />
+	  6330 (2)</li>
+       <li><input type="radio" name="control[model]" value="6420"  onclick="TheSearchForm.submit()()" />
+	  6420 (1)</li>
+       <li><input type="radio" name="control[model]" value="6430"  onclick="TheSearchForm.submit()()" />
+	  6430 (1)</li>
+       <li><input type="radio" name="control[model]" value="6930"  onclick="TheSearchForm.submit()()" />
+	  6930 (2)</li>
+       <li><input type="radio" name="control[model]" value="6930 Premium"  onclick="TheSearchForm.submit()()" />
+	  6930 Premium (1)</li>
+       <li><input type="radio" name="control[model]" value="7200"  onclick="TheSearchForm.submit()()" />
+	  7200 (1)</li>
+       <li><input type="radio" name="control[model]" value="7760"  onclick="TheSearchForm.submit()()" />
+	  7760 (3)</li>
+       <li><input type="radio" name="control[model]" value="8300"  onclick="TheSearchForm.submit()()" />
+	  8300 (1)</li>
+       <li><input type="radio" name="control[model]" value="8310"  onclick="TheSearchForm.submit()()" />
+	  8310 (1)</li>
+       <li><input type="radio" name="control[model]" value="8310R"  onclick="TheSearchForm.submit()()" />
+	  8310R (1)</li>
+       <li><input type="radio" name="control[model]" value="8345RT"  onclick="TheSearchForm.submit()()" />
+	  8345RT (1)</li>
+       <li><input type="radio" name="control[model]" value="8430"  onclick="TheSearchForm.submit()()" />
+	  8430 (1)</li>
+       <li><input type="radio" name="control[model]" value="8430T"  onclick="TheSearchForm.submit()()" />
+	  8430T (1)</li>
+       <li><input type="radio" name="control[model]" value="8530"  onclick="TheSearchForm.submit()()" />
+	  8530 (5)</li>
+       <li><input type="radio" name="control[model]" value="9400"  onclick="TheSearchForm.submit()()" />
+	  9400 (1)</li>
+       <li><input type="radio" name="control[model]" value="9530T"  onclick="TheSearchForm.submit()()" />
+	  9530T (1)</li>
+       <li><input type="radio" name="control[model]" value="9650"  onclick="TheSearchForm.submit()()" />
+	  9650 (1)</li>
+       <li><input type="radio" name="control[model]" value="9660 STS"  onclick="TheSearchForm.submit()()" />
+	  9660 STS (1)</li>
+       <li><input type="radio" name="control[model]" value="9750"  onclick="TheSearchForm.submit()()" />
+	  9750 (2)</li>
+       <li><input type="radio" name="control[model]" value="9760"  onclick="TheSearchForm.submit()()" />
+	  9760 (3)</li>
+       <li><input type="radio" name="control[model]" value="9760STS"  onclick="TheSearchForm.submit()()" />
+	  9760STS (1)</li>
+       <li><input type="radio" name="control[model]" value="9770 STS"  onclick="TheSearchForm.submit()()" />
+	  9770 STS (6)</li>
+       <li><input type="radio" name="control[model]" value="9860 STS"  onclick="TheSearchForm.submit()()" />
+	  9860 STS (2)</li>
+       <li><input type="radio" name="control[model]" value="9870 STS"  onclick="TheSearchForm.submit()()" />
+	  9870 STS (1)</li>
+       <li><input type="radio" name="control[model]" value="997"  onclick="TheSearchForm.submit()()" />
+	  997 (1)</li>
+       <li><input type="radio" name="control[model]" value="9996"  onclick="TheSearchForm.submit()()" />
+	  9996 (1)</li>
+       <li><input type="radio" name="control[model]" value="S670"  onclick="TheSearchForm.submit()()" />
+	  S670 (2)</li>
+       </ul>
+    </li>
+    </ul>
+<input type="hidden" value="John Deere" name="control[OldMake]">
+<input type="hidden" value="" name="control[OldType]">
+ </form>
+</div>

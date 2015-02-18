@@ -1,0 +1,19 @@
+<div id="ProductMenu">
+    <p style="margin-bottom: 5px;">Keyword Search: Separate by commas:</p>
+    <div>
+    
+    
+        <p><input type="text" name="control[keywords]" size="10" maxlength="75" style="width: 80%" value="{{keywords}}" />
+        <input class="searchbutton" type="submit" value="Search Now" name="control[Search]"  />
+        <input type="submit" value="&nbsp;Refresh Display&nbsp;"  />
+        <input type="submit" value="&nbsp;New Search&nbsp;" name="control[NewSearch]" /></p>
+        
+        {{ProductTypes}}
+        
+        {{ProductMakes}}
+        <input type="hidden" value="{{make}}" name="control[OldMake]">
+        <input type="hidden" value="{{type}}" name="control[OldType]">
+        {{pagination}}
+
+	</div>
+</div>

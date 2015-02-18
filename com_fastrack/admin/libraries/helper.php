@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 16th February 2015
+ * @version 18th February 2015
  * @since 9th February 2015
  */
 
@@ -25,7 +25,7 @@ defined('_JEXEC') or die();
 /**
  * Fastrack Helper
  *
- * @version 14th February 2015
+ * @version 18th February 2015
  * @since 9th February 2015
  */
 class FastrackHelper {
@@ -372,21 +372,21 @@ class FastrackHelper {
 			if ( isset($control['type']) AND empty ($control['subtype'])) {
 				if ($w['type'] == $control['type']) {
 					@$menu['make'][] = $w['make']."::".$w['model'];
-					@$make[FastrackHelper::createSafeKey($w['make'])]['count']++;
-					@$make[FastrackHelper::createSafeKey($w['make'])][FastrackHelper::createSafeKey($w['model'])]['count']++;
+					@$make[FastrackHelper::getSafeKey($w['make'])]['count']++;
+					@$make[FastrackHelper::getSafeKey($w['make'])][FastrackHelper::getSafeKey($w['model'])]['count']++;
 					$MakeTotal++;
 				}
 			} elseif ( isset($control['type']) AND isset ($control['subtype'])) {
 				if ($w['type'] == $control['type'] AND $w['subtype'] == $control['subtype']) {
 					@$menu['make'][] = $w['make']."::".$w['model'];
-					@$make[FastrackHelper::createSafeKey($w['make'])]['count']++;
-					@$make[FastrackHelper::createSafeKey($w['make'])][FastrackHelper::createSafeKey($w['model'])]['count']++;
+					@$make[FastrackHelper::getSafeKey($w['make'])]['count']++;
+					@$make[FastrackHelper::getSafeKey($w['make'])][FastrackHelper::getSafeKey($w['model'])]['count']++;
 					$MakeTotal++;
 				}
 			} else {
 				@$menu['make'][] = $w['make']."::".$w['model'];
-				@$make[FastrackHelper::createSafeKey($w['make'])]['count']++;
-				@$make[FastrackHelper::createSafeKey($w['make'])][FastrackHelper::createSafeKey($w['model'])]['count']++;
+				@$make[FastrackHelper::getSafeKey($w['make'])]['count']++;
+				@$make[FastrackHelper::getSafeKey($w['make'])][FastrackHelper::getSafeKey($w['model'])]['count']++;
 				$MakeTotal++;
 			}
 		
@@ -394,26 +394,26 @@ class FastrackHelper {
 			if ( isset($control['make']) AND empty ($control['model'])) {
 				if ($w['make'] == $control['make']) {
 					@$menu['type'][] = $w['type']."::".$w['subtype'];
-					@$type[FastrackHelper::createSafeKey($w['type'])]['count']++;
-					@$type[FastrackHelper::createSafeKey($w['type'])][FastrackHelper::createSafeKey($w['subtype'])]['count']++;
+					@$type[FastrackHelper::getSafeKey($w['type'])]['count']++;
+					@$type[FastrackHelper::getSafeKey($w['type'])][FastrackHelper::getSafeKey($w['subtype'])]['count']++;
 					$TypeTotal++;
 				}
 			} elseif ( isset($control['make']) AND isset ($control['model'])) {
 				if ($w['make'] == $control['make'] AND $w['model'] == $control['model']) {
 					@$menu['type'][] = $w['type']."::".$w['subtype'];
-					@$type[FastrackHelper::createSafeKey($w['type'])]['count']++;
-					@$type[FastrackHelper::createSafeKey($w['type'])][FastrackHelper::createSafeKey($w['subtype'])]['count']++;
+					@$type[FastrackHelper::getSafeKey($w['type'])]['count']++;
+					@$type[FastrackHelper::getSafeKey($w['type'])][FastrackHelper::getSafeKey($w['subtype'])]['count']++;
 					$TypeTotal++;
 				}
 			} else {
 				@$menu['type'][] = $w['type']."::".$w['subtype'];
-				@$type[FastrackHelper::createSafeKey($w['type'])]['count']++;
-				@$type[FastrackHelper::createSafeKey($w['type'])][FastrackHelper::createSafeKey($w['subtype'])]['count']++;
+				@$type[FastrackHelper::getSafeKey($w['type'])]['count']++;
+				@$type[FastrackHelper::getSafeKey($w['type'])][FastrackHelper::getSafeKey($w['subtype'])]['count']++;
 				$TypeTotal++;
 			}
 		
 			if (! isset($type[$w['type']]['image']))
-				@$type[FastrackHelper::createSafeKey($w['type'])]['image'] = $image;
+				@$type[$w['type']]['image'] = $image;
 			$total++;
 		}
 		$menu['make'] = array_unique($menu['make']);
@@ -589,16 +589,16 @@ class FastrackHelper {
 		return $w;
 	}
 /**
- * create Safe Key
+ * get Safe Key
  *
- * @version 17th February 2015
- * @since 17th February 2015
- * @param string Key
- * @return string Key
+ * @version 18th February 2015
+ * @since 18th February 2015
+ * @param string un-safe Key
+ * @return string Safe Key
  */
-	static public function createSafeKey($key) {
-	
-		return strtolower('fts'.str_replace(array(' ', "\n", "\r", ',', '.'), '', trim($key)).'FTS');
+ 	static public function getSafeKey($key) {
+		
+		return strtolower('_'.trim(str_replace(array(' ', '&', "\n", "\r", "\t", '.', ',', '/'), '', $key)));
 	}
 }
 

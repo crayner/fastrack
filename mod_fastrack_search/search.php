@@ -83,7 +83,8 @@ class ModFastrackSearch {
 					case 'make':
 						$result .= '<input type="hidden" name="control[OldMake]" value="'.$w.'" />'."\n";
 					case 'keywords':
-						$result .= '<input type="hidden" name="control[OldMake]" value="'.rtrim(implode(',', $w), ',').'" />'."\n";
+						if (is_array($w))
+							$result .= '<input type="hidden" name="control[OldMake]" value="'.rtrim(implode(',', $w), ',').'" />'."\n";
 						break;
 					default:
 					$result .= '<input type="hidden" name="control['.$q.']" value="'.$w.'" />'."\n";

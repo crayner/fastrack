@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK_SEARCH</name>
 	<author>Hill Range Services</author>
-	<creationDate>17th Feb 2015</creationDate>
+	<creationDate>18th Feb 2015</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -20,11 +20,14 @@
 		<folder>language</folder>
 	</files>
 	<config>
-		<fields name="params" addfieldpath="/administrator/components/com_fastrack/models/fields">
+		<fields name="params"
+			addfieldpath="/modules/com_fastrack/fields">
 			<fieldset name="basic">
-				<field name="css_search" type="textarea2" default="" label="MOD_FASTRACK_SEARCH_FIELD_CSS_CONTENT_LABEL"
+				<field name="css_search" type="textarea2" default="" label="MOD_FASTRACK_SEARCH_FIELD_CSS_LABEL"
 					rows="10" cols="80" filter="raw">
-					<content><![CDATA[/* CSS Document */
+					<content><![CDATA[
+
+/* CSS Document */
 #ProductMenu {
 	background: #dddddd;
 	border-radius: 20px;
@@ -65,7 +68,7 @@ margin-top: 2px;
 }
 					
 ]]></content>
-					<description>MOD_FASTRACK_SEARCH_FIELD_CSS_CONTENT_DESC</description>
+					<description>MOD_FASTRACK_SEARCH_FIELD_CSS_DESC</description>
 				</field>
 			</fieldset>
 		</fields>

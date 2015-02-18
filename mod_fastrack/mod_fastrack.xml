@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>17th Feb 2014</creationDate>
+	<creationDate>18th Feb 2014</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -16,7 +16,6 @@
 		<filename module="mod_fastrack">mod_fastrack.php</filename>
 		<filename>index.html</filename>
 		<filename>preparation.php</filename>
-		<filename>display.php</filename>
 		<folder>language</folder>
 		<folder>tmpl</folder>
 	</files>

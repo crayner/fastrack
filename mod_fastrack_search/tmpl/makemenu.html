@@ -1,0 +1,16 @@
+
+	<p>Make/Model</p>
+		<ul>
+            <li><input type="radio" name="control[make]" value="All Makes" onclick="TheSearchForm.submit()">All Types ({{makeTotal}})</li>
+            {{#makelist}}
+            <li><input type="radio" name="control[make]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
+            	{{#modellist}}
+                	<ul>
+                    	<li><input type="radio" name="control[model]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+                    </ul>
+                {{/modellist}}
+            </li>
+            {{/makelist}}
+        </ul>
+       
+      

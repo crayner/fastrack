@@ -1,5 +1,5 @@
 /* CSS Document */
-/* Version: 16th February 2015  */
+
 #usedmachinery {
 	margin: 0;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -128,6 +128,7 @@ margin-top: -5px;
 	border-radius: 20px;
 }
 .SaleThumbs {
+	clear: both;
 /*	width: 95%;  */
 }
 .thumb {

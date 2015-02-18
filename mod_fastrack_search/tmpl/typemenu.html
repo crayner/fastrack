@@ -1,0 +1,16 @@
+
+	<p>Type/SubType</p>
+		<ul>
+            <li><input type="radio" name="control[type]" value="All Types" onclick="TheSearchForm.submit()">All Types ({{typeTotal}})</li>
+            {{#typelist}}
+            <li><input type="radio" name="control[type]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
+            	{{#subtypelist}}
+                	<ul>
+                    	<li><input type="radio" name="control[subtype]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+                    </ul>
+                {{/subtypelist}}
+            </li>
+            {{/typelist}}
+        </ul>
+       
+      

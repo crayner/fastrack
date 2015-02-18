@@ -23,6 +23,8 @@
 
 defined('_JEXEC') or die();
 
+JLoader::import('components/com_fastrack/libraries/mustache/src/mustache/Autoloader', JPATH_ADMINISTRATOR);
+
 class FastrackDisplay {
 /**
   * Attributes
@@ -73,7 +75,19 @@ class FastrackDisplay {
   */
   	public function setAttribute($name, $value) {
 	
-		$this->attributes->$name = $value;
+		$this->attributes->$name = $value ;
+	}
+/**
+  * Get Attribute
+  *
+  * @version 1st December 2014	
+  * @since 1st December 2014	
+  * @param string Attribute Name
+  * @return mixed Value
+  */
+  	private function getAttribute($name) {
+	
+		return $this->attributes->$name ;
 	}
 /**
   * Add to Attribute
@@ -172,18 +186,21 @@ class FastrackDisplay {
 		return ;
 	}
 /**
- * set Sub Attribute
- *
- * @version 17th February 2015
- * @since 17th February 2015
- * @return void
- */
- 	public function setSubAttribute($name, $parent = NULL) {
-	
-		if ($parent === NULL)
-			$parent = array();
-		else
-			$parent = explode('.', $parent);
-	printAnObject($parent, true);
+  * Define Template Attributes
+  *
+  * @version 18th February 2015
+  * @since 18th February 2015	
+  * @param string Attribute Name
+  * @param mixed Attribute Value
+  * @return void
+  */
+	public function setListAttribute($name, $value){
+		
+		if (! isset ( $this->attributes->$name))
+			$this->setAttribute($name, array());
+		$current = $this->getAttribute($name);
+		$current[] = $value;
+		$this->setAttribute($name, $current);
+		return ;
 	}
 }

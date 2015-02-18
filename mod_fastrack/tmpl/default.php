@@ -17,202 +17,27 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 17th February 2015
+ * @version 18th February 2015
  * @since 14th February 2015
  */
 
 defined('_JEXEC') or die();
 
-JLoader::import('modules.mod_fastrack.display', JPATH_SITE);
+JLoader::import('components.com_fastrack.libraries.display', JPATH_ADMINISTRATOR);
 
 JLoader::import('modules.mod_fastrack_search.search', JPATH_SITE);
 
-$css = <<<CSS
-/* CSS Document */
+$css = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/default.css');
+$css = $params->get('css_contents', $css);
 
-#usedmachinery {
-	margin: 0;
-	font-family: Verdana, Arial, Helvetica, sans-serif;
-	font-size: 12px;
-	font-weight: normal;
-	color: #666666;
-	text-align: left;
-}
-
-#usedmachinery .tb_paginate{
-border-width: 1px;
-border-style: solid;
-}
-
-#usedmachinery .paginate_1{
-	background: #EEEEEE;
-}                                 
-
-#usedmachinery .paginate_0, #usedmachinery .paginate_1 {
-	border-width: 1px;
-	border-style: solid;
-}                     
-
-#usedmachinery .paginate_0 a, #usedmachinery .paginate_1 a {
-	text-decoration: none;
-	color: #333333;
-	font-size: 80%;
-}
-
-#usedmachinery .paginate_0 img, #usedmachinery .paginate_1 img {
-	border: none;
-}
-.highlight-box {
-	float: right; 
-	text-align: center;
-	border-radius: 15px;
-	/* border: 1px #CCCCCC solid; */
-	background: #DEDEDE;
-}
-.highlight-box img {
-	padding: 5px;
-	border-radius: 15px;
-}
-.titleright h2{
-	text-align: right;
-}
-.rt-grid-3a {
-	width: 250px;
-}
-.gf-menu .item {
-    padding: 0 8px;
-    }
-.item-page h3 {
-	color: #7E7E7E;
-	font-family: 'SourceSansProRegular',Helvetica,Arial,sans-serif;
-	font-size: 1.1em;
-	font-weight: normal;
-}
-
-
-/* Used Products CSS added August 2014 */
-.SaleItems {
-}
-.SaleItem {
-	margin-top: -1px 2px 2px 2px;
-	padding: 0px;
-	clear: both ;
-}
-.Specifications {
-	float: left;
-    margin: 5px;
-	padding: 5px;
-	max-width: 55%;
-	color: #7e7e7e;
-	text-transform: uppercase;
-/*	width: 55%; */}
-.SaleItemHeader {
-	margin: 3px;
-    padding-bottom: 8px;
-    padding-left: 17px;
-    padding-right: 20px;
-    padding-top: 14px;
-	position: relative;
-	background: #1E772B;
-	border-radius: 20px;
-	color: #ffffff;
-	text-transform: uppercase;
-}
-.SpecHeading {
-color: green;
-text-transform: uppercase;
-   font-size: 130%;
-}
-.SaleItemHeader li {
-display: inline-block;
-}
-li.PriceTitle  {
-float:right;
-}
-.PriceTitle input {
-margin-top: -5px;
-}
-.MainTitle,  .PriceTitle {
-    font-size: 150%;
-	font-weight: bold;
-}
-.audgst {
-	font-size: 53%;
-}
-.SaleItemHeader h3 {
-	position: absolute;
-	right: 5px;
-	width: 30%;
-	text-align: right;
-	line-height: 35px;
-	vertical-align: center;
-}
-.SaleItem p {
-	padding: 1px 0 3px 0;
-	margin: 0;
-
-}
-#firstImage {
-	width: 245px;
-	float: none;
-	border-radius: 20px;
-}
-.SaleThumbs {
-	clear: both;
-/*	width: 95%;  */
-}
-.thumb {
-	float: left; /* must be floated for same cross browser position of larger image */
-	position: relative;
-	margin: 3px;
-}
-.thumb img { 
-	border: 1px solid #DEDEDE;
-	vertical-align: bottom;
-	height: 70px ;
-	border-radius: 12px;
-}
-.thumb:hover {
-	border: 0; /* IE6 needs this to show large image */
-	z-index: 1;
-}
-.thumb span { 
-	position: absolute;
-	visibility: hidden;
-}
-.thumb:hover span { 
-	visibility: visible;
-	top: -200px; 
-	left: 25px; 
-}
-.thumb:hover span img { 
-	height: 245px;	
-}
-.UsedProductManagement {
-}
-.Pagination {
-	background-color: transparent;
-	color: ButtonText; 
-	border: 1px solid ButtonFace;
-	border-radius: 4px;
-}
-.PaginationChecked {
-	background-color: ButtonFace; 
-	color: ButtonText; 
-	border: 1px solid ButtonFace;
-	border-radius: 4px;
-}
-div#StartFooter {
-	width: 100%;
-}
-CSS;
 
 ?>
-<div class="UsedProductManagement">
+
 <form name="TheForm" id="TheForm" method="post">
-<!--<p>Vanderfield are currently listing a total of <?php echo $total; ?> used products for sale.</p>-->
 <?php
 $doc = JFactory::getDocument();
+$doc->addStyleDeclaration($css);
+
 $input = JFactory::getApplication()->input;
 $xx = FastrackHelper::getCondition('xx');
 $count = FastrackHelper::getCondition('count');
@@ -232,18 +57,11 @@ echo $pagination;
 $pagin = FastrackHelper::getCondition('pagin');
 $control = FastrackHelper::getCondition('control');
 
-
 $ShowCount = $params->get('pageitems', 10);
 if ($count < $params->get('pageitems', 10))
 	$ShowCount = $count;
 
-$itemsTemplate = <<<ppp
-<div id="SaleItems">
-{{warning}}
-<p>Vanderfield currently has {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
-{{items}}
-</div>
-ppp;
+$itemsTemplate = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/siteitems.html');
 
 $items = new FastrackDisplay();
 $items->setTemplate($params->get('items_content', $itemsTemplate));
@@ -256,57 +74,7 @@ if ($count> 1)
 $items->setAttribute('plural', $plural);
 $items->setAttribute('pageitems', $params->get('pageitems', 10));
 
-
-
-
-$itemTemplate = <<<ooo
-<div class="SaleItem">
-	<div class="SaleItemHeader">
-		<li class="MainTitle">{{make}} - {{model}}</li>
-		<li class="PriceTitle">
-			<span class="audgst">{{currency}}</span> {{cost}} <span class="audgst">{{gst}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			<input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('{{enquiry}}', '_self')" />
-		</li>
-		<div style="clear:both;"></div>
-	</div> <!-- End of SaleItemHeader -->
-	<div class="Specifications">
-		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
-		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
-		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
-		{{#config_name}}<p><b>{{config_name}}:</b> {{config_value}}</p>{{/config_name}}
-		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
-		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
-		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}
-		{{#hours}}<p><b>Hours:</b> {{hours}}</p>{{/hours}}
-		{{#stockref}}<p><b>Stock Ref #:</b> {{stockref}}</p>{{/stockref}}
-		{{#engpower}}<p><b>Eng. Power:</b> {{engpower}}</p>{{/engpower}}
-		{{#status}}<p><b>Status:</b> {{status}}</p>{{/status}}
-		<!-- <p><b>ID:</b> {{id}}</p> -->
-		{{#description}}<p><b>Description:</b> {{description}}</p>{{/description}}
-		{{#miscellaneous}}{{miscellaneous}}{{/miscellaneous}}
-	</div> <!-- End of Specifications -->
-	<div id="FirstImageHolder">
-		<p><img id="firstImage" src='{{firstimage}}' alt='' width="245" /></p>
-        {{#thumbimages}}<div class="SaleThumbs">
-            {{thumbimages}}
-        </div> <!-- End of SaleThumbs -->{{/thumbimages}}
-	</div> <!-- End of FirstImageHolder -->
-</div> <!-- End of SaleItem -->
-ooo;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+$itemTemplate = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/siteitem.html');
 
 $DisplayCount = 0;
 $DisplayNow = false;
@@ -445,7 +213,6 @@ foreach ($xx as $q=>$w) {
 
 <?php echo $items->render(); ?>
 
-
 <div id="StartFooter">&nbsp;</div>
 
 <?php echo $pagination; 
@@ -453,11 +220,9 @@ foreach ($xx as $q=>$w) {
 echo ModFastrackSearch::hiddenSearch();
 ?>
 
-
 </form>
 
 <?php
-
 foreach($fileNames as $ftfile) {
 	# Now remove old image files from created stack.
 	$path = rtrim($ftfile->resultPath, '/').'/';

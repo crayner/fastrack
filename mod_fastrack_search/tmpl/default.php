@@ -95,8 +95,8 @@ $ProductMenu->setAttribute('keywords', $keywords);
 			$mv['count'] = $type[$mk][FastrackHelper::getSafeKey($model)]['count'];
 			$models[] = $mv;
 		}
-		if (! empty ($models))
-			$value['subtypelist'] = $models;
+		if (! empty ($models)) 
+			$value['sublist'][0]['models'] = $models;
 	}
 	
 	if (! empty($value))

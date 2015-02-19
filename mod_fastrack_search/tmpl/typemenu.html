@@ -4,11 +4,11 @@
             <li><input type="radio" name="control[type]" value="All Types" onclick="TheSearchForm.submit()">All Types ({{typeTotal}})</li>
             {{#typelist}}
             <li><input type="radio" name="control[type]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
-            	{{#subtypelist}}
+            	{{#sublist}}
                 	<ul>
-                    	<li><input type="radio" name="control[subtype]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+                    	{{#models}}<li><input type="radio" name="control[subtype]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>{{/models}}
                     </ul>
-                {{/subtypelist}}
+                {{/sublist}}
             </li>
             {{/typelist}}
         </ul>

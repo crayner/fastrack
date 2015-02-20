@@ -6,7 +6,9 @@
             <li><input type="radio" name="control[make]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
             	{{#modellist}}
                 	<ul>
-                    	<li><input type="radio" name="control[model]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+                    	{{#models}}
+                        <li><input type="radio" name="control[model]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+                        {{/models}}
                     </ul>
                 {{/modellist}}
             </li>

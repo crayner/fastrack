@@ -6,7 +6,9 @@
             <li><input type="radio" name="control[type]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
             	{{#sublist}}
                 	<ul>
-                    	{{#models}}<li><input type="radio" name="control[subtype]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>{{/models}}
+                    	{{#subtype}}
+                        <li><input type="radio" name="control[subtype]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+                        {{/subtype}}
                     </ul>
                 {{/sublist}}
             </li>

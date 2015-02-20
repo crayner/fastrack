@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 19th February 2015
+ * @version 20th February 2015
  * @since 1st December 2014
  */
 
@@ -27,7 +27,7 @@ JLoader::import('components/com_fastrack/libraries/mustache/src/mustache/Autoloa
 /**
  * Fastrack Display
  *
- * @version 19th February 2015
+ * @version 20th February 2015
  * @since 1st December 2014
  */
 
@@ -58,11 +58,6 @@ class FastrackDisplay {
   */
   	private $sections;
 /**
-  * Template Section Test
-  * var boolean
-  */
-  	private $sectionTest;
-/**
   * Template Lists
   * var array
   */
@@ -77,6 +72,16 @@ class FastrackDisplay {
   * var array
   */
   	private $attributeType = array();
+/**
+  * Attribute Data
+  * var Object
+  */
+  	private $attributeData;
+/**
+  * Section Output
+  * var Object
+  */
+  	private $sectionOutput;
 /**
   * Construct
   *
@@ -133,67 +138,44 @@ class FastrackDisplay {
 /**
   * Set Template
   *
-  * @version 1st December 2014	
+  * @version 20th February 2015	
   * @since 1st December 2014	
   * @param string Template
   * @return void
   */
   	public function setTemplate($value) {
 	
-		$this->template = $value;
+		$this->template = '{{#all}}
+'.$value.'
+{{/all}}';
 	}
 /**
   * Render Display
   *
-  * @version 19th February 2015	
+  * @version 20th February 2015	
   * @since 1st December 2014	
   * @param string Template
   * @return string (HTML OUTPUT)
   */
   	public function render($template = '') {
 		
-$this->attributes->typelist[1]['checked'] = ' checked';
-$this->attributes->typelist[1]['sublist'][0]['models'][0]['count'] = 3;
-$this->attributes->typelist[1]['sublist'][0]['models'][0]['key'] = '_model0';
-$this->attributes->typelist[1]['sublist'][0]['models'][0]['model'] = 'Model 0';
-$this->attributes->typelist[1]['sublist'][0]['models'][1]['count'] = 2;
-$this->attributes->typelist[1]['sublist'][0]['models'][1]['key'] = '_model1';
-$this->attributes->typelist[1]['sublist'][0]['models'][1]['model'] = 'Model 1';
+
 		if ($template !== '')
 			$this->setTemplate($template);
 		$this->output = '';
 		$this->defineAttributeTypes();
 		$this->defineTemplateAttributes();
 		$this->template = $this->parseTemplateSections();
-		$this->output = $this->template;
-		
-		
-		foreach ($this->templateAttrib as $search) {
-			$name = str_replace(array('{{', '}}'), '', $search);
-			$replace = '';
-			if (isset($this->attributes->$name))
-				$replace = $this->attributes->$name;
-			$this->output = str_replace($search, $replace, $this->output);
+		$this->sectionOutput = new stdClass ;
+		while (count($this->sections) > 0) {
+			end($this->sections);
+			$name = key($this->sections);
+			$template = array_pop($this->sections);
+			$output = $this->renderSection($name, $template);
+			$this->setAttribute($name, $output);
+			$this->sectionOutput->$name = $output;
 		}
-foreach($this->sections as $f)
-	printAnObject(htmlspecialchars($f[0]));
-printAnObject($this->attributes);
-printAnObject($this->templateAttrib);
-printAnObject($this->attributeType);
-printAnObject($this->templateTestAttrib);
-printAnObject($this->output, true);
-
-		/*  If Attribute Tested, then remove failed test values
-		or remove test labels.  */
-		foreach($this->templateTestAttrib as $name=>$value) {
-			if (isset($this->attributes->$name)) {
-				$this->output = str_replace(array('{{#'.$name.'}}','{{/'.$name.'}}'), '', $this->output); 
-			} else {
-				foreach($value as $search)
-					$this->output = str_replace($search, '', $this->output);
-			}
-		}
-
+		$this->output = $this->combineSections();
 		return $this->output;
 	}
 /**
@@ -203,8 +185,10 @@ printAnObject($this->output, true);
   * @since 1st December 2014	
   * @return void
   */
-  	protected function defineTemplateAttributes() {
+  	protected function defineTemplateAttributes($template = NULL) {
 		
+		if ($template !== NULL)
+			$this->template = $template;
 		$x = explode('{{', $this->template);
 		$this->templateAttrib = array();
 		$this->templateTestAttrib = array();
@@ -258,13 +242,28 @@ printAnObject($this->output, true);
 	private function defineAttributeTypes(){
 		
 		$this->attributeType = array();
+		$this->attributeData = new stdClass ;
+		$this->attributeData->all = (array) $this->attributes;
 		foreach ((array) $this->attributes as $k=>$v) {
 			if (is_array($v)) {
-					$this->attributeType[$k]['type'] = 'list';
-					$this->attributeType[$k]['list'] = array();
-					$this->attributeType[$k]['list'] = $this->defineAttributeList($this->attributeType[$k]['list'], $v);
-			} else
+					$key = key($v);
+					if (intval($key) === $key) {
+						$this->attributeType[$k]['type'] = 'list';
+						$this->attributeType[$k]['list'] = array();
+						$this->attributeType[$k]['list'] = $this->defineAttributeList($this->attributeType[$k]['list'], $v);
+						$this->attributeType[$k]['data'] = $v;
+						$this->attributeData->$k = $v;
+					} else {
+						$this->attributeType[$k]['type'] = 'sub';
+						$this->attributeType[$k]['sub'] = array();
+						$this->attributeType[$k]['sub'] = $this->defineAttributeSubTypeValues($this->attributeType[$k]['sub'],$k, $v);
+						$this->attributeType[$k]['data'] = $v;
+						$this->attributeData->$k = $v;
+					}
+			} else {
 				$this->attributeType[$k]['type'] = 'single';
+				$this->attributeType[$k]['data'] = $v;
+			}
 		}
 		return ;
 	}
@@ -288,7 +287,7 @@ printAnObject($this->output, true);
   * Define Attribute Sub Type Values
   *
   * defines the attribute types within the attributes.
-  * @version 19th February 2015
+  * @version 20th February 2015
   * @since 19th February 2015	
   * @param array Attibute Type part.
   * @param mixed Value
@@ -299,22 +298,34 @@ printAnObject($this->output, true);
 		if ( is_array ( $value ) ) {
 			foreach($value as $k=>$v) {
 				if (is_array($v)) {
-					$attrib[$k]['type'] = 'list';
-					$attrib[$k]['list'] = array();
-					$attrib[$k]['list'] = $this->defineAttributeList($attrib[$k]['list'], $v);
+					$key = key($v);
+					if (intval($key) === $key) {
+						$attrib[$k]['type'] = 'list';
+						$attrib[$k]['list'] = array();
+						$attrib[$k]['list'] = $this->defineAttributeList($attrib[$k]['list'], $v);
+						$attrib[$k]['data'] = $v;
+						$this->attributeData->$k = $v;
+					} else {
+						$attrib[$k]['type'] = 'sub';
+						$attrib[$k]['sub'] = array();
+						$attrib[$k]['sub'] = $this->defineAttributeSubTypeValues($attrib[$k]['sub'], $k, $v);
+						$attrib[$k]['data'] = $v;
+						$this->attributeData->$k = $v;
+					}
 				} else {
 					$attrib[$k]['type'] = 'single';
+					$attrib[$k]['data'] = $v;
 				}
 			}
 		} else {
-			$attrib[$k]['type'] = 'single';
+			$attrib[$key]['type'] = 'single';
 		}
 		return $attrib;
 	}
 /**
  * Parse Template Sections
  *
- * @version 19th February 2015
+ * @version 20th February 2015
  * @since 19th February 2015
  * @return string base Template
  */
@@ -327,7 +338,7 @@ printAnObject($this->output, true);
 				$l = strlen('{{/'.$listName.'}}') ;
 				$f = mb_strpos($template, '{{/'.$listName.'}}') + $l;
 				$sec = substr($template, $s, $f - $s);
-				$this->sections[$listName][] = substr($sec, $l, -$l);
+				$this->sections[$listName] = substr($sec, $l, -$l);
 				$template = str_replace($sec, '{{'.$listName.'}}', $template);
 			}
 		}
@@ -340,28 +351,125 @@ printAnObject($this->output, true);
 /**
  * Parse Sections
  *
- * @version 19th February 2015
+ * @version 20th February 2015
  * @since 19th February 2015
  * @return boolean Found matches
  */
  	private function parseSections() {
 	
 		$this->sectionTest = false;
-		foreach ($this->sections as $pList=>$ans) {
-			foreach($ans as $key=>$text) {
-				foreach ($this->templateLists as $listName) {
-					while (false !== ($s = mb_strpos($text, '{{#'.$listName.'}}'))) {
-							$l = strlen('{{/'.$listName.'}}') ;
-							$f = mb_strpos($text, '{{/'.$listName.'}}') + $l;
-							$sec = substr($text, $s, $f - $s);
-							$this->sections[$listName][] = substr($sec, $l, -$l);
-							$text = str_replace($sec, '{{'.$listName.'}}', $text);
-							$this->sections[$pList][$key] = $text;
-							$this->sectionTest = true;
-					}
+		foreach ($this->sections as $pList=>$text) {
+			foreach ($this->templateLists as $listName) {
+				while (false !== ($s = mb_strpos($text, '{{#'.$listName.'}}'))) {
+					$l = strlen('{{/'.$listName.'}}') ;
+					$f = mb_strpos($text, '{{/'.$listName.'}}') + $l;
+					$sec = substr($text, $s, $f - $s);
+					$this->sections[$listName] = substr($sec, $l, -$l);
+					$text = str_replace($sec, '{{'.$listName.'}}', $text);
+					$this->sections[$pList] = $text;
+					$this->sectionTest = true;
 				}
 			}
 		}
 		return $this->sectionTest;
+	}
+/**
+ * Render Section
+ *
+ * @version 20th February 2015
+ * @since 20th February 2015
+ * @param string Section Name
+ * @param string Template
+ * @return string
+ */
+	private function renderSection($name, $template){
+	
+		if (! isset ($this->attributeData->$name))
+			return '';
+		$data = $this->attributeData->$name;
+		$output = '';
+		//Test Data Type, sub or list.
+		reset($data);
+		$key = key($data);
+		if (intval($key) === $key) {
+			$output =  $this->renderSectionList($data, $template);
+		} else {
+			$output =  $this->renderSectionSub($data, $template);
+		}
+		return $output;
+	}
+/**
+ * Render Section List
+ *
+ * @version 20th February 2015
+ * @since 20th February 2015
+ * @param array Data
+ * @param string Template
+ * @return string
+ */
+	private function renderSectionList($data, $template){
+	
+		$output = '';
+		foreach ($data as $values)
+			$output .= $this->renderTemplateData($values, $template);
+		return $output;
+	}
+/**
+ * Render Template Data
+ *
+ * @version 20th February 2015
+ * @since 20th February 2015
+ * @param array Data
+ * @param string Template
+ * @return string
+ */
+	private function renderTemplateData($data, $template){
+	
+		$this->defineTemplateAttributes($template);
+		foreach ($this->templateAttrib as $name){
+			$sh = str_replace(array('{{', '}}'), '', $name);
+			if (isset($data[$sh])) {
+				if (! is_array($data[$sh])) 
+					$template = str_replace($name, $data[$sh], $template);
+			} else
+				$template = str_replace($name, '', $template);
+		}
+		return $template;
+	}
+/**
+ * Render Section Sub
+ *
+ * @version 20th February 2015
+ * @since 20th February 2015
+ * @param array Data
+ * @param string Template
+ * @return string
+ */
+	private function renderSectionSub($data, $template){
+	
+		return $this->renderTemplateData($data, $template);
+	}
+/**
+ * combine Sections
+ *
+ * @version 20th February 2015
+ * @since 20th February 2015
+ * @return string
+ */
+	private function combineSections(){
+	
+		$output = $this->attributes->all;
+		do {
+			$this->defineTemplateAttributes($output);
+			foreach ($this->templateAttrib as $name) {
+				$sh = str_replace(array('{{', '}}'), '', $name);
+				if (isset($this->attributes->$sh)) {
+					$output = str_replace($name, $this->attributes->$sh, $output);
+				} else {
+					$output = str_replace($name, '', $output);
+				}
+			}
+		} while (! empty ($this->templateAttrib)) ;
+		return $output;
 	}
 }

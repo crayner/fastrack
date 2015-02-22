@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 17th February 2015
+ * @version 22nd February 2015
  * @since 17th February 2015
  */
 
@@ -25,7 +25,7 @@ defined('_JEXEC') or die();
 /**
  * Module Fastrack Search
  *
- * @version 17th February 2015
+ * @version 22nd February 2015
  * @since 17th February 2015
  */
 class ModFastrackSearch {
@@ -63,7 +63,7 @@ class ModFastrackSearch {
 /**
  * Hidden Search Display
  *
- * @version 17th February 2015
+ * @version 22nd February 2015
  * @since 17th February 2015
  * @return string Form Inputs
  */
@@ -85,9 +85,13 @@ class ModFastrackSearch {
 					$result .= "<input type=\"hidden\" name=\"control[OldType]\" value=\"".$w."\" />\n";
 					$result .= "<input type=\"hidden\" name=\"control[".$q."]\" value=\"".$w."\" />\n";
 					break;
+				case 'oldKeywords':
+					break ;
 				case 'keywords':
-					if (is_array($w))
+					if (is_array($w)) {
 						$result .= "<input type=\"hidden\" name=\"control[".$q."]\" value=\"".rtrim(implode(',', $w), ',')."\" />\n";
+						$result .= "<input type=\"hidden\" name=\"control[oldKeywords]\" value=\"".rtrim(implode(',', $w), ',')."\" />\n";
+					}
 					break;
 				default:
 					$result .= "<input type=\"hidden\" name=\"control[".$q."]\" value=\"".$w."\" />\n";

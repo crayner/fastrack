@@ -17,12 +17,16 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 21st February 2015
+ * @version 22nd February 2015
  * @since 26th November 2014
  */
 
 defined('_JEXEC') or die();
-
+/**
+ * Mod Fastrack Preparation
+ *
+ * @version 22nd February 2015
+ */
 class ModFastrackPreparation {
 
 	static public $params;
@@ -30,7 +34,7 @@ class ModFastrackPreparation {
 /**
   * Execute
   *
-  * @version 21st February 2015
+  * @version 22nd February 2015
   * @since 26th November 2014
   * @param object Registry
   * @return void
@@ -49,13 +53,18 @@ class ModFastrackPreparation {
 			$control = FastrackHelper::setCondition('control', array());
 			$pagin = FastrackHelper::setCondition('pagin', array());
 		}
-		if (isset($control['keywords']) AND ! empty($control['keywords'])) {
+		if (! empty($control['keywords'])) {
 			$search = explode(',', strtoupper($control['keywords']));
+			$oldKw = array();
+			if (isset($control['oldKeywords']) )
+				$oldKw = explode(',', strtoupper($control['oldKeywords']));
 			foreach ($search as $q=>$w)
 				$search[$q] = trim($w);
 			$control = FastrackHelper::setCondition('control', array());
 			$control['keywords'] = $search;
-			$pagin = FastrackHelper::setCondition('pagin', array());
+			if ($control['keywords'] != $oldKw) {
+				$pagin = FastrackHelper::setCondition('pagin', array());
+			}
 			$DisplayList = array();
 			foreach ($xx as $q=>$w) {
 				$test = strtoupper(serialize($w));

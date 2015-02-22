@@ -71,24 +71,28 @@ class ModFastrackSearch {
 	
 		$control = FastrackHelper::getCondition('control', array());
 		$result = '';
-		foreach ($control as $q=>$w) 
-			if (! empty ( $w ) ) 
-				switch ($q) {
-					case 'OldType':
-						break;
-					case 'type':
-						$result .= '<input type="hidden" name="control[OldType]" value="'.$w.'" />'."\n";
-					case 'OldMake':
-						break;
-					case 'make':
-						$result .= '<input type="hidden" name="control[OldMake]" value="'.$w.'" />'."\n";
-					case 'keywords':
-						if (is_array($w))
-							$result .= '<input type="hidden" name="control[OldMake]" value="'.rtrim(implode(',', $w), ',').'" />'."\n";
-						break;
-					default:
-					$result .= '<input type="hidden" name="control['.$q.']" value="'.$w.'" />'."\n";
-				}
+		foreach ($control as $q=>$w) {
+			switch ($q) {
+				case 'OldMake':
+					break;
+				case 'make':
+					$result .= "<input type=\"hidden\" name=\"control[OldMake]\" value=\"".$w."\" />\n";
+					$result .= "<input type=\"hidden\" name=\"control[".$q."]\" value=\"".$w."\" />\n";
+					break;
+				case 'OldType':
+					break;
+				case 'type':
+					$result .= "<input type=\"hidden\" name=\"control[OldType]\" value=\"".$w."\" />\n";
+					$result .= "<input type=\"hidden\" name=\"control[".$q."]\" value=\"".$w."\" />\n";
+					break;
+				case 'keywords':
+					if (is_array($w))
+						$result .= "<input type=\"hidden\" name=\"control[".$q."]\" value=\"".rtrim(implode(',', $w), ',')."\" />\n";
+					break;
+				default:
+					$result .= "<input type=\"hidden\" name=\"control[".$q."]\" value=\"".$w."\" />\n";
+			}
+		}
 		return $result;
 	}
 }

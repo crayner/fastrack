@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 17th February 2015
+ * @version 21st February 2015
  * @since 26th November 2014
  */
 
@@ -30,7 +30,7 @@ class ModFastrackPreparation {
 /**
   * Execute
   *
-  * @version 17th February 2015
+  * @version 21st February 2015
   * @since 26th November 2014
   * @param object Registry
   * @return void
@@ -78,15 +78,20 @@ class ModFastrackPreparation {
 			}
 			unset($DisplayList);
 		}
-		
 		if (empty($control['OldMake']) AND isset($control['OldMake']))
 			unset($control['OldMake']);
 		if (empty($control['OldType']) AND isset($control['OldType']))
 			unset($control['OldType']);
+		if (isset($control['subtype']))
+			if ($control['subtype'] === 'allsubtypes')
+				unset($control['subtype'], $pagin);
+		if (isset($control['model']))
+			if ($control['model'] === 'allmodels')
+				unset($control['model'], $pagin);
 		if (@$control['make'] == "All Makes")
-			unset($control['make'], $pagin);
+			unset($control['make'], $pagin, $control['models']);
 		if (@$control['type'] == "All Types")
-			unset($control['type'], $pagin);
+			unset($control['type'], $pagin, $control['subtypes']);
 		if (@$control['OldMake'] !== @$control['make'] AND isset($control['make']))
 			unset($control['model'], $pagin);
 		if (@$control['OldType'] !== @$control['type'])

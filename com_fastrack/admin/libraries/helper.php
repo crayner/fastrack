@@ -332,7 +332,7 @@ class FastrackHelper {
   * @version 16th February 2015
   * @since 27th November 2014
   * @param string Condition Name
-  * @return mixed ConditionValue
+  * @return mixed Condition Value
   */
 	public static function setSearchControls($xx){
 

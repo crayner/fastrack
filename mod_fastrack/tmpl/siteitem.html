@@ -4,7 +4,7 @@
 	<div class="SaleItemHeader">
 		<li class="MainTitle">{{make}} - {{model}}</li>
 		<li class="PriceTitle">
-			<span class="audgst">{{currency}}</span> {{cost}} <span class="audgst">{{gst}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			{{#price}}<span class="audgst">{{currency}}</span> ${{cost}} <span class="audgst">{{gst}}</span>{{/price}}&nbsp;&nbsp;&nbsp;&nbsp;
 			<input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('{{enquiry}}', '_self')" />
 		</li>
 		<div style="clear:both;"></div>
@@ -13,7 +13,7 @@
 		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
 		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
 		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
-		{{#config_name}}<p><b>{{config_name}}:</b> {{config_value}}</p>{{/config_name}}
+		{{#config}}<p><b>{{name}}:</b> {{value}}</p>{{/config}}
 		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
 		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
 		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}
@@ -28,8 +28,11 @@
 	<div id="FirstImageHolder">
 		<p><img id="firstImage" src='{{firstimage}}' alt='' width="245" /></p>
         {{#thumbimages}}<div class="SaleThumbs">
-            {{thumbimages}}
-        </div> <!-- End of SaleThumbs -->{{/thumbimages}}
+        	{{#images}}<a class="thumb" href="#">
+            	<img src="{{imageURL}}" alt="" width="{{thumbwidth}}" height="{{thumbheight}}">
+				<span style="width: {{width4}}px; height: {{height4}}px; "><img src="{{imageURL}}" alt="" width="{{width}}" height="{{height}}"></span>
+            </a>{{/images}}
+         </div> <!-- End of SaleThumbs -->{{/thumbimages}}
 	</div> <!-- End of FirstImageHolder -->
 </div> <!-- End of SaleItem -->
 

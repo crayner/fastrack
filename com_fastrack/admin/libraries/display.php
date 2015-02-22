@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 20th February 2015
+ * @version 21st February 2015
  * @since 1st December 2014
  */
 
@@ -27,7 +27,7 @@ JLoader::import('components/com_fastrack/libraries/mustache/src/mustache/Autoloa
 /**
  * Fastrack Display
  *
- * @version 20th February 2015
+ * @version 21st February 2015
  * @since 1st December 2014
  */
 
@@ -167,7 +167,8 @@ class FastrackDisplay {
 		$this->defineTemplateAttributes();
 		$this->template = $this->parseTemplateSections();
 		$this->sectionOutput = new stdClass ;
-		while (count($this->sections) > 0) {
+		$this->sectionOutput->all = $this->sections['all'];
+		while (count($this->sections) > 1) {
 			end($this->sections);
 			$name = key($this->sections);
 			$template = array_pop($this->sections);
@@ -175,6 +176,7 @@ class FastrackDisplay {
 			$this->setAttribute($name, $output);
 			$this->sectionOutput->$name = $output;
 		}
+		$this->sectionOutput->all = $this->sections['all'];
 		$this->output = $this->combineSections();
 		return $this->output;
 	}
@@ -263,6 +265,7 @@ class FastrackDisplay {
 			} else {
 				$this->attributeType[$k]['type'] = 'single';
 				$this->attributeType[$k]['data'] = $v;
+				$this->attributeData->$k = $v;
 			}
 		}
 		return ;
@@ -376,7 +379,7 @@ class FastrackDisplay {
 /**
  * Render Section
  *
- * @version 20th February 2015
+ * @version 21st February 2015
  * @since 20th February 2015
  * @param string Section Name
  * @param string Template
@@ -388,13 +391,17 @@ class FastrackDisplay {
 			return '';
 		$data = $this->attributeData->$name;
 		$output = '';
-		//Test Data Type, sub or list.
-		reset($data);
-		$key = key($data);
-		if (intval($key) === $key) {
-			$output =  $this->renderSectionList($data, $template);
+		//Test Data Type, sub, single or list.
+		if (is_array($data)) {
+			reset($data);
+			$key = key($data);
+			if (intval($key) === $key) {
+				$output =  $this->renderSectionList($data, $template);
+			} else {
+				$output =  $this->renderSectionSub($data, $template);
+			}
 		} else {
-			$output =  $this->renderSectionSub($data, $template);
+			$output =  $this->renderSectionSub($data, $template);		
 		}
 		return $output;
 	}
@@ -417,7 +424,7 @@ class FastrackDisplay {
 /**
  * Render Template Data
  *
- * @version 20th February 2015
+ * @version 21st February 2015
  * @since 20th February 2015
  * @param array Data
  * @param string Template
@@ -431,8 +438,11 @@ class FastrackDisplay {
 			if (isset($data[$sh])) {
 				if (! is_array($data[$sh])) 
 					$template = str_replace($name, $data[$sh], $template);
-			} else
-				$template = str_replace($name, '', $template);
+			} elseif (! is_array($data)) {
+				$template = str_replace($name, $data, $template);
+			} else {
+			 	$template = str_replace($name, '', $template);
+			}
 		}
 		return $template;
 	}
@@ -458,7 +468,7 @@ class FastrackDisplay {
  */
 	private function combineSections(){
 	
-		$output = $this->attributes->all;
+		$output = $this->sectionOutput->all;
 		do {
 			$this->defineTemplateAttributes($output);
 			foreach ($this->templateAttrib as $name) {
@@ -466,7 +476,7 @@ class FastrackDisplay {
 				if (isset($this->attributes->$sh)) {
 					$output = str_replace($name, $this->attributes->$sh, $output);
 				} else {
-					$output = str_replace($name, '', $output);
+					 $output = str_replace($name, '', $output);
 				}
 			}
 		} while (! empty ($this->templateAttrib)) ;

@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>18th Feb 2014</creationDate>
+	<creationDate>21st Feb 2014</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -48,12 +48,12 @@
 				<field name="item_content" type="textarea2" default="" label="MOD_FASTRACK_FIELD_ITEM_CONTENT_LABEL"
 					rows="10" cols="80" filter="raw">
 					<content><![CDATA[
-					
+
 <div class="SaleItem">
 	<div class="SaleItemHeader">
 		<li class="MainTitle">{{make}} - {{model}}</li>
 		<li class="PriceTitle">
-			<span class="audgst">{{currency}}</span> {{cost}} <span class="audgst">{{gst}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			{{#price}}<span class="audgst">{{currency}}</span> {{cost}} <span class="audgst">{{gst}}</span>{{/price}}&nbsp;&nbsp;&nbsp;&nbsp;
 			<input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('{{enquiry}}', '_self')" />
 		</li>
 		<div style="clear:both;"></div>
@@ -62,7 +62,7 @@
 		<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
 		<p class="SpecHeading"><b>Make:</b> {{make}}</p>
 		<p class="SpecHeading"><b>Model:</b> {{model}}</p>
-		{{#config_name}}<p><b>{{config_name}}:</b> {{config_value}}</p>{{/config_name}}
+		{{#config}}<p><b>{{name}}:</b> {{value}}</p>{{/config}}
 		{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
 		{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
 		{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}

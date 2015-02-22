@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 18th February 2015
+ * @version 21st February 2015
  * @since 14th February 2015
  */
 
@@ -99,9 +99,9 @@ foreach ($xx as $q=>$w) {
 				case "price";
 					if (! isset (  $w['price']['currency'] ) )
 						$w['price']['currency'] = 'AUD';
-					$item->setAttribute('currency', $w['price']['currency']); 
-					$item->setAttribute('cost', '$'.number_format($w['price']['value'], 2, '.', ',')); 
-					$item->setAttribute('gst', $w['price']['gst_value'], 10); 
+					$w['price']['cost'] = number_format($w['price']['value'], 2, '.', ',');
+					$w['price']['gst'] =$w['price']['gst_value'];
+					$item->setAttribute('price', $w['price']);
 					fwrite($FileID, "cost:=".$w['price']['value']."\n");
 					fwrite($FileID, "gst:=".$w['price']['gst_value']."\n");
 					fwrite($FileID, "currency:=".$w['price']['currency']."\n");
@@ -117,11 +117,11 @@ foreach ($xx as $q=>$w) {
 					$item->setAttribute($n, $w[$n]); 
 					fwrite($FileID, $n.":=".$w[$n]."\n");
 					break;
+				case "configuration";
 				case "config";
 					if (isset($w[$n])) {
 						fwrite($FileID, $w[$n]['name'].":=".$w[$n]['value']."\n");
-						$item->setAttribute($n.'_name', $w[$n]['name']); 
-						$item->setAttribute($n.'_value', $w[$n]['value']); 
+						$item->setAttribute($n, array('name'=>$w[$n]['name'],'value'=>$w[$n]['value']));
 					}
 					break;
 				case "listingtype";
@@ -190,6 +190,7 @@ foreach ($xx as $q=>$w) {
 
 		$imageURL = rtrim($ftfile->imageURL, '/').'/';
 		$item->setAttribute('firstimage', $imageURL . '/' . $xx[$q]['image'][1]);
+		$images = array();
 		foreach ($xx[$q]['image'] as $c=>$i) {
 			$iv = getimagesize($ftfile->path . $i);
 			$s = $iv[1]/245;
@@ -200,25 +201,32 @@ foreach ($xx as $q=>$w) {
 			$tw = intval($iv[0]/$s);
 			$stuff = "<a class=\"thumb\" href=\"#\"><img src=\"".$imageURL.$i."\" alt=\"\" width=\"".$tw."\" height=\"".$th."\">
 			<span style=\"width: ".strval($w + 4)."px; height: ".strval($h+4)."px; \"><img src=\"". $imageURL.$i . "\" alt=\"\" width=\"".$w."\" height=\"".$h."\"></span></a>";
-			$item->addToAttribute('thumbimages', $stuff);
+			$stuff = array();
+			$stuff['imageURL'] = $imageURL.$i;
+			$stuff['thumbwidth'] = $tw;
+			$stuff['width'] = $w;
+			$stuff['width4'] = $w + 4;
+			$stuff['thumbheight'] = $th;
+			$stuff['height'] = $h;
+			$stuff['height4'] = $h + 4;
+			$images[] = $stuff;
 		}
-		
+		$ti['images'] = $images;
+		$item->setAttribute('thumbimages', $ti);		
 		$items->addToAttribute('items', $item->render());
 		$DisplayCount++;
 		if ($DisplayCount > $params->get('pageitems', 10) - 1)
 			break;
 	}
 }
-?>
 
-<?php echo $items->render(); ?>
+$items->setAttribute('search', ModFastrackSearch::hiddenSearch());
+
+echo $items->render(); ?>
 
 <div id="StartFooter">&nbsp;</div>
 
-<?php echo $pagination; 
-
-echo ModFastrackSearch::hiddenSearch();
-?>
+<?php echo $pagination; ?>
 
 </form>
 

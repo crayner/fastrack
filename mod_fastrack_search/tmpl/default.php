@@ -25,7 +25,8 @@ defined('_JEXEC') or die();
 JLoader::import('modules.mod_fastrack.helper', JPATH_SITE);
 
 JLoader::import('components.com_fastrack.libraries.display', JPATH_ADMINISTRATOR);
-
+JLoader::import('components.com_fastrack.libraries.mustache.src.Mustache.Autoloader', JPATH_ADMINISTRATOR);
+Mustache_Autoloader::register();
 
 $input = JFactory::getApplication()->input;
 $doc = JFactory::getDocument();
@@ -47,117 +48,116 @@ $make = FastrackHelper::getCondition('make', array());
 
 
 
-$template = file_get_contents(JPATH_SITE.'/modules/mod_fastrack_search/tmpl/productmenu.html');
-$ProductMenu = new FastrackDisplay();
-$ProductMenu->setTemplate($params->get('product_menu', $template));
-$ProductMenu->setAttribute('pagination', ModFastrackPreparation::hiddenPagin());
-$ProductMenu->setAttribute('keywords', $keywords);
+$ProductMenu = array();
+$ProductMenu['pagination'] = ModFastrackPreparation::hiddenPagin();
+$ProductMenu['keywords'] = $keywords;
+$ProductMenu['type'] = @$control['type'];
+$ProductMenu['make'] = @$control['make'];
 
 ?>
 
 <form name="TheSearchForm" id="TheSearchForm" method="post">
 
 <?php if ($keywords === NULL) {
-	$template = file_get_contents(JPATH_SITE.'/modules/mod_fastrack_search/tmpl/typemenu.html');
-	$TypeMenu = new FastrackDisplay();
-	$TypeMenu->setTemplate($params->get('type_menu', $template));
-    $TypeMenu->setAttribute('typeTotal', $TypeTotal); 
-	$xx = FastrackHelper::getCondition('xx');
-	$m = '';
-	$displaysubtype = false;
-	$value = array();
-	foreach ($menu['type'] as $w) {
-		$q = explode("::", $w);
-		$q[0] = trim($q[0]);
-		$model = trim($q[1]);
-		if ($q[0] !== $m) {
-			$m = $q[0];
-			if (! empty($value))
-				$TypeMenu->setListAttribute('typelist', $value);
-			$mk = FastrackHelper::getSafeKey($m);
-			if ($displaysubtype) 
-				$displaysubtype = false;
-			$value = array();
-			$models = array();
-			$value['key'] = $mk;
-			$value['name'] = $m;
+
+	if (!isset($control['menu'] )) {
+		$TypeMenu = array();
+		$TypeMenu['typeTotal'] = $TypeTotal; 
+		$xx = FastrackHelper::getCondition('xx');
+		$m = '';
+		$displaysubtype = false;
+		$value = array();
+		foreach ($menu['type'] as $w) {
+			$q = explode("::", $w);
+			$q[0] = trim($q[0]);
+			$model = trim($q[1]);
+			if ($q[0] !== $m) {
+				$m = $q[0];
+				if (! empty($value))
+					$TypeMenu['typelist'][] = $value;
+				$mk = FastrackHelper::getSafeKey($m);
+				if ($displaysubtype) 
+					$displaysubtype = false;
+				$value = array();
+				$models = array();
+				$value['key'] = $mk;
+				$value['name'] = $m;
+				if (@$control['type'] == $m) {
+					$value['checked'] = ' checked';
+					$displaysubtype = true;
+				}
+				$value['count'] = $type[$mk]['count'];
+			} 
 			if (@$control['type'] == $m) {
-				$value['checked'] = ' checked';
-				$displaysubtype = true;
+				$mv = array();
+				$mv['name'] = $model;
+				if (@$control['subtype'] == $model)
+					$mv['selected'] = ' checked';
+				$mv['count'] = $type[$mk][FastrackHelper::getSafeKey($model)]['count'];
+				$models[] = $mv;
 			}
-			$value['count'] = $type[$mk]['count'];
-		} 
-		if (@$control['type'] == $m) {
-			$mv = array();
-			$mv['name'] = $model;
-			if (@$control['subtype'] == $model)
-				$mv['checked'] = ' checked';
-			$mv['count'] = $type[$mk][FastrackHelper::getSafeKey($model)]['count'];
-			$models[] = $mv;
+			if (! empty ($models)) 
+				$value['sublist']['subtype'] = $models;
 		}
-		if (! empty ($models)) 
-			$value['sublist']['subtype'] = $models;
+		
+		if (! empty($value))
+			$TypeMenu['typelist'][] = $value;
+		
+		if ($displaysubtype) 
+			$displaysubtype = false;
+		
+	
+		$ProductMenu['ProductTypes'] = $TypeMenu;
 	}
-	
-	if (! empty($value))
-		$TypeMenu->setListAttribute('typelist', $value);
-	
-	if ($displaysubtype) 
+	if (! isset($control['type'])) {
+		$MakeMenu = array();
+		$MakeMenu['makeTotal'] = $MakeTotal; 
+		  
+		$m = '';
 		$displaysubtype = false;
-	
-	$ProductMenu->setAttribute('type', @$control['type']);
-
-	$ProductMenu->setAttribute('ProductTypes', $TypeMenu->render());
-
-	  
-	$template = file_get_contents(JPATH_SITE.'/modules/mod_fastrack_search/tmpl/makemenu.html');
-	$MakeMenu = new FastrackDisplay();
-	$MakeMenu->setTemplate($params->get('type_menu', $template));
-    $MakeMenu->setAttribute('makeTotal', $MakeTotal); 
-	  
-	$m = '';
-	$displaysubtype = false;
-	$value = array();
-	foreach ($menu['make'] as $w) {
-		$q = explode("::", $w);
-		$q[0] = trim($q[0]);
-		$model = trim($q[1]);
-		if ($q[0] !== $m) {
-			$m = $q[0];
-			if (! empty($value))
-				$MakeMenu->setListAttribute('makelist', $value);
-			$mk = FastrackHelper::getSafeKey($m);
-			if ($displaysubtype) 
-				$displaysubtype = false;
-			$value = array();
-			$models = array();
-			$value['key'] = $mk;
-			$value['name'] = $m;
-			$value['count'] = $make[$mk]['count'];
+		$value = array();
+		foreach ($menu['make'] as $w) {
+			$q = explode("::", $w);
+			$q[0] = trim($q[0]);
+			$model = trim($q[1]);
+			if ($q[0] !== $m) {
+				$m = $q[0];
+				if (! empty($value))
+					$MakeMenu['makelist'][] = $value;
+				$mk = FastrackHelper::getSafeKey($m);
+				if ($displaysubtype) 
+					$displaysubtype = false;
+				$value = array();
+				$models = array();
+				$value['key'] = $mk;
+				$value['name'] = $m;
+				$value['count'] = $make[$mk]['count'];
+				if (@$control['make'] == $m) {
+					$displaysubtype = true;
+					$value['checked'] = ' checked';
+				}
+			} 
 			if (@$control['make'] == $m) {
-				$displaysubtype = true;
-				$value['checked'] = ' checked';
+				$mv = array();
+				$mv['name'] = $model;
+				if (@$control['model'] == $model)
+					$mv['selected'] = ' checked';
+				$mv['count'] = $make[$mk][FastrackHelper::getSafeKey($model)]['count'];
+				$models[] = $mv;
 			}
-		} 
-		if (@$control['make'] == $m) {
-			$mv = array();
-			$mv['name'] = $model;
-			if (@$control['model'] == $model)
-				$mv['checked'] = ' checked';
-			$mv['count'] = $make[$mk][FastrackHelper::getSafeKey($model)]['count'];
-			$models[] = $mv;
+			if (! empty ($models)) 
+				$value['modellist']['models'] = $models;
 		}
-		if (! empty ($models)) 
-			$value['modellist']['models'] = $models;
+		if (! empty($value))
+			$MakeMenu['makelist'][] = $value;
+		if ($displaysubtype) 
+			$displaysubtype = false;
+		$ProductMenu['ProductMakes'] = $MakeMenu;
 	}
-	if (! empty($value))
-		$MakeMenu->setListAttribute('makelist', $value);
-	if ($displaysubtype) 
-		$displaysubtype = false;
-	$ProductMenu->setAttribute('ProductMakes', $MakeMenu->render());
 } 
 
-$ProductMenu->setAttribute('make', @$control['make']);
-echo $ProductMenu->render();
+$m = new Mustache_Engine ;
+$template = file_get_contents(JPATH_SITE.'/modules/mod_fastrack_search/tmpl/productmenu.html');
+echo $m->render($params->get('content_search', $template),  $ProductMenu);
 ?>
 </form>

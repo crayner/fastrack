@@ -22,8 +22,6 @@
  */
 
 defined('_JEXEC') or die();
-
-JLoader::import('components/com_fastrack/libraries/mustache/src/mustache/Autoloader', JPATH_ADMINISTRATOR);
 /**
  * Fastrack Display
  *

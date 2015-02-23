@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK_SEARCH</name>
 	<author>Hill Range Services</author>
-	<creationDate>21st Feb 2015</creationDate>
+	<creationDate>23rd Feb 2015</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -20,9 +20,77 @@
 		<folder>language</folder>
 	</files>
 	<config>
-		<fields name="params"
-			addfieldpath="/modules/com_fastrack/fields">
+		<fields name="params" addfieldpath="/administrator/components/com_fastrack/models/fields">
 			<fieldset name="basic">
+				<field name="content_search" type="textarea2" default="" label="MOD_FASTRACK_SEARCH_FIELD_CONTENT_LABEL"
+					rows="10" cols="80" filter="raw">
+					<content><![CDATA[
+
+<div id="ProductMenu">
+    <p style="margin-bottom: 5px;">Keyword Search: Separate by commas:</p>
+    <div>
+    
+    
+        <p><input type="text" name="control[keywords]" size="10" maxlength="75" style="width: 80%" value="{{keywords}}" />
+        <input class="searchbutton" type="submit" value="Search Now" name="control[Search]"  />
+        <input type="submit" value="&nbsp;Refresh Display&nbsp;"  />
+        <input type="submit" value="&nbsp;New Search&nbsp;" name="control[NewSearch]" /></p>
+        
+        {{#ProductTypes}}
+
+		<p>Type/SubType</p>
+			<ul>
+				<li><input type="radio" name="control[type]" value="All Types" onclick="TheSearchForm.submit()">All Types ({{typeTotal}})</li>
+				{{#typelist}}
+				<li><input type="radio" name="control[type]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
+					{{#sublist}}
+						<ul>
+							<li><input type="radio" name="control[subtype]" value="allsubtypes" onclick="TheSearchForm.submit()"  />All Sub-Types</li>
+							{{#subtype}}
+							<li><input type="radio" name="control[subtype]" value="{{name}}"{{#checked}}{{checked}}{{/checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+							{{/subtype}}
+						</ul>
+					{{/sublist}}
+				</li>
+				{{/typelist}}
+			</ul>
+       
+        {{/ProductTypes}}
+        
+        {{#ProductMakes}}
+        
+		<p>Make/Model</p>
+			<ul>
+				<li><input type="radio" name="control[make]" value="All Makes" onclick="TheSearchForm.submit()">All Makes ({{makeTotal}})</li>
+				{{#makelist}}
+				<li><input type="radio" name="control[make]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
+					{{#modellist}}
+						<ul>
+							<li><input type="radio" name="control[model]" value="allmodels" onclick="TheSearchForm.submit()"  />All Models</li>
+							{{#models}}
+							<li><input type="radio" name="control[model]" value="{{name}}"{{#checked}}{{checked}}{{/checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+							{{/models}}
+						</ul>
+					{{/modellist}}
+				</li>
+				{{/makelist}}
+			</ul>
+       
+        {{/ProductMakes}}
+      
+        
+        
+        <input type="hidden" value="{{make}}" name="control[OldMake]">
+        <input type="hidden" value="{{type}}" name="control[OldType]">
+        <input type="hidden" value="{{keywords}}" name="control[oldKeywords]">
+        {{pagination}}
+
+	</div>
+</div>
+					
+]]></content>
+					<description>MOD_FASTRACK_SEARCH_FIELD_CONTENT_DESC</description>
+				</field>
 				<field name="css_search" type="textarea2" default="" label="MOD_FASTRACK_SEARCH_FIELD_CSS_LABEL"
 					rows="10" cols="80" filter="raw">
 					<content><![CDATA[

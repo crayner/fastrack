@@ -24,7 +24,8 @@
 defined('_JEXEC') or die();
 
 JLoader::import('components.com_fastrack.libraries.display', JPATH_ADMINISTRATOR);
-
+JLoader::import('components.com_fastrack.libraries.mustache.src.Mustache.Autoloader', JPATH_ADMINISTRATOR);
+Mustache_Autoloader::register();
 JLoader::import('modules.mod_fastrack_search.search', JPATH_SITE);
 
 $css = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/default.css');
@@ -221,6 +222,8 @@ foreach ($xx as $q=>$w) {
 }
 
 $items->setAttribute('search', ModFastrackSearch::hiddenSearch());
+$m = new Mustache_Engine ;
+$template = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/default.html');
 
 echo $items->render(); ?>
 

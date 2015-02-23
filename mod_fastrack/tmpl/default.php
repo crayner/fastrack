@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 21st February 2015
+ * @version 23rd February 2015
  * @since 14th February 2015
  */
 
@@ -29,13 +29,11 @@ Mustache_Autoloader::register();
 JLoader::import('modules.mod_fastrack_search.search', JPATH_SITE);
 
 $css = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/default.css');
-$css = $params->get('css_contents', $css);
+$css = $params->get('css_contents', $css);?>
+
+<form name="TheForm" id="TheForm" method="post"><?php
 
 
-?>
-
-<form name="TheForm" id="TheForm" method="post">
-<?php
 $doc = JFactory::getDocument();
 $doc->addStyleDeclaration($css);
 
@@ -62,20 +60,15 @@ $ShowCount = $params->get('pageitems', 10);
 if ($count < $params->get('pageitems', 10))
 	$ShowCount = $count;
 
-$itemsTemplate = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/siteitems.html');
-
-$items = new FastrackDisplay();
-$items->setTemplate($params->get('items_content', $itemsTemplate));
-$items->setAttribute('warning', $warning);
-$items->setAttribute('TotalAvailable', $TotalAvailable);
-$items->setAttribute('count', $count);
+$items = array();
+$items['warning'] = $warning;
+$items['TotalAvailable'] = $TotalAvailable;
+$items['count'] = $count;
 $plural = '';
 if ($count> 1)
 	$plural = 's';
-$items->setAttribute('plural', $plural);
-$items->setAttribute('pageitems', $params->get('pageitems', 10));
-
-$itemTemplate = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/siteitem.html');
+$items['plural'] = $plural;
+$items['pageitems'] = $params->get('pageitems', 10);
 
 $DisplayCount = 0;
 $DisplayNow = false;
@@ -85,16 +78,15 @@ foreach ($xx as $q=>$w) {
 	if ($w['id'] == $pagin['startKey'])
 		$DisplayNow = true;
 	if ($DisplayNow) {
-		$item = new FastrackDisplay();
-		$item->setTemplate($params->get('item_content', $itemTemplate));
+		$item = array();
 		$xx[$q] = FastrackHelper::imageCreator($xx[$q], $ftfile);
 		unset($image);
-		$item->setAttribute('enquiry', str_replace('{{id}}', $w['id'], $ftfile->enquiryURL));
+		$item['enquiry'] = str_replace('{{id}}', $w['id'], $ftfile->enquiryURL);
 		$FileID = fopen($ftfile->resultPath.$w['id'].".txt", "w");   
 		foreach ($order as $n){
 			switch ($n) {
 				case "type";
-					$item->setAttribute('type', $w[$n]);
+					$item['type'] = $w[$n];
 					fwrite($FileID, $n.":=".$w[$n]." - ".$w['subtype']."\n");
 					break;
 				case "price";
@@ -102,84 +94,84 @@ foreach ($xx as $q=>$w) {
 						$w['price']['currency'] = 'AUD';
 					$w['price']['cost'] = number_format($w['price']['value'], 2, '.', ',');
 					$w['price']['gst'] =$w['price']['gst_value'];
-					$item->setAttribute('price', $w['price']);
+					$item['price'] = $w['price'];
 					fwrite($FileID, "cost:=".$w['price']['value']."\n");
 					fwrite($FileID, "gst:=".$w['price']['gst_value']."\n");
 					fwrite($FileID, "currency:=".$w['price']['currency']."\n");
 					break;
 				case "subtype":
-					$item->setAttribute($n, $w[$n]);
+					$item[$n] =  $w[$n];
 					break;
 				case "make";
-					$item->setAttribute($n, $w[$n]); 
+					$item[$n] =  $w[$n]; 
 					fwrite($FileID, $n.":=".$w[$n]."\n");
 					break;
 				case "model";
-					$item->setAttribute($n, $w[$n]); 
+					$item[$n] =  $w[$n]; 
 					fwrite($FileID, $n.":=".$w[$n]."\n");
 					break;
 				case "configuration";
 				case "config";
 					if (isset($w[$n])) {
 						fwrite($FileID, $w[$n]['name'].":=".$w[$n]['value']."\n");
-						$item->setAttribute($n, array('name'=>$w[$n]['name'],'value'=>$w[$n]['value']));
+						$item[$n] =  array('name'=>$w[$n]['name'],'value'=>$w[$n]['value']);
 					}
 					break;
 				case "listingtype";
 					if (isset($w[$n])) {
-						$item->setAttribute($n, $w[$n]['value']); 
+						$item[$n] =  $w[$n]['value']; 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "condition";
 					if (isset($w[$n])){
-						$item->setAttribute($n, $w[$n]['value']); 
+						$item[$n] =  $w[$n]['value']; 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "year";
 					if (isset($w[$n])) {
-						$item->setAttribute($n, $w[$n]['value']); 
+						$item[$n] =  $w[$n]['value']; 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "hours";
 					if (isset($w[$n])){
-						$item->setAttribute($n, $w[$n]['value']); 
+						$item[$n] =  $w[$n]['value']; 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "stockref";
 					if (isset($w[$n])) {
-						$item->setAttribute($n, $w[$n]['value']); 
+						$item[$n] =  $w[$n]['value']; 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "engpower";
 					if (isset($w[$n])) {
-						$item->setAttribute($n, $w[$n]['value']); 
+						$item[$n] =  $w[$n]['value']; 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					}
 					break;
 				case "status";
 					if (isset($w[$n]))
-						$item->setAttribute($n, $w[$n]['value']); 
+						$item[$n] =  $w[$n]['value']; 
 						fwrite($FileID, $n.":=".$w[$n]['value']."\n");
 					break;
 				case "id";
 					if (isset($w[$n])) {
-						$item->setAttribute($n, $w[$n]); 
+						$item[$n] =  $w[$n]; 
 						fwrite($FileID, $n.":=".$w[$n]."\n");
 					}
 					break;
 				case "description";
 					if (isset($w[$n])) {
-						$item->setAttribute($n, str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value']))); 
+						$item[$n] =  str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value'])); 
 						fwrite($FileID, $n.":=".str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value']))."\n");
 					}
 					break;
 				default:
-					$item->addToAttribute('miscellaneous', "<p><b>".$n.":</b> ".$w[$n]."</p>\n"); 
+					$item['miscellaneous'][] = "<p><b>".$n.":</b> ".$w[$n]."</p>\n"; 
 					fwrite($FileID, $n.':+'.$w[$n]."\n");
 			}
 		}
@@ -190,7 +182,7 @@ foreach ($xx as $q=>$w) {
 			$xx[$q]['image'][1] = 'PlaceHolder.png';
 
 		$imageURL = rtrim($ftfile->imageURL, '/').'/';
-		$item->setAttribute('firstimage', $imageURL . '/' . $xx[$q]['image'][1]);
+		$item['firstimage'] = $imageURL . '/' . $xx[$q]['image'][1];
 		$images = array();
 		foreach ($xx[$q]['image'] as $c=>$i) {
 			$iv = getimagesize($ftfile->path . $i);
@@ -213,19 +205,18 @@ foreach ($xx as $q=>$w) {
 			$images[] = $stuff;
 		}
 		$ti['images'] = $images;
-		$item->setAttribute('thumbimages', $ti);		
-		$items->addToAttribute('items', $item->render());
+		$item['thumbimages'] = $ti;		
+		$items['items'][] = $item;
 		$DisplayCount++;
 		if ($DisplayCount > $params->get('pageitems', 10) - 1)
 			break;
 	}
 }
 
-$items->setAttribute('search', ModFastrackSearch::hiddenSearch());
+$items['search']  = ModFastrackSearch::hiddenSearch();
 $m = new Mustache_Engine ;
 $template = file_get_contents(JPATH_SITE.'/modules/mod_fastrack/tmpl/default.html');
-
-echo $items->render(); ?>
+echo $m->render($params->get('content', $template), $items); ?>
 
 <div id="StartFooter">&nbsp;</div>
 

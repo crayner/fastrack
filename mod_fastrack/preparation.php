@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 22nd February 2015
+ * @version 23rd February 2015
  * @since 26th November 2014
  */
 
@@ -25,7 +25,7 @@ defined('_JEXEC') or die();
 /**
  * Mod Fastrack Preparation
  *
- * @version 22nd February 2015
+ * @version 23rd February 2015
  */
 class ModFastrackPreparation {
 
@@ -304,7 +304,7 @@ class ModFastrackPreparation {
 /**
   * Execute
   *
-  * @version 16th February 2015
+  * @version 23rd February 2015
   * @since 26th November 2014
   * @param array Items
   * @retrun array
@@ -320,7 +320,7 @@ class ModFastrackPreparation {
 				$pagin['startKeyValues'][$page++] = $w['id'];
 			}
 			$x++;
-			if ($x >= $pageItems)
+			if ($x > $pageItems)
 				$x = 1;
 		}
 		FastrackHelper::setCondition('startKeyValues', $pagin['startKeyValues']); 

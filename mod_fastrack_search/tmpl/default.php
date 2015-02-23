@@ -109,6 +109,8 @@ $ProductMenu['make'] = @$control['make'];
 	
 		$ProductMenu['ProductTypes'] = $TypeMenu;
 	}
+
+
 	if (! isset($control['type'])) {
 		$MakeMenu = array();
 		$MakeMenu['makeTotal'] = $MakeTotal; 
@@ -154,10 +156,12 @@ $ProductMenu['make'] = @$control['make'];
 			$displaysubtype = false;
 		$ProductMenu['ProductMakes'] = $MakeMenu;
 	}
+
+
 } 
 
 $m = new Mustache_Engine ;
-$template = file_get_contents(JPATH_SITE.'/modules/mod_fastrack_search/tmpl/productmenu.html');
+$template = file_get_contents(JPATH_SITE.'/modules/mod_fastrack_search/tmpl/default.html');
 echo $m->render($params->get('content_search', $template),  $ProductMenu);
 ?>
 </form>

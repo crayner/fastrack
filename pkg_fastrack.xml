@@ -17,6 +17,6 @@
 		<file id="mod_fastrack_search" type="module" client="site">mod_fastrack_search.zip</file>
 	</files>
 	<updateservers>
-		<server type="extension" priority="1" name="pkg_fastrack">https://sites.google.com/a/hillrange.com.au/fastrack/package-files/fastrack_upgrade.xml</server>
+		<server type="extension" priority="1" name="pkg_fastrack">http://fastrack.hillrange.com.au/package-files/fastrack_upgrade.xml</server>
 	</updateservers>
 </extension>

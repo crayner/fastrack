@@ -17,11 +17,14 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 18th February 2015
+ * @version 27th February 2015
  * @since 9th February 2015
  */
 
 defined('_JEXEC') or die();
+
+if (! function_exists('printAnObject') ) JLoader::import('components.com_fastrack.libraries.debug', JPATH_ADMINISTRATOR);
+
 /**
  * Fastrack Helper
  *
@@ -602,56 +605,3 @@ class FastrackHelper {
 	}
 }
 
-/**
- * Print an Object
- *
- * @version 16th February 2015
- * @since OLD
- * @param mixed The object to be printed
- * @param boolean Stop execution after printing object.
- * @param boolean Stop execution after printing object.
- * @return void
- */
-	function printAnObject($object, $stop = false, $full = false) {
-	
-		$caller = debug_backtrace();
-		echo "<pre>\n";
-		echo $caller[0]['line'].': '.$caller[0]['file'];
-		echo "\n</pre>\n";
-		echo "<pre>\n";
-		print_r($object);
-		if ($full) 
-			print_r($caller);
-		echo "\n</pre>\n";
-		if ($stop) 
-			trigger_error('Object Print Stop', E_USER_ERROR);
-		return ;
-	}
-/**
- * File an Object
- *
- * @version 10th November 2014
- * @since OLD
- * @param mixed The object to be printed
- * @param string Name of File
- * @return void
- */
-	function fileAnObject($object, $name = NULL) {
-	
-		$config = JFactory::getConfig();
-		$logpath = $config->get('log_path');
-		if ($name === NULL)
-			$fn = '/' . substr(md5(print_r($object, true)), 0, 12).'.dump';
-		else
-			$fn = '/' . $name . '.dump';
-		$caller = debug_backtrace();
-		$data = $caller[0]['line'].': '.$caller[0]['file']."\n";
-		$data .= print_r($object, true);
-		$x = '';
-		foreach ($caller as $w) {
-			$x =  $w['line'].': '.$w['file'].' '.$w['function']."\n". $x;
-		}
-		$data .= "\n".$x;
-		file_put_contents($logpath.$fn, $data);
-		return ;
-	}

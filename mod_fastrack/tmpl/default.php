@@ -223,7 +223,7 @@ echo $m->render($params->get('content', $template), $items); ?>
 <?php echo $pagination; ?>
 
 </form>
-
+<div style="clear:both;">&nbsp;</div>
 <?php
 foreach($fileNames as $ftfile) {
 	# Now remove old image files from created stack.

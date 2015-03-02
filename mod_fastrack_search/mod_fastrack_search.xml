@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK_SEARCH</name>
 	<author>Hill Range Services</author>
-	<creationDate>27th Feb 2015</creationDate>
+	<creationDate>28th Feb 2015</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -29,7 +29,7 @@
 					rows="10" cols="80" filter="raw">
 					<content><![CDATA[
 
-<div id="ProductMenu">
+<div id="ProductMenu" class="container-fluid">
     <p style="margin-bottom: 5px;">Keyword Search: Separate by commas:</p>
     <div>
     
@@ -40,45 +40,45 @@
         <input type="submit" value="&nbsp;New Search&nbsp;" name="control[NewSearch]" /></p>
         
         {{#ProductTypes}}
-
-		<p>Type/SubType</p>
-			<ul>
-				<li><input type="radio" name="control[type]" value="All Types" onclick="TheSearchForm.submit()">All Types ({{typeTotal}})</li>
-				{{#typelist}}
-				<li><input type="radio" name="control[type]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
-					{{#sublist}}
-						<ul>
-							<li><input type="radio" name="control[subtype]" value="allsubtypes" onclick="TheSearchForm.submit()"  />All Sub-Types</li>
-							{{#subtype}}
-							<li><input type="radio" name="control[subtype]" value="{{name}}"{{#checked}}{{checked}}{{/checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
-							{{/subtype}}
-						</ul>
-					{{/sublist}}
-				</li>
-				{{/typelist}}
-			</ul>
-       
+		<div class="well">
+            <p>Type/SubType</p>
+            <ul>
+                <li><input type="radio" name="control[type]" value="All Types" onclick="TheSearchForm.submit()">All Types ({{typeTotal}})</li>
+                {{#typelist}}
+                <li><input type="radio" name="control[type]" value="{{name}}"{{#checked}}{{checked}}{{/checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
+                    {{#sublist}}
+                        <ul>
+                            <li><input type="radio" name="control[subtype]" value="allsubtypes" onclick="TheSearchForm.submit()"  />All Sub-Types</li>
+                            {{#subtype}}
+                            <li><input type="radio" name="control[subtype]" value="{{name}}"{{#selected}}{{selected}}{{/selected}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+                            {{/subtype}}
+                        </ul>
+                    {{/sublist}}
+                </li>
+                {{/typelist}}
+            </ul>
+        </div>
         {{/ProductTypes}}
         
         {{#ProductMakes}}
-        
-		<p>Make/Model</p>
-			<ul>
-				<li><input type="radio" name="control[make]" value="All Makes" onclick="TheSearchForm.submit()">All Makes ({{makeTotal}})</li>
-				{{#makelist}}
-				<li><input type="radio" name="control[make]" value="{{name}}"{{checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
-					{{#modellist}}
-						<ul>
-							<li><input type="radio" name="control[model]" value="allmodels" onclick="TheSearchForm.submit()"  />All Models</li>
-							{{#models}}
-							<li><input type="radio" name="control[model]" value="{{name}}"{{#checked}}{{checked}}{{/checked}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
-							{{/models}}
-						</ul>
-					{{/modellist}}
-				</li>
-				{{/makelist}}
-			</ul>
-       
+        <div class="well">
+            <p>Make/Model</p>
+            <ul>
+                <li><input type="radio" name="control[make]" value="All Makes" onclick="TheSearchForm.submit()">All Makes ({{makeTotal}})</li>
+                {{#makelist}}
+                <li><input type="radio" name="control[make]" value="{{name}}"{{#checked}}{{checked}}{{/checked}} onclick="TheSearchForm.submit()">{{name}} ({{count}})
+                    {{#modellist}}
+                        <ul>
+                            <li><input type="radio" name="control[model]" value="allmodels" onclick="TheSearchForm.submit()"  />All Models</li>
+                            {{#models}}
+                            <li><input type="radio" name="control[model]" value="{{name}}"{{#selected}}{{selected}}{{/selected}} onclick="TheSearchForm.submit()"  />{{name}} ({{count}})</li>
+                            {{/models}}
+                        </ul>
+                    {{/modellist}}
+                </li>
+                {{/makelist}}
+            </ul>
+       	</div>
         {{/ProductMakes}}
       
         
@@ -99,17 +99,22 @@
 					<content><![CDATA[
 
 /* CSS Document */
+/* 28th February 2015 */
 #ProductMenu {
-	background: #dddddd;
-	border-radius: 20px;
-	padding: 20px 2px 20px 2px;
+	margin: 0;
+	padding: 0;
+}#ProductMenu div {
+	margin: 0;
+	padding: 0;
 }
 #ProductMenu h3 {
 	line-height: unset;
 }
 
 #ProductMenu ul {
-	list-style-type: none;	
+	list-style-type: none;
+	text-indent: 0;
+	padding: 0;
 }
 #ProductMenu label {
 	font-size: 80%;	
@@ -121,15 +126,11 @@
 	padding: 2px;
 	color: #777777;
 	width: 110px;
-/*	text-shadow: 0 1px 0 #3c61ab;*/
 }
 .EnqButton {
-margin-top: 2px;
+	margin-top: 2px;
 }
 #ProductMenu input[type="submit"]:hover {
-/*	border: none;
-	background-color: transparent;	
-	text-decoration: underline ; */
 }
 
 .searchbutton {

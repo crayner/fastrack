@@ -227,6 +227,10 @@ echo $m->render($params->get('content', $template), $items); ?>
 <?php
 foreach($fileNames as $ftfile) {
 	# Now remove old image files from created stack.
+	if (! is_dir($ftfile->resultPath)) {
+		if (! @mkdir($ftfile->resultPath))
+			JError::raiseWarning('42', JText::_('COM_FASTRACK_ERROR_RESULTPATH'));
+	}
 	$path = rtrim($ftfile->resultPath, '/').'/';
 	$images = dir($path);
 	

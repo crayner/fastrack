@@ -28,7 +28,7 @@ if (! function_exists('printAnObject') ) JLoader::import('components.com_fastrac
 /**
  * Fastrack Helper
  *
- * @version 18th February 2015
+ * @version 27th February 2015
  * @since 9th February 2015
  */
 class FastrackHelper {
@@ -549,7 +549,7 @@ class FastrackHelper {
   * Image Creator
   *
   * Resize Images so speed up normal page render
-  * @version 3rd December 2014
+  * @version 27th February 2015
   * @since 3rd December 2014
   * @param array Item Details
   * @param object File Details
@@ -573,6 +573,10 @@ class FastrackHelper {
 						$thumb = imagecreatetruecolor($width, $height);
 						$source = imagecreatefromjpeg($ftfile->path.$w['image'][$count]);
 						imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $im[0], $im[1]);
+						if (! is_dir($ftfile->resultPath)) {
+							if (! @mkdir($ftfile->resultPath))
+								JError::raiseWarning('42', JText::_('COM_FASTRACK_ERROR_RESULTPATH'));
+						}
 						imagejpeg($thumb, $ftfile->resultPath.$imageName.'_'.$w['id'].'_'.strval($count).'.jpg');
 						imagedestroy($source);
 						imagedestroy($thumb);

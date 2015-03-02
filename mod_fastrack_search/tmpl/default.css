@@ -1,15 +1,20 @@
 /* CSS Document */
+/* 28th February 2015 */
 #ProductMenu {
-	background: #dddddd;
-	border-radius: 20px;
-	padding: 20px 2px 20px 2px;
+	margin: 0;
+	padding: 0;
+}#ProductMenu div {
+	margin: 0;
+	padding: 0;
 }
 #ProductMenu h3 {
 	line-height: unset;
 }
 
 #ProductMenu ul {
-	list-style-type: none;	
+	list-style-type: none;
+	text-indent: 0;
+	padding: 0;
 }
 #ProductMenu label {
 	font-size: 80%;	
@@ -21,15 +26,11 @@
 	padding: 2px;
 	color: #777777;
 	width: 110px;
-/*	text-shadow: 0 1px 0 #3c61ab;*/
 }
 .EnqButton {
-margin-top: 2px;
+	margin-top: 2px;
 }
 #ProductMenu input[type="submit"]:hover {
-/*	border: none;
-	background-color: transparent;	
-	text-decoration: underline ; */
 }
 
 .searchbutton {

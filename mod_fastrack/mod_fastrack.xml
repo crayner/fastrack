@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>23rd Feb 2014</creationDate>
+	<creationDate>28th Feb 2015</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -40,50 +40,49 @@
 					rows="10" cols="80" filter="raw">
 					<content><![CDATA[
 
-
-
-<div class="UsedProductManagement">
+<div class="UsedProductManagement container-fluid">
 	<div id="SaleItems">
-		{{#warning}}<p>{{warning}}</p>{{/warning}}
+		{{#warning}}{{{warning}}}{{/warning}}
 		<p>The files have {{TotalAvailable}} used products in the catalogue.  Your search revealed {{count}} product{{plural}}, displayed {{pageitems}} products to a page.</p>
 		{{#items}}
 
 
-        <div class="SaleItem">
-            <div class="SaleItemHeader">
-                <li class="MainTitle">{{make}} - {{model}}</li>
-                <li class="PriceTitle">
-                    {{#price}}<span class="audgst">{{currency}}</span> ${{cost}} <span class="audgst">{{gst}}</span>{{/price}}&nbsp;&nbsp;&nbsp;&nbsp;
-                    <input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('{{enquiry}}', '_self')" />
-                </li>
-                <div style="clear:both;"></div>
-            </div> <!-- End of SaleItemHeader -->
-            <div class="Specifications">
-                <p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
-                <p class="SpecHeading"><b>Make:</b> {{make}}</p>
-                <p class="SpecHeading"><b>Model:</b> {{model}}</p>
-                {{#config}}<p><b>{{name}}:</b> {{value}}</p>{{/config}}
-                {{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
-                {{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
-                {{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}
-                {{#hours}}<p><b>Hours:</b> {{hours}}</p>{{/hours}}
-                {{#stockref}}<p><b>Stock Ref #:</b> {{stockref}}</p>{{/stockref}}
-                {{#engpower}}<p><b>Eng. Power:</b> {{engpower}}</p>{{/engpower}}
-                {{#status}}<p><b>Status:</b> {{status}}</p>{{/status}}
-                <!-- <p><b>ID:</b> {{id}}</p> -->
-                {{#description}}<p><b>Description:</b> {{description}}</p>{{/description}}
-                {{#miscellaneous}}{{miscellaneous}}{{/miscellaneous}}
-            </div> <!-- End of Specifications -->
-            <div id="FirstImageHolder">
-                <p><img id="firstImage" src='{{firstimage}}' alt='' width="245" /></p>
-                {{#thumbimages}}<div class="SaleThumbs">
-                    {{#images}}<a class="thumb" href="#">
-                        <img src="{{imageURL}}" alt="" width="{{thumbwidth}}" height="{{thumbheight}}">
-                        <span style="width: {{width4}}px; height: {{height4}}px; "><img src="{{imageURL}}" alt="" width="{{width}}" height="{{height}}"></span>
-                    </a>{{/images}}
-                 </div> <!-- End of SaleThumbs -->{{/thumbimages}}
-            </div> <!-- End of FirstImageHolder -->
-        </div> <!-- End of SaleItem -->
+		<div class="SaleItem">
+			<div class="SaleItemHeader">
+				<li class="MainTitle">{{make}} - {{model}}</li>
+				<li class="PriceTitle">
+					{{#price}}<span class="audgst">{{currency}}</span> ${{cost}} <span class="audgst">{{gst}}</span>{{/price}}&nbsp;&nbsp;&nbsp;&nbsp;
+					<input class="EnqButton" type="button" value="&nbsp;Send Enquiry&nbsp;" onclick="window.open('{{enquiry}}', '_self')" />
+				</li>
+			</div> <!-- End of SaleItemHeader -->
+			<div style="clear:both;">
+				<div class="Specifications">
+					<p class="SpecHeading"><b>Type:</b> {{type}} - {{subtype}}</p>
+					<p class="SpecHeading"><b>Make:</b> {{make}}</p>
+					<p class="SpecHeading"><b>Model:</b> {{model}}</p>
+					{{#config}}<p><b>{{name}}:</b> {{value}}</p>{{/config}}
+					{{#listingtype}}<p><b>Listing Type:</b> {{listingtype}}</p>{{/listingtype}}
+					{{#condition}}<p><b>Condition:</b> {{condition}}</p>{{/condition}}
+					{{#year}}<p><b>Year:</b> {{year}}</p>{{/year}}
+					{{#hours}}<p><b>Hours:</b> {{hours}}</p>{{/hours}}
+					{{#stockref}}<p><b>Stock Ref #:</b> {{stockref}}</p>{{/stockref}}
+					{{#engpower}}<p><b>Eng. Power:</b> {{engpower}}</p>{{/engpower}}
+					{{#status}}<p><b>Status:</b> {{status}}</p>{{/status}}
+					<!-- <p><b>ID:</b> {{id}}</p> -->
+					{{#description}}<p><b>Description:</b> {{description}}</p>{{/description}}
+					{{#miscellaneous}}{{{miscellaneous}}}{{/miscellaneous}}
+				</div> <!-- End of Specifications -->
+				<div id="FirstImageHolder">
+					<p><img id="firstImage" src='{{firstimage}}' alt='' width="245" /></p>
+					{{#thumbimages}}<div class="SaleThumbs">
+						{{#images}}<a class="thumb" href="#">
+							<img src="{{imageURL}}" alt="" width="{{thumbwidth}}" height="{{thumbheight}}">
+							<span style="width: {{width4}}px; height: {{height4}}px; "><img src="{{imageURL}}" alt="" width="{{width}}" height="{{height}}"></span>
+						</a>{{/images}}
+					 </div> <!-- End of SaleThumbs -->{{/thumbimages}}
+				</div> <!-- End of FirstImageHolder -->
+			</div>
+		</div> <!-- End of SaleItem -->
 
 		{{/items}}
 	</div> <!-- End of SaleItems -->
@@ -98,8 +97,9 @@
 				<field name="css_contents" type="textarea2" default="" label="MOD_FASTRACK_FIELD_CSS_CONTENT_LABEL"
 					rows="10" cols="80" filter="raw">
 					<content><![CDATA[
+					
 /* CSS Document */
-
+/* Version: 28th February 2015  */
 #usedmachinery {
 	margin: 0;
 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -136,7 +136,6 @@ border-style: solid;
 	float: right; 
 	text-align: center;
 	border-radius: 15px;
-	/* border: 1px #CCCCCC solid; */
 	background: #DEDEDE;
 }
 .highlight-box img {
@@ -175,7 +174,7 @@ border-style: solid;
 	max-width: 55%;
 	color: #7e7e7e;
 	text-transform: uppercase;
-/*	width: 55%; */}
+}
 .SaleItemHeader {
 	margin: 3px;
     padding-bottom: 8px;
@@ -228,8 +227,7 @@ margin-top: -5px;
 	border-radius: 20px;
 }
 .SaleThumbs {
-	clear: both;
-/*	width: 95%;  */
+        clear: both;
 }
 .thumb {
 	float: left; /* must be floated for same cross browser position of larger image */
@@ -274,12 +272,15 @@ margin-top: -5px;
 }
 div#StartFooter {
 	width: 100%;
+	clear: both;
 }
 
 					
 ]]></content>
 					<description>MOD_FASTRACK_FIELD_CSS_CONTENT_DESC</description>
 				</field>
+				<field name="@spacer" type="spacer" default="" label=""
+					description="" />
 				<field name="moduleclass_sfx" type="text"
 						label="COM_MODULES_FIELD_MODULECLASS_SFX_LABEL" description="COM_MODULES_FIELD_MODULECLASS_SFX_DESC" />
 			</fieldset>

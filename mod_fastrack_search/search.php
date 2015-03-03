@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 27th February 2015
+ * @version 3rd March 2015
  * @since 17th February 2015
  */
 
@@ -25,7 +25,7 @@ defined('_JEXEC') or die();
 /**
  * Module Fastrack Search
  *
- * @version 27th February 2015
+ * @version 3rd March 2015
  * @since 17th February 2015
  */
 class ModFastrackSearch {
@@ -37,7 +37,7 @@ class ModFastrackSearch {
 /**
  * Execute
  *
- * @version 27th February 2015
+ * @version 3rd March 2015
  * @since 17th February 2015
  * @param object \Joomla\Registry\Registry
  * @return void
@@ -57,6 +57,9 @@ class ModFastrackSearch {
 		$query->where($sql->quoteName('title') . ' = ' . $sql->quote($params->get('module_id')));
 		$sql->setQuery($query);
 		$mfp = $sql->loadResult();
+		$mfp = json_decode($mfp);
+		unset($mfp->moduleclass_sfx, $mfp->module_tag, $mfp->bootstrap_size, $mfp->header_tag, $mfp->header_class, $mfp->style);
+		$mfp = json_encode($mfp);
 		self::$params->loadString($mfp);
 		ModFastrackPreparation::execute(self::$params);
 		return ;

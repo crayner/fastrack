@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 27th February 2015
+ * @version 3rd March 2015
  * @since 9th February 2015
  */
 
@@ -28,7 +28,7 @@ if (! function_exists('printAnObject') ) JLoader::import('components.com_fastrac
 /**
  * Fastrack Helper
  *
- * @version 27th February 2015
+ * @version 3rd March 2015
  * @since 9th February 2015
  */
 class FastrackHelper {
@@ -549,7 +549,7 @@ class FastrackHelper {
   * Image Creator
   *
   * Resize Images so speed up normal page render
-  * @version 27th February 2015
+  * @version 3rd March 2015
   * @since 3rd December 2014
   * @param array Item Details
   * @param object File Details
@@ -574,7 +574,8 @@ class FastrackHelper {
 						$source = imagecreatefromjpeg($ftfile->path.$w['image'][$count]);
 						imagecopyresized($thumb, $source, 0, 0, 0, 0, $width, $height, $im[0], $im[1]);
 						if (! is_dir($ftfile->resultPath)) {
-							if (! @mkdir($ftfile->resultPath))
+							FastrackHelper::buildPath($ftfile->resultPath);
+							if (! is_dir($ftfile->resultPath))
 								JError::raiseWarning('42', JText::_('COM_FASTRACK_ERROR_RESULTPATH'));
 						}
 						imagejpeg($thumb, $ftfile->resultPath.$imageName.'_'.$w['id'].'_'.strval($count).'.jpg');
@@ -606,6 +607,21 @@ class FastrackHelper {
  	static public function getSafeKey($key) {
 		
 		return strtolower('_'.trim(str_replace(array(' ', '&', "\n", "\r", "\t", '.', ',', '/'), '', $key)));
+	}
+/**
+  * Build Path
+  * @version 3rd March 2015
+  * @since 3rd March 2015
+  * @param sting Path to Build
+  * @return void
+  */
+  	static public function buildPath($path) {
+		
+		$p = pathinfo($path);
+		if (! is_dir($p['dirname']))
+			FastrackHelper::buildPath($p['dirname']);
+		mkdir($path);
+		return ;
 	}
 }
 

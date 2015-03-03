@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 14th February 2015
+ * @version 3rd March 2015
  * @since 13th February 2015
  */
 
@@ -30,7 +30,7 @@ JLoader::import('components.com_fastrack.libraries.parser', JPATH_ADMINISTRATOR)
 /** 
  * Fastrack Models List Files
  * 
- * @version 13th February 2015
+ * @version 3rd March 2015
  * @since 13th February 2015
  */
 class FastrackModelsTest extends FastrackModelsDefault {
@@ -41,7 +41,7 @@ class FastrackModelsTest extends FastrackModelsDefault {
 /**
  * Execute
  *
- * @version 14th February 2015
+ * @version 3rd March 2015
  * @since 13th February 2015
  * @return array Results
  */
@@ -57,12 +57,14 @@ class FastrackModelsTest extends FastrackModelsDefault {
 		if (! is_file($this->ftfile->path.$this->ftfile->name))
 			$result['name'] = JText::_('COM_FASTRACK_ERROR_NAME');
 			
-		if (! is_dir($this->ftfile->path))
-			if (! mkdir($this->ftfile->path))
+		if (! is_dir($this->ftfile->path)) {
+			FastrackHelper::buildPath($this->ftfile->path);
+			if (! is_dir($this->ftfile->path))
 				$result['path'] = JText::_('COM_FASTRACK_ERROR_PATH');
-
+		}
 		if (! is_dir($this->ftfile->resultPath)) {
-			if (! @mkdir($this->ftfile->resultPath))
+				FastrackHelper::buildPath($this->ftfile->resultPath);
+			if (! is_dir($this->ftfile->resultPath))
 				$result['resultPath'] = JText::_('COM_FASTRACK_ERROR_RESULTPATH');
 		}
 		if (strtolower(substr($this->ftfile->enquiryURL, 0, 4)) == 'http')

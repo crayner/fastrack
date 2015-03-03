@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 23rd February 2015
+ * @version 3rd March 2015
  * @since 14th February 2015
  */
 
@@ -228,7 +228,8 @@ echo $m->render($params->get('content', $template), $items); ?>
 foreach($fileNames as $ftfile) {
 	# Now remove old image files from created stack.
 	if (! is_dir($ftfile->resultPath)) {
-		if (! @mkdir($ftfile->resultPath))
+		FastrackHelper::buildPath($ftfile->resultPath);
+		if (! is_dir($ftfile->resultPath))
 			JError::raiseWarning('42', JText::_('COM_FASTRACK_ERROR_RESULTPATH'));
 	}
 	$path = rtrim($ftfile->resultPath, '/').'/';

@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 11th February 2015
+ * @version 4th March 2015
  * @since 11th February 2015
  */
 
@@ -43,7 +43,7 @@ class FastrackViewsDefaultHtml extends JViewHtml{
 /**
  * Render
  *
- * @version 11th February 2015
+ * @version 4th March 2015
  * @since 11th February 2015
  * @param string ?????
  * @retrun string
@@ -51,13 +51,6 @@ class FastrackViewsDefaultHtml extends JViewHtml{
 	public function render() {
 		
 		JToolBarHelper::title(JText::_('COM_FASTRACK'), 'Fastrack Title');
-
-
-		$canDo = FastrackHelper::getActions();
-		if ($canDo->get('core.admin')) {
-			JToolBarHelper::preferences('com_fastrack', 550);
-			JToolBarHelper::divider();
-		}
 
 		return parent::render();
 	}

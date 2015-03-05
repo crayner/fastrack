@@ -636,7 +636,7 @@ class FastrackHelper {
 /*
 Calling Code in RSForm::PHP Scripts::$formLayout
 JLoader::import('components.com_fastrack.libraries.helper', JPATH_ADMINISTRATOR);
-$formLayout = FastrackHelper::emailForm();
+$formLayout = FastrackHelper::emailForm($formLayout);
 */
 		$input = JFactory::getApplication()->input;
 		$productID = $input->get('productID', '0');

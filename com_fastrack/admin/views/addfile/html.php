@@ -57,7 +57,7 @@ class FastrackViewsAddfileHtml extends JViewHtml{
 		return parent::render();
 	}
 /**
- * Render
+ * add ToolBar
  * 
  * @version 11th February 2015
  * @since 11th February 2015

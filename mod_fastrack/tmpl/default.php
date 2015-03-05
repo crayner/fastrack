@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 3rd March 2015
+ * @version 5th March 2015
  * @since 14th February 2015
  */
 
@@ -81,7 +81,15 @@ foreach ($xx as $q=>$w) {
 		$item = array();
 		$xx[$q] = FastrackHelper::imageCreator($xx[$q], $ftfile);
 		unset($image);
-		$item['enquiry'] = str_replace('{{id}}', $w['id'], $ftfile->enquiryURL);
+		$item['enquiry'] = str_replace('productID={{id}}', '', $ftfile->enquiryURL);
+		if (strpos($item['enquiry'], '?') !== false)
+			$item['enquiry'] .= '&fileName='.$ftfile->name;
+		else
+			$item['enquiry'] .= '?fileName='.$ftfile->name;
+		if (strpos($item['enquiry'], '?') !== false)
+			$item['enquiry'] .= '&productID='.$w['id'];
+		else
+			$item['enquiry'] .= '?productID='.$w['id'];
 		$FileID = fopen($ftfile->resultPath.$w['id'].".txt", "w");   
 		foreach ($order as $n){
 			switch ($n) {

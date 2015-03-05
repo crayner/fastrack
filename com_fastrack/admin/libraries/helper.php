@@ -623,5 +623,159 @@ class FastrackHelper {
 		mkdir($path);
 		return ;
 	}
+/**
+ * email Form Generator
+ * 
+ * @version 5th March 2015
+ * @since 5th March 2015
+ * @return string Layout
+ */
+	static public function emailForm($formLayout = '') {
+
+
+/*
+Calling Code in RSForm::PHP Scripts::$formLayout
+JLoader::import('components.com_fastrack.libraries.helper', JPATH_ADMINISTRATOR);
+$formLayout = FastrackHelper::emailForm();
+*/
+		$input = JFactory::getApplication()->input;
+		$productID = $input->get('productID', '0');
+		$name = $input->get('fileName', '');
+
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->where($db->quoteName('name') . ' = ' . $db->quote($name));
+		$query->select('*');
+		$query->from($db->quoteName('#__fastrack_files'));
+		$db->setQuery($query);
+		$ftfile = $db->loadObject();
+		$ftfile->resultPath = rtrim($ftfile->resultPath, '/').'/';
+		$x = file($ftfile->resultPath.$productID.".txt");
+		
+		$product = array();
+		foreach($x as $l) {
+			$w = explode(':=', $l);
+			$product[trim($w[0])] = trim($w[1]);
+		}
+		$imagePath = $ftfile->resultPath.trim(str_replace('.xml', '', $name)).'_';
+		$imageURL = rtrim($ftfile->imageURL, '/').'/'.trim(str_replace('.xml', '', $name)).'_';
+		$s = '';
+		if (is_file($imagePath.$productID."_1.jpg")) {
+			$i = getimagesize($imagePath.$productID."_1.jpg");
+		$s = "
+			<div style=\"float: right; width: ".intval($i[0] + 4)."px\">
+				<h4>".$product['make']."</h4>
+				<p> Model: ".$product['model']."</p>
+				<p>".$product['currency']." $".number_format($product['cost'], 2, ".", ",")." ".$product['gst']."</p>
+				<img src=\"".$imageURL.$productID."_1.jpg\" alt=\"\" />
+			</div>";
+		}
+		$formLayout = $s.$formLayout;
+		return $formLayout;
+	}
+/**
+ * User email
+ * 
+ * @version 5th March 2015
+ * @since 5th March 2015
+ * @return array UserEmailFiles
+ */
+	static public function userEmail() {
+
+/*
+Calling Code in RSForm::PHP Email Scripts::$userEmail
+JLoader::import('components.com_fastrack.libraries.helper', JPATH_ADMINISTRATOR);
+$userEmail = FastrackHelper::userEmail();
+*/
+
+		$input = JFactory::getApplication()->input;
+		$productID = $input->get('productID', '0');
+		$name = $input->get('fileName', '');
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->where($db->quoteName('name') . ' = ' . $db->quote($name));
+		$query->select('*');
+		$query->from($db->quoteName('#__fastrack_files'));
+		$db->setQuery($query);
+		$ftfile = $db->loadObject();
+		$ftfile->resultPath = rtrim($ftfile->resultPath, '/').'/';
+		$imagePath = $ftfile->resultPath.trim(str_replace('.xml', '', $name)).'_';
+		$imageUrl = rtrim($ftfile->imageURL, '/').'/'.trim(str_replace('.xml', '', $name)).'_';
+		$userEmail = array();
+		if (is_file($imagePath.$productID."_1.jpg")) 
+			$userEmail['files'][] = $imageUrl.$productID."_1.jpg";
+		return $userEmail;
+	
+	}
+/**
+ * Product Details
+ * 
+ * @version 5th March 2015
+ * @since 5th March 2015
+ * @return string Product Details
+ */
+	static public function emailProductDetails() {
+
+/*
+Calling Code in RSForm::Default for Product Details
+//<code>
+JLoader::import('components.com_fastrack.libraries.helper', JPATH_ADMINISTRATOR);
+return FastrackHelper::emailProductDetails();
+//</code>
+*/
+
+		$input = JFactory::getApplication()->input;
+		$productID = $input->get('productID', '0');
+		$name = $input->get('fileName', '');
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->where($db->quoteName('name') . ' = ' . $db->quote($name));
+		$query->select('*');
+		$query->from($db->quoteName('#__fastrack_files'));
+		$db->setQuery($query);
+		$ftfile = $db->loadObject();
+		$ftfile->resultPath = rtrim($ftfile->resultPath, '/').'/';
+		$x = '<p>'. str_replace("\n", "</p>\n<p>", file_get_contents($ftfile->resultPath.$productID.".txt")).'</p>';
+		return $x;
+	}
+/**
+ * Subject Details
+ * 
+ * @version 5th March 2015
+ * @since 5th March 2015
+ * @return string Subject
+ */
+	static public function emailSubjectDetails() {
+
+/*
+Calling Code in RSForm::Defualt Value for Subject
+//<code>
+JLoader::import('components.com_fastrack.libraries.helper', JPATH_ADMINISTRATOR);
+return FastrackHelper::emailSubjectDetails();
+//</code>
+*/
+
+		$input = JFactory::getApplication()->input;
+		$productID = $input->get('productID', '0');
+		$name = $input->get('fileName', '');
+		$db = JFactory::getDbo();
+		$query = $db->getQuery(true);
+		$query->where($db->quoteName('name') . ' = ' . $db->quote($name));
+		$query->select('*');
+		$query->from($db->quoteName('#__fastrack_files'));
+		$db->setQuery($query);
+		$ftfile = $db->loadObject();
+		$ftfile->resultPath = rtrim($ftfile->resultPath, '/').'/';
+		$x = file($ftfile->resultPath.$productID.".txt");
+		
+		$product = array();
+		foreach($x as $l) {
+			$w = explode(':=', $l);
+			$product[trim($w[0])] = trim($w[1]);
+		}
+		
+		$s = "Used Product Inquiry - ".$product['make'].' - '.$product['model']."  Stock Ref:".$product['stockref'];
+		return $s;
+	}
 }
 

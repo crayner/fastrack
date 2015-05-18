@@ -17,8 +17,8 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 5th March 2015
- * @since 14th February 2015
+ * @version 	18th May 2015
+ * @since 		14th February 2015
  */
 
 defined('_JEXEC') or die();
@@ -178,9 +178,19 @@ foreach ($xx as $q=>$w) {
 						fwrite($FileID, $n.":=".str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value']))."\n");
 					}
 					break;
+				case 'measurements':
+				case 'text':
+				case 'option':
+					if (isset($w[$n])) {
+						$item[$n] = $w[$n]; 
+						fwrite($FileID, $n.":=".$w[$n]."\n");
+					}
+					break;
 				default:
-					$item['miscellaneous'][] = "<p><b>".$n.":</b> ".$w[$n]."</p>\n"; 
-					fwrite($FileID, $n.':+'.$w[$n]."\n");
+					if (isset($w[$n])) {
+						$item['miscellaneous'][] = "<p><b>".$n.":</b> ".$w[$n]."</p>\n"; 
+						fwrite($FileID, $n.':+'.$w[$n]."\n");
+					}
 			}
 		}
 		fclose($FileID);

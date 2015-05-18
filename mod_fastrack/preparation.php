@@ -17,15 +17,15 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 23rd February 2015
- * @since 26th November 2014
+ * @version 	18th May 2015
+ * @since 		26th November 2014
  */
 
 defined('_JEXEC') or die();
 /**
  * Mod Fastrack Preparation
  *
- * @version 23rd February 2015
+ * @version 	18th May 2015
  */
 class ModFastrackPreparation {
 
@@ -34,8 +34,8 @@ class ModFastrackPreparation {
 /**
   * Execute
   *
-  * @version 22nd February 2015
-  * @since 26th November 2014
+  * @version 	18th May 2015
+  * @since 		26th November 2014
   * @param object Registry
   * @return void
   */
@@ -137,11 +137,10 @@ class ModFastrackPreparation {
 
 		
 		# Analyse Attributes and convert to items
-		
 		foreach ($xx as $q=>$w) {
 			foreach ($w['attributes']['attribute'] as $e=>$r){
-				switch ($r['name']){
-					case "Price":
+				switch ($r['id']){
+					case "35":
 						$xx[$q]['price']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['price'][$t] = $y;
@@ -154,56 +153,56 @@ class ModFastrackPreparation {
 								$xx[$q]['price']['gst_value'] = 'inc-GST';
 							}
 						break;
-					case "Listing Type":
+					case "119":
 						$xx[$q]['listingtype']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['listingtype'][$t] = $y;
 						}
 						unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['listingtype'][0]);
 						break;
-					case "Item Condition":
+					case "236":
 						$xx[$q]['condition']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['condition'][$t] = $y;
 						}
 						unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['condition'][0]);
 						break;
-					case "Stock/Ref #":
+					case "25":
 						$xx[$q]['stockref']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['stockref'][$t] = $y;
 						}
 						unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['stockref'][0]);
 						break;
-					case "Status":
+					case "21":
 						$xx[$q]['status']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['status'][$t] = $y;
 						}
 						unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['status'][0]);
 						break;
-					case "Description":
+					case "19":
 						$xx[$q]['description']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['description'][$t] = $y;
 						}
 						unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['description'][0]);
 						break;
-					case "Hours":
+					case "10":
 						$xx[$q]['hours']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['hours'][$t] = $y;
 						}
 						unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['hours'][0]);
 						break;
-					case "Year":
+					case "36":
 						$xx[$q]['year']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['year'][$t] = $y;
 						}
 						unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['year'][0]);
 						break;
-					case "Eng Power":
+					case "32":
 						$xx[$q]['engpower']['value'] = $r[0];
 						foreach ($r as $t=>$y){
 							$xx[$q]['engpower'][$t] = $y;
@@ -211,23 +210,37 @@ class ModFastrackPreparation {
 						unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['engpower'][0]);
 						break;
 					default:
-						if (strpos($r['name'], "Config")) {
-							$xx[$q]['config']['value'] = $r[0];
-							foreach ($r as $t=>$y){
-								$xx[$q]['config'][$t] = $y;
-							}
-							unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['config'][0]);
+						switch ($r['type']) {
+							case "Decimal":
+							case "Integer":
+								$xx[$q]['measurements'] = $r['name'].':'.$r[0].$r['uom'].', ';
+								unset($xx[$q]['attributes']['attribute'][$e]);
+								break ;
+							case "Text":
+							case "Text30":
+								$xx[$q]['text'] = $r['name'].':'.$r[0].', ';
+								unset($xx[$q]['attributes']['attribute'][$e]);
+								break ;
+							case "Option":
+								if (strpos($r['name'], "Config")) {
+									$xx[$q]['config']['value'] = $r[0];
+									foreach ($r as $t=>$y){
+										$xx[$q]['config'][$t] = $y;
+									}
+									unset($xx[$q]['attributes']['attribute'][$e],$xx[$q]['config'][0]);
+								} else {
+									$xx[$q]['option'] = $r['name'].':'.$r[0].', ';
+									unset($xx[$q]['attributes']['attribute'][$e]);
+								}
+								break ;
+							default:
+								//  Nothing to do here
 						}
-						
 				}
 			}
 		}
 		
-		
 	
-		
-		
-		
 		
 		$yy = array();
 		foreach ($xx as $q=>$w) {
@@ -285,6 +298,8 @@ class ModFastrackPreparation {
 		$order[] = "id";
 		$order[] = "description";
 		$order[] = 'price';
+		$order[] = 'option';
+		$order[] = 'measurements';
 
 		$xx = FastrackHelper::setCondition('xx', FastrackHelper::SortResults($yy, array('listprice'=>'DESC', 'make'=>'ASC', 'model' => 'ASC')));
 

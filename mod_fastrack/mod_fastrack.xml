@@ -2,7 +2,7 @@
 <extension type="module" version="3.0" method="upgrade" client="site">
 	<name>MOD_FASTRACK</name>
 	<author>Hill Range Services</author>
-	<creationDate>18th May 2015</creationDate>
+	<creationDate>12th July 2016</creationDate>
 	<copyright>This extension is released under the GNU/GPL License.
 	</copyright>
 	<license>http://www.gnu.org/copyleft/gpl.html
@@ -10,7 +10,7 @@
 	<authorEmail>info@hillrange.com.au
 	</authorEmail>
 	<authorUrl>fastrack.hillrange.com.au</authorUrl>
-	<version>1.0</version>
+	<version>1.0.01</version>
 	<description>MOD_FASTRACK_DESCRIPTION</description>
 	<files>
 		<filename module="mod_fastrack">mod_fastrack.php</filename>

@@ -17,7 +17,7 @@
  * @author		Hill Range Services http://fastrack.hillrange.com.au
  * @copyright	Copyright (C) 2014  Hill Range Services  All rights reserved.
  * @license		http://www.gnu.org/licenses/gpl.html GNU/GPL
- * @version 	18th May 2015
+ * @version 	12th July 2016
  * @since 		14th February 2015
  */
 
@@ -174,8 +174,9 @@ foreach ($xx as $q=>$w) {
 					break;
 				case "description";
 					if (isset($w[$n])) {
-						$item[$n] =  str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value'])); 
-						fwrite($FileID, $n.":=".str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", $w[$n]['value']))."\n");
+						$desc = str_replace (array(", , , ,", ", , ,", ", ,"), ",", str_replace(array("\r\n", "\n\r", "\n", "<br>", "<br />"), ", ", html_entity_decode($w[$n]['value']))); 
+						$item[$n] =  $desc; 
+						fwrite($FileID, $n.":=".$desc."\n");
 					}
 					break;
 				case 'measurements':
